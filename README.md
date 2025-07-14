@@ -18,10 +18,6 @@ Marlin is a lightweight portfolio management tool designed for tracking investme
 1. Clone the repository
 2. Open `index.html` in your browser
 
-## Configuration
-
-Update `config.js` with your API keys and portfolio settings.
-
 ## License
 
 MIT License
