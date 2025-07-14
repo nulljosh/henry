@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Investment Goals Calculator</title>
+    <link id="framework-css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
+        .container { max-width: 1000px; margin: 2rem auto; }
+        .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .goal-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; margin: 0.5rem 0; border-radius: 6px; background: rgba(0,0,0,0.03); }
+        .progress-container { width: 120px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar { height: 100%; border-radius: 2px; transition: width 0.3s ease; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .metric-card { padding: 1rem; border-radius: 6px; text-align: center; color: white; }
+        .metric-value { font-size: 1.5rem; font-weight: 700; }
+        .metric-label { font-size: 0.8rem; opacity: 0.9; }
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+        .pros { padding: 1rem; border-radius: 6px; background: rgba(76, 175, 80, 0.1); border-left: 3px solid #4caf50; }
+        .cons { padding: 1rem; border-radius: 6px; background: rgba(244, 67, 54, 0.1); border-left: 3px solid #f44336; }
+        .success { background: linear-gradient(45deg, #00d4aa, #00b4d8); }
+        .info { background: linear-gradient(45deg, #0077be, #00b4d8); }
+        .primary { background: linear-gradient(45deg, #7b68ee, #9370db); }
+        .warning { background: linear-gradient(45deg, #ffa500, #ff8c00); }
+        .danger { background: linear-gradient(45deg, #ff6b6b, #ff5252); }
+        .link { background: linear-gradient(45deg, #48cae4, #0077be); }
+        .dark { background: linear-gradient(45deg, #495057, #343a40); }
+        .chart-container { position: relative; height: 300px; margin: 1rem 0; }
+        #growthChart { max-width: 100%; height: 300px; background: rgba(255,255,255,0.8); border-radius: 8px; }
+        
+        .theme-bootstrap .dropdown-menu { display: block; position: relative; float: none; background: white; border: 1px solid #ddd; box-shadow: none; margin: 0; }
+        .theme-bootstrap .dropdown-toggle::after { display: none; }
+        .theme-bootstrap .form-select { display: inline-block; width: 100%; padding: 0.375rem 0.75rem; border: 1px solid #ddd; border-radius: 4px; }
+        .theme-skeleton .card { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; }
+        .theme-materialize .card { box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .theme-minimal body { background: #fafafa; }
+        .theme-minimal .card { background: white; border: 1px solid #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <div class="level">
+                    <div class="level-left">
+                        <h1 class="title">Investment Goals Calculator</h1>
+                    </div>
+                    <div class="level-right">
+                        <select id="themeSelect" onchange="switchTheme()" class="select-theme">
+                            <option value="bulma">Bulma</option>
+                            <option value="bootstrap">Bootstrap</option>
+                            <option value="skeleton">Skeleton</option>
+                            <option value="materialize">Materialize</option>
+                            <option value="minimal">Minimal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="columns is-multiline">
+                    <div class="column is-3">
+                        <label class="label">Portfolio ($)</label>
+                        <input class="input" type="text" id="current" value="10,000" oninput="formatNumber(this)">
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">Monthly Income ($)</label>
+                        <input class="input" type="number" id="monthlyIncome" value="2000">
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">Monthly Expenses ($)</label>
+                        <input class="input" type="number" id="monthlyExpenses" value="1000">
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">Bitcoin Return</label>
+                        <select id="btcScenario" class="select is-fullwidth">
+                            <option value="15">Conservative (15%)</option>
+                            <option value="25">Moderate (25%)</option>
+                            <option value="35" selected>Optimistic (35%)</option>
+                            <option value="50">Bull (50%)</option>
+                        </select>
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">S&P 500 Return</label>
+                        <select id="spScenario" class="select is-fullwidth">
+                            <option value="7">Conservative (7%)</option>
+                            <option value="10" selected>Moderate (10%)</option>
+                            <option value="12">Optimistic (12%)</option>
+                            <option value="15">Bull (15%)</option>
+                        </select>
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">Tax Rate</label>
+                        <select id="taxRate" class="select is-fullwidth">
+                            <option value="0">0% (Tax-Free)</option>
+                            <option value="15">15% (LTCG)</option>
+                            <option value="25" selected>25% (Mixed)</option>
+                            <option value="37">37% (High)</option>
+                        </select>
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">Inflation</label>
+                        <select id="inflationRate" class="select is-fullwidth">
+                            <option value="2">2% (Target)</option>
+                            <option value="3" selected>3% (Current)</option>
+                            <option value="4">4% (High)</option>
+                        </select>
+                    </div>
+                    <div class="column is-3">
+                        <label class="label">Rebalancing</label>
+                        <select id="rebalancing" class="select is-fullwidth">
+                            <option value="none">None</option>
+                            <option value="annual" selected>Annual</option>
+                            <option value="threshold">5% Threshold</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="buttons is-centered">
+                    <button class="button is-primary is-active" onclick="toggleView('nominal')">Nominal</button>
+                    <button class="button" onclick="toggleView('real')">Real (Inflation-Adjusted)</button>
+                </div>
+
+                <div class="metrics">
+                    <div class="metric-card success">
+                        <div class="metric-value" id="monthlyAvailable">$1,000</div>
+                        <div class="metric-label">Monthly Available</div>
+                    </div>
+                    <div class="metric-card info">
+                        <div class="metric-value" id="btcAllocation">$500</div>
+                        <div class="metric-label">Bitcoin (50%)</div>
+                    </div>
+                    <div class="metric-card primary">
+                        <div class="metric-value" id="spAllocation">$500</div>
+                        <div class="metric-label">S&P 500 (50%)</div>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-value" id="effectiveRate">22%</div>
+                        <div class="metric-label">Blended Return</div>
+                    </div>
+                </div>
+
+                <div class="notification is-info is-light">
+                    <div id="scenarioInfo">Bitcoin 35% + S&P 10% | Nominal returns</div>
+                </div>
+
+                <div class="box">
+                    <h2 class="title is-4">Time to Goals</h2>
+                    <div id="goals"></div>
+                </div>
+
+                <div class="box">
+                    <h2 class="title is-4">Portfolio Growth by Decade</h2>
+                    <canvas id="growthChart" width="800" height="300"></canvas>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h3 class="title is-5">✅ Advantages</h3>
+                        <ul id="prosList"></ul>
+                    </div>
+                    <div class="cons">
+                        <h3 class="title is-5">⚠️ Risks</h3>
+                        <ul id="consList"></ul>
+                    </div>
+                </div>
+
+                <div class="notification is-warning">
+                    <strong>Disclaimer:</strong> Educational tool only. Markets are volatile. Past performance doesn't guarantee future results.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'nominal';
+        
+        const frameworks = {
+            bulma: 'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css',
+            bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css',
+            skeleton: 'https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css',
+            materialize: 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
+            minimal: ''
+        };
+
+        const goals = [
+            { amt: 100000, label: '100K', color: 'success' },
+            { amt: 250000, label: '250K', color: 'info' },
+            { amt: 500000, label: '500K', color: 'primary' },
+            { amt: 1000000, label: '1M', color: 'warning' },
+            { amt: 2500000, label: '2.5M', color: 'danger' },
+            { amt: 5000000, label: '5M', color: 'link' }
+        ];
+
+        function switchTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            const cssLink = document.getElementById('framework-css');
+            const themeSelect = document.getElementById('themeSelect');
+            
+            document.body.className = 'theme-' + theme;
+            cssLink.href = frameworks[theme];
+            
+            themeSelect.className = theme === 'bootstrap' ? 'form-select' : 'select-theme';
+        }
+
+        function formatNumber(input) {
+            let value = input.value.replace(/,/g, '');
+            if (!isNaN(value) && value !== '') {
+                input.value = parseInt(value).toLocaleString();
+            }
+            updateAll();
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            document.querySelectorAll('.button').forEach(btn => btn.classList.remove('is-active', 'is-primary'));
+            event.target.classList.add('is-active', 'is-primary');
+            updateAll();
+        }
+
+        function simulateGrowth(goal) {
+            const current = +document.getElementById('current').value.replace(/,/g, '');
+            const income = +document.getElementById('monthlyIncome').value;
+            const expenses = +document.getElementById('monthlyExpenses').value;
+            const monthly = Math.max(0, income - expenses);
+            const btcRate = +document.getElementById('btcScenario').value / 100;
+            const spRate = +document.getElementById('spScenario').value / 100;
+            
+            if (current >= goal || monthly <= 0) return current >= goal ? 0 : 50;
+            
+            let btcValue = current * 0.5;
+            let spValue = current * 0.5;
+            let months = 0;
+            
+            while ((btcValue + spValue) < goal && months < 600) {
+                btcValue += monthly * 0.5;
+                spValue += monthly * 0.5;
+                
+                btcValue *= (1 + btcRate / 12);
+                spValue *= (1 + spRate / 12);
+                
+                if (document.getElementById('rebalancing').value === 'annual' && months % 12 === 0) {
+                    const total = btcValue + spValue;
+                    btcValue = spValue = total * 0.5;
+                }
+                
+                months++;
+            }
+            
+            return months >= 600 ? 50 : Math.round(months / 12 * 10) / 10;
+        }
+
+        function drawChart() {
+            const canvas = document.getElementById('growthChart');
+            const ctx = canvas.getContext('2d');
+            const current = +document.getElementById('current').value.replace(/,/g, '');
+            const income = +document.getElementById('monthlyIncome').value;
+            const expenses = +document.getElementById('monthlyExpenses').value;
+            const monthly = Math.max(0, income - expenses);
+            const btcRate = +document.getElementById('btcScenario').value / 100;
+            const spRate = +document.getElementById('spScenario').value / 100;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const decades = [];
+            const currentYear = new Date().getFullYear();
+            let btcValue = current * 0.5;
+            let spValue = current * 0.5;
+            
+            decades.push({ year: currentYear, value: current });
+            
+            for (let year = currentYear + 10; year <= currentYear + 30; year += 10) {
+                const monthsToAdd = (year - currentYear) * 12 - (decades.length - 1) * 120;
+                
+                for (let i = 0; i < monthsToAdd; i++) {
+                    btcValue += monthly * 0.5;
+                    spValue += monthly * 0.5;
+                    btcValue *= (1 + btcRate / 12);
+                    spValue *= (1 + spRate / 12);
+                }
+                
+                decades.push({ year: year, value: btcValue + spValue });
+            }
+            
+            const padding = 60;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            const maxValue = Math.max.apply(Math, decades.map(d => d.value));
+            const minValue = Math.min.apply(Math, decades.map(d => d.value));
+            const valueRange = maxValue - minValue || 1;
+            
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(padding + chartWidth, y);
+                ctx.stroke();
+                
+                const value = maxValue - (valueRange / 5) * i;
+                ctx.fillStyle = '#666';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText('$' + (value / 1000000).toFixed(1) + 'M', padding - 10, y + 4);
+            }
+            
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding + chartHeight);
+            ctx.lineTo(padding + chartWidth, padding + chartHeight);
+            ctx.stroke();
+            
+            ctx.strokeStyle = '#7b68ee';
+            ctx.fillStyle = '#7b68ee';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            for (let i = 0; i < decades.length; i++) {
+                const decade = decades[i];
+                const x = padding + (chartWidth / (decades.length - 1)) * i;
+                const y = padding + chartHeight - ((decade.value - minValue) / valueRange) * chartHeight;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.restore();
+                
+                ctx.fillStyle = '#333';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(decade.year, x, padding + chartHeight + 20);
+                
+                ctx.fillStyle = '#7b68ee';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText('$' + (decade.value / 1000000).toFixed(1) + 'M', x, y - 10);
+            }
+            
+            ctx.stroke();
+            
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Portfolio Value Over Time', canvas.width / 2, 30);
+        }
+
+        function updateAll() {
+            const income = +document.getElementById('monthlyIncome').value;
+            const expenses = +document.getElementById('monthlyExpenses').value;
+            const available = Math.max(0, income - expenses);
+            const btcRate = +document.getElementById('btcScenario').value;
+            const spRate = +document.getElementById('spScenario').value;
+            const taxRate = +document.getElementById('taxRate').value / 100;
+            const inflationRate = +document.getElementById('inflationRate').value / 100;
+            
+            const blendedReturn = (btcRate + spRate) / 2;
+            const afterTaxReturn = blendedReturn * (1 - taxRate * 0.4);
+            const effectiveRate = currentView === 'real' ? afterTaxReturn - inflationRate : afterTaxReturn;
+            
+            document.getElementById('monthlyAvailable').textContent = '$' + available.toLocaleString();
+            document.getElementById('btcAllocation').textContent = '$' + (available * 0.5).toLocaleString();
+            document.getElementById('spAllocation').textContent = '$' + (available * 0.5).toLocaleString();
+            document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(1) + '%';
+            document.getElementById('scenarioInfo').textContent = 'Bitcoin ' + btcRate + '% + S&P ' + spRate + '% | ' + (currentView === 'nominal' ? 'Nominal' : 'Real') + ' returns';
+            
+            const pros = [
+                "50/50 diversification reduces risk",
+                "Dollar-cost averaging smooths volatility",
+                "Tax and inflation considerations",
+                "Multiple scenario planning",
+                "Rebalancing maintains allocation"
+            ];
+            
+            const cons = [
+                "High Bitcoin volatility (60-120% annually)",
+                "Regulatory risks for crypto",
+                "No bonds or defensive assets",
+                "Assumes consistent savings",
+                "Simplified tax calculations"
+            ];
+            
+            document.getElementById('prosList').innerHTML = pros.map(p => '<li>' + p + '</li>').join('');
+            document.getElementById('consList').innerHTML = cons.map(c => '<li>' + c + '</li>').join('');
+            
+            const goalsDiv = document.getElementById('goals');
+            goalsDiv.innerHTML = goals.map(g => {
+                const years = simulateGrowth(g.amt);
+                const display = years >= 50 ? "50+" : years;
+                const progress = Math.min(100, (1 / Math.max(1, years)) * 100);
+                
+                return '<div class="goal-item"><div><strong>' + g.label + '</strong></div><div style="display: flex; align-items: center; gap: 1rem;"><div class="progress-container"><div class="progress-bar ' + g.color + '" style="width: ' + progress + '%"></div></div><div>' + display + ' years</div></div></div>';
+            }).join('');
+            
+            drawChart();
+        }
+
+        ['current', 'monthlyIncome', 'monthlyExpenses', 'btcScenario', 'spScenario', 'taxRate', 'inflationRate', 'rebalancing'].forEach(function(id) {
+            document.getElementById(id).addEventListener(id === 'current' ? 'input' : 'change', updateAll);
+        });
+
+        updateAll();
+    </script>
+</body>
+</html>
