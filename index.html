@@ -227,6 +227,7 @@
     </div>
 
     <script>
+        // Cached data
         const assets = {
             btc: { name: 'Bitcoin', returns: [15, 25, 35, 50], class: 'btc' },
             eth: { name: 'Ethereum', returns: [12, 22, 32, 45], class: 'eth' },
@@ -256,53 +257,67 @@
             { text: "Kiss my piss.", author: "Erlich Bachman" }
         ];
 
+        // Cache DOM elements
+        const elements = {
+            current: document.getElementById('current'),
+            monthlyIncome: document.getElementById('monthlyIncome'),
+            monthlyExpenses: document.getElementById('monthlyExpenses'),
+            metrics: document.getElementById('metrics'),
+            scenarioInfo: document.getElementById('scenarioInfo'),
+            goals: document.getElementById('goals'),
+            prosList: document.getElementById('prosList'),
+            consList: document.getElementById('consList'),
+            motivationText: document.getElementById('motivationText'),
+            motivationAuthor: document.getElementById('motivationAuthor'),
+            canvas: document.getElementById('growthChart')
+        };
+
+        // Cache allocation inputs
+        const allocInputs = {};
+        Object.keys(assets).forEach(key => {
+            allocInputs[key] = document.getElementById(key + 'Alloc');
+        });
+
         let currentQuote = Math.floor(Math.random() * quotes.length);
+        let cachedData = {};
 
         function rotateQuote() {
             const quote = quotes[currentQuote];
-            document.getElementById('motivationText').textContent = quote.text;
-            document.getElementById('motivationAuthor').textContent = `- ${quote.author}`;
+            elements.motivationText.textContent = quote.text;
+            elements.motivationAuthor.textContent = `- ${quote.author}`;
             currentQuote = (currentQuote + 1) % quotes.length;
         }
 
         function getAllocations() {
             const allocs = {};
             Object.keys(assets).forEach(key => {
-                allocs[key] = +document.getElementById(key + 'Alloc').value || 0;
+                allocs[key] = +allocInputs[key].value || 0;
             });
             return allocs;
         }
 
         function getBlendedReturn() {
             const allocs = getAllocations();
-            const total = Object.values(allocs).reduce((sum, val) => sum + val, 0);
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
             if (total === 0) return 0;
             
-            let weightedReturn = 0;
-            Object.keys(allocs).forEach(key => {
+            return Object.keys(allocs).reduce((sum, key) => {
                 const weight = allocs[key] / total;
-                const avgReturn = assets[key].returns.reduce((sum, val) => sum + val, 0) / assets[key].returns.length;
-                weightedReturn += weight * avgReturn;
-            });
-            
-            return weightedReturn;
+                const avg = assets[key].returns.reduce((a, b) => a + b) / assets[key].returns.length;
+                return sum + weight * avg;
+            }, 0);
         }
 
         function simulateGrowth(goal) {
-            const current = +document.getElementById('current').value || 0;
-            const income = +document.getElementById('monthlyIncome').value || 0;
-            const expenses = +document.getElementById('monthlyExpenses').value || 0;
-            const monthly = Math.max(0, income - expenses);
+            const current = +elements.current.value || 0;
+            const monthly = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
             const annualReturn = getBlendedReturn() / 100;
             
             if (current >= goal || monthly <= 0) return current >= goal ? 0 : 50;
             
-            let value = current;
-            let months = 0;
-            
+            let value = current, months = 0;
             while (value < goal && months < 600) {
-                value += monthly;
-                value *= (1 + annualReturn / 12);
+                value = (value + monthly) * (1 + annualReturn / 12);
                 months++;
             }
             
@@ -310,98 +325,87 @@
         }
 
         function drawChart() {
-            const canvas = document.getElementById('growthChart');
-            const ctx = canvas.getContext('2d');
-            const container = canvas.parentElement;
+            const ctx = elements.canvas.getContext('2d');
+            const container = elements.canvas.parentElement;
             const dpr = window.devicePixelRatio || 1;
             
-            canvas.width = container.clientWidth * dpr;
-            canvas.height = container.clientHeight * dpr;
-            canvas.style.width = container.clientWidth + 'px';
-            canvas.style.height = container.clientHeight + 'px';
+            elements.canvas.width = container.clientWidth * dpr;
+            elements.canvas.height = container.clientHeight * dpr;
+            elements.canvas.style.width = container.clientWidth + 'px';
+            elements.canvas.style.height = container.clientHeight + 'px';
             ctx.scale(dpr, dpr);
             
-            const current = +document.getElementById('current').value || 0;
-            const income = +document.getElementById('monthlyIncome').value || 0;
-            const expenses = +document.getElementById('monthlyExpenses').value || 0;
-            const monthly = Math.max(0, income - expenses);
+            const current = +elements.current.value || 0;
+            const monthly = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
             const annualReturn = getBlendedReturn() / 100;
             
             ctx.clearRect(0, 0, container.clientWidth, container.clientHeight);
             
-            const decades = [];
-            const currentYear = new Date().getFullYear();
+            // Generate data points
+            const data = [{year: new Date().getFullYear(), value: current}];
             let value = current;
             
-            decades.push({ year: currentYear, value: current });
-            
-            for (let year = currentYear + 5; year <= currentYear + 30; year += 5) {
-                const monthsToAdd = (year - currentYear) * 12 - (decades.length - 1) * 60;
-                for (let i = 0; i < monthsToAdd; i++) {
-                    value += monthly;
-                    value *= (1 + annualReturn / 12);
+            for (let i = 5; i <= 30; i += 5) {
+                for (let j = 0; j < 60; j++) {
+                    value = (value + monthly) * (1 + annualReturn / 12);
                 }
-                decades.push({ year: year, value: value });
+                data.push({year: data[0].year + i, value});
             }
             
             const padding = 60;
-            const chartWidth = container.clientWidth - padding * 2;
-            const chartHeight = container.clientHeight - padding * 2;
-            const maxValue = Math.max(...decades.map(d => d.value));
+            const w = container.clientWidth - padding * 2;
+            const h = container.clientHeight - padding * 2;
+            const maxValue = Math.max(...data.map(d => d.value));
             
-            // Grid
+            // Draw grid and line
             ctx.strokeStyle = '#e2e8f0';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 5; i++) {
-                const y = padding + (chartHeight / 5) * i;
+                const y = padding + (h / 5) * i;
                 ctx.beginPath();
                 ctx.moveTo(padding, y);
-                ctx.lineTo(padding + chartWidth, y);
+                ctx.lineTo(padding + w, y);
                 ctx.stroke();
             }
             
-            // Line
             ctx.strokeStyle = '#667eea';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            decades.forEach((decade, i) => {
-                const x = padding + (chartWidth / (decades.length - 1)) * i;
-                const y = padding + chartHeight - (decade.value / maxValue) * chartHeight;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+            data.forEach((d, i) => {
+                const x = padding + (w / (data.length - 1)) * i;
+                const y = padding + h - (d.value / maxValue) * h;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
             });
             ctx.stroke();
             
-            // Points
-            decades.forEach((decade, i) => {
-                const x = padding + (chartWidth / (decades.length - 1)) * i;
-                const y = padding + chartHeight - (decade.value / maxValue) * chartHeight;
+            // Draw points and labels
+            ctx.fillStyle = '#667eea';
+            data.forEach((d, i) => {
+                const x = padding + (w / (data.length - 1)) * i;
+                const y = padding + h - (d.value / maxValue) * h;
                 
                 ctx.beginPath();
                 ctx.arc(x, y, 5, 0, 2 * Math.PI);
-                ctx.fillStyle = '#667eea';
                 ctx.fill();
                 
                 ctx.fillStyle = '#4a5568';
                 ctx.font = '11px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(decade.year, x, container.clientHeight - 10);
+                ctx.fillText(d.year, x, container.clientHeight - 10);
                 
-                const valueText = decade.value >= 1000000 ? (decade.value / 1000000).toFixed(1) + 'M' : (decade.value / 1000).toFixed(0) + 'K';
+                const valueText = d.value >= 1000000 ? (d.value / 1000000).toFixed(1) + 'M' : (d.value / 1000).toFixed(0) + 'K';
                 ctx.fillText(valueText, x, y - 10);
+                ctx.fillStyle = '#667eea';
             });
         }
 
         function updateAll() {
-            const income = +document.getElementById('monthlyIncome').value || 0;
-            const expenses = +document.getElementById('monthlyExpenses').value || 0;
-            const available = Math.max(0, income - expenses);
+            const available = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
             const allocs = getAllocations();
-            const total = Object.values(allocs).reduce((sum, val) => sum + val, 0);
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
             const blendedReturn = getBlendedReturn();
             
             // Update metrics
-            const metricsDiv = document.getElementById('metrics');
             let metricsHTML = `<div class="metric-card btc">
                 <div class="metric-value">$${available.toLocaleString()}</div>
                 <div class="metric-label">Monthly Available</div>
@@ -409,9 +413,9 @@
             
             Object.keys(allocs).forEach(key => {
                 if (allocs[key] > 0) {
-                    const amount = (available * allocs[key] / 100).toFixed(0);
+                    const amount = Math.floor(available * allocs[key] / 100);
                     metricsHTML += `<div class="metric-card ${assets[key].class}">
-                        <div class="metric-value">$${(+amount).toLocaleString()}</div>
+                        <div class="metric-value">$${amount.toLocaleString()}</div>
                         <div class="metric-label">${assets[key].name} (${allocs[key]}%)</div>
                     </div>`;
                 }
@@ -422,14 +426,11 @@
                 <div class="metric-label">Blended Return</div>
             </div>`;
             
-            metricsDiv.innerHTML = metricsHTML;
-            
-            // Update scenario info
-            document.getElementById('scenarioInfo').textContent = `Total allocation: ${total}% | Expected return: ${blendedReturn.toFixed(1)}%`;
+            elements.metrics.innerHTML = metricsHTML;
+            elements.scenarioInfo.textContent = `Total allocation: ${total}% | Expected return: ${blendedReturn.toFixed(1)}%`;
             
             // Update goals
-            const goalsDiv = document.getElementById('goals');
-            goalsDiv.innerHTML = goals.map(g => {
+            elements.goals.innerHTML = goals.map(g => {
                 const years = simulateGrowth(g.amt);
                 const display = years >= 50 ? "50+" : years;
                 const progress = Math.min(100, (1 / Math.max(1, years)) * 100);
@@ -445,8 +446,8 @@
             }).join('');
             
             // Update pros/cons
-            const cryptoAlloc = (allocs.btc + allocs.eth + allocs.sol) || 0;
-            const etfAlloc = (allocs.vti + allocs.voo + allocs.spy) || 0;
+            const cryptoAlloc = allocs.btc + allocs.eth + allocs.sol;
+            const etfAlloc = allocs.vti + allocs.voo + allocs.spy;
             
             const pros = [
                 `${cryptoAlloc}% crypto for growth potential`,
@@ -464,23 +465,18 @@
                 "Simplified return projections"
             ];
             
-            document.getElementById('prosList').innerHTML = pros.map(p => `<li>${p}</li>`).join('');
-            document.getElementById('consList').innerHTML = cons.map(c => `<li>${c}</li>`).join('');
+            elements.prosList.innerHTML = pros.map(p => `<li>${p}</li>`).join('');
+            elements.consList.innerHTML = cons.map(c => `<li>${c}</li>`).join('');
             
             setTimeout(drawChart, 50);
         }
 
-        // Event listeners
-        const inputs = ['current', 'monthlyIncome', 'monthlyExpenses'];
-        const allocs = Object.keys(assets).map(key => key + 'Alloc');
-        
-        [...inputs, ...allocs].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateAll);
+        // Initialize
+        [...Object.values(elements), ...Object.values(allocInputs)].forEach(el => {
+            if (el.tagName === 'INPUT') el.addEventListener('input', updateAll);
         });
         
         window.addEventListener('resize', drawChart);
-        
-        // Initialize
         rotateQuote();
         setInterval(rotateQuote, 6000);
         updateAll();
