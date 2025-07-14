@@ -38,12 +38,41 @@
             display: block;
         }
         .motivation { background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center; transition: all 0.3s ease; }
-        .header-section { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .header-section { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 1.5rem; 
+        }
+        .header-left { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        .header-right {
+            text-align: right;
+        }
         .logo { flex-shrink: 0; }
         .header-text .title { margin-bottom: 0.25rem; }
         .header-text .subtitle { margin-bottom: 0; color: #666; }
+        .slogan {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+            font-weight: 500;
+        }
         .motivation-text { font-size: 1.1rem; font-weight: 600; }
         .motivation-author { font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem; }
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .header-right {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -51,28 +80,32 @@
         <div class="card">
             <div class="card-content">
                 <div class="header-section">
-                    <svg width="48" height="48" viewBox="0 0 100 100" class="logo">
-                        <!-- Marlin body -->
-                        <ellipse cx="45" cy="50" rx="30" ry="8" fill="#2c5aa0" stroke="#1a4480" stroke-width="1"/>
-                        <!-- Marlin head -->
-                        <ellipse cx="20" cy="50" rx="12" ry="6" fill="#2c5aa0" stroke="#1a4480" stroke-width="1"/>
-                        <!-- Marlin spear/bill -->
-                        <path d="M8 50 L32 48 L32 52 Z" fill="#4a4a4a" stroke="#333" stroke-width="1"/>
-                        <!-- Dorsal fin -->
-                        <path d="M40 42 L50 30 L60 42 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
-                        <!-- Tail fin -->
-                        <path d="M75 45 L90 35 L95 50 L90 65 L75 55 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
-                        <!-- Pectoral fin -->
-                        <path d="M35 55 L42 65 L50 58 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
-                        <!-- Eye -->
-                        <circle cx="25" cy="48" r="2" fill="white"/>
-                        <circle cx="26" cy="47" r="1" fill="black"/>
-                        <!-- Gills -->
-                        <path d="M32 47 Q35 50 32 53" stroke="#0f2240" stroke-width="1" fill="none"/>
-                    </svg>
-                    <div class="header-text">
-                        <h1 class="title">MarlinVest</h1>
-                        <p class="subtitle is-6">Fast as fuck portfolio management</p>
+                    <div class="header-left">
+                        <svg width="48" height="48" viewBox="0 0 100 100" class="logo">
+                            <!-- Marlin body -->
+                            <ellipse cx="45" cy="50" rx="30" ry="8" fill="#2c5aa0" stroke="#1a4480" stroke-width="1"/>
+                            <!-- Marlin head -->
+                            <ellipse cx="20" cy="50" rx="12" ry="6" fill="#2c5aa0" stroke="#1a4480" stroke-width="1"/>
+                            <!-- Marlin spear/bill -->
+                            <path d="M8 50 L32 48 L32 52 Z" fill="#4a4a4a" stroke="#333" stroke-width="1"/>
+                            <!-- Dorsal fin -->
+                            <path d="M40 42 L50 30 L60 42 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
+                            <!-- Tail fin -->
+                            <path d="M75 45 L90 35 L95 50 L90 65 L75 55 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
+                            <!-- Pectoral fin -->
+                            <path d="M35 55 L42 65 L50 58 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
+                            <!-- Eye -->
+                            <circle cx="25" cy="48" r="2" fill="white"/>
+                            <circle cx="26" cy="47" r="1" fill="black"/>
+                            <!-- Gills -->
+                            <path d="M32 47 Q35 50 32 53" stroke="#0f2240" stroke-width="1" fill="none"/>
+                        </svg>
+                        <div class="header-text">
+                            <h1 class="title">MarlinVest</h1>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="slogan">Fast as fuck portfolio management</div>
                     </div>
                 </div>
 
