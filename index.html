@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Investment Calculator</title>
+    <title>Marlin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" rel="stylesheet">
     <style>
@@ -25,8 +25,18 @@
         .warning { background: linear-gradient(45deg, #ffa500, #ff8c00); }
         .danger { background: linear-gradient(45deg, #ff6b6b, #ff5252); }
         .link { background: linear-gradient(45deg, #48cae4, #0077be); }
-        #growthChart { width: 100%; height: 300px; border-radius: 8px; }
-        @media (min-width: 768px) { #growthChart { height: 400px; } }
+        .chart-container { 
+            width: 100%; 
+            height: 400px; 
+            position: relative; 
+            margin: 1rem 0; 
+        }
+        #growthChart { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 8px; 
+            display: block;
+        }
         .motivation { background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center; transition: all 0.3s ease; }
         .motivation-text { font-size: 1.1rem; font-weight: 600; }
         .motivation-author { font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem; }
@@ -115,7 +125,9 @@
 
                 <div class="box">
                     <h2 class="title is-4">Portfolio Growth Over Time</h2>
-                    <canvas id="growthChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="growthChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="pros-cons">
@@ -155,7 +167,28 @@
             { text: "We're going to make the world a better place, through minimal message-oriented transport layers.", author: "Richard Hendricks" },
             { text: "I'm not a businessman, I'm a business, man.", author: "Erlich Bachman" },
             { text: "Success is 1% inspiration, 98% perspiration, and 2% attention to detail.", author: "Jared Dunn" },
-            { text: "We're making the world a better place through constructing elegant hierarchies for maximum code reuse and extensibility.", author: "Richard Hendricks" }
+            { text: "We're making the world a better place through constructing elegant hierarchies for maximum code reuse and extensibility.", author: "Richard Hendricks" },
+            { text: "I don't know about you people, but I don't want to live in a world where someone else makes the world a better place better than we do.", author: "Gavin Belson" },
+            { text: "Aviato. My aviato. A-V-I-A-T-O. Aviato.", author: "Erlich Bachman" },
+            { text: "I'm gonna build a box and it's gonna be glorious.", author: "Gilfoyle" },
+            { text: "You just brought piss to a shit fight, you little cunt.", author: "Gilfoyle" },
+            { text: "I like to think of myself as a people person.", author: "Jared Dunn" },
+            { text: "Rigby, you're about to get fucked by the long dick of the law.", author: "Erlich Bachman" },
+            { text: "I've always been about the products, not the politics.", author: "Richard Hendricks" },
+            { text: "Middle-out! Middle-out! Middle-out!", author: "Richard Hendricks" },
+            { text: "I eat that shit for breakfast.", author: "Erlich Bachman" },
+            { text: "You're gonna be rich, and you're gonna be successful, and you're gonna be happy.", author: "Jared Dunn" },
+            { text: "Jin Yang! Jin Yang! Jin Yang!", author: "Erlich Bachman" },
+            { text: "The only thing I'm guilty of is being a goddamn American patriot.", author: "Gavin Belson" },
+            { text: "I'm not superstitious, but I am a little stitious.", author: "Jared Dunn" },
+            { text: "Fuck you, Danesh. And fuck your algorithm.", author: "Gilfoyle" },
+            { text: "I don't want to sound like a dick or nothin', but it says on your chart that you're fucked up.", author: "Erlich Bachman" },
+            { text: "Welcome to the machine.", author: "Gilfoyle" },
+            { text: "Consider the middle-out algorithm.", author: "Richard Hendricks" },
+            { text: "You know, I've been thinking about efficiency a lot lately.", author: "Jared Dunn" },
+            { text: "I'm CEO, bitch!", author: "Gavin Belson" },
+            { text: "My uncle used to say, 'you look like someone starved a virgin to death.'", author: "Gilfoyle" },
+            { text: "Kiss my piss.", author: "Erlich Bachman" }
         ];
 
         let currentQuoteIndex = Math.floor(Math.random() * motivationalQuotes.length);
@@ -196,11 +229,17 @@
             const canvas = document.getElementById('growthChart');
             const ctx = canvas.getContext('2d');
             
-            // High DPI setup
+            // Get the container dimensions
+            const container = canvas.parentElement;
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            // Set canvas size with high DPI support
             const dpr = window.devicePixelRatio || 1;
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
+            canvas.width = containerWidth * dpr;
+            canvas.height = containerHeight * dpr;
+            canvas.style.width = containerWidth + 'px';
+            canvas.style.height = containerHeight + 'px';
             ctx.scale(dpr, dpr);
             
             const current = +document.getElementById('current').value;
@@ -210,7 +249,7 @@
             const btcRate = +document.getElementById('btcScenario').value / 100;
             const spRate = +document.getElementById('spScenario').value / 100;
             
-            ctx.clearRect(0, 0, rect.width, rect.height);
+            ctx.clearRect(0, 0, containerWidth, containerHeight);
             
             // Calculate decades
             const decades = [];
@@ -233,11 +272,11 @@
                 decades.push({ year: year, value: btcValue + spValue });
             }
             
-            const padding = 60;
-            const chartWidth = rect.width - padding * 2;
-            const chartHeight = rect.height - padding * 2;
+            const padding = 70;
+            const chartWidth = containerWidth - padding * 2;
+            const chartHeight = containerHeight - padding * 2;
             const maxValue = Math.max(...decades.map(d => d.value));
-            const minValue = Math.min(...decades.map(d => d.value));
+            const minValue = 0;
             const valueRange = maxValue - minValue || 1;
             
             // Grid lines
@@ -253,9 +292,10 @@
                 
                 const value = maxValue - (valueRange / 5) * i;
                 ctx.fillStyle = '#666';
-                ctx.font = '12px Arial';
+                ctx.font = '11px Arial';
                 ctx.textAlign = 'right';
-                ctx.fillText('$' + (value / 1000000).toFixed(1) + 'M', padding - 10, y + 4);
+                const valueText = value >= 1000000 ? (value / 1000000).toFixed(1) + 'M' : (value / 1000).toFixed(0) + 'K';
+                ctx.fillText(valueText, padding - 10, y + 4);
             }
             
             // Main line
@@ -288,12 +328,16 @@
                 ctx.fillStyle = 'white';
                 ctx.fill();
                 
-                // Labels
+                // Year labels
                 ctx.fillStyle = '#333';
-                ctx.font = '14px Arial';
+                ctx.font = '12px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(decade.year, x, rect.height - 20);
-                ctx.fillText('$' + (decade.value / 1000000).toFixed(1) + 'M', x, y - 15);
+                ctx.fillText(decade.year, x, containerHeight - 15);
+                
+                // Value labels
+                ctx.font = '11px Arial';
+                const valueText = decade.value >= 1000000 ? (decade.value / 1000000).toFixed(1) + 'M' : (decade.value / 1000).toFixed(0) + 'K';
+                ctx.fillText(valueText, x, y - 12);
             });
         }
 
@@ -342,15 +386,20 @@
                 return '<div class="goal-item"><div><strong>' + g.label + '</strong></div><div style="display: flex; align-items: center; gap: 1rem;"><div class="progress-container"><div class="progress-bar ' + g.color + '" style="width: ' + progress + '%"></div></div><div>' + display + ' years</div></div></div>';
             }).join('');
             
-            drawChart();
+            setTimeout(drawChart, 100); // Small delay to ensure container is sized
         }
 
         // Initialize with random quote and set up rotation
         rotateMotivation();
-        setInterval(rotateMotivation, 8000); // Change quote every 8 seconds
+        setInterval(rotateMotivation, 8000);
 
         ['current', 'monthlyIncome', 'monthlyExpenses', 'btcScenario', 'spScenario', 'taxRate'].forEach(id => {
             document.getElementById(id).addEventListener('change', updateAll);
+        });
+
+        // Redraw chart on window resize
+        window.addEventListener('resize', () => {
+            setTimeout(drawChart, 100);
         });
 
         updateAll();
