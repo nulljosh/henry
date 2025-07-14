@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Marlin • Portfolio Manager</title>
+    <title>Marlin • Enhanced Portfolio Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" rel="stylesheet">
     <style>
@@ -115,6 +115,66 @@
         .allocation-item { text-align: center; }
         .allocation-item label { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; display: block; }
         .allocation-item input { width: 60px; text-align: center; }
+        .allocation-item input.is-danger { border-color: #f44336; }
+        .risk-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 87, 34, 0.05);
+            border-radius: 8px;
+        }
+        .risk-card {
+            padding: 1rem;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .risk-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .risk-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .cycle-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        .cycle-bull { background: rgba(76, 175, 80, 0.1); color: #4caf50; }
+        .cycle-bear { background: rgba(244, 67, 54, 0.1); color: #f44336; }
+        .cycle-neutral { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         @media (max-width: 768px) {
             .header-section { flex-direction: column; gap: 1rem; text-align: center; }
             .metrics { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
@@ -190,6 +250,36 @@
                     </div>
                 </div>
 
+                <div id="errorMessages"></div>
+                <div id="dataStatus" class="notification is-info is-light" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    Loading market data...
+                </div>
+
+                <div class="cycle-indicator" id="cycleIndicator">
+                    <span>📊</span>
+                    <span>Market Cycle: Neutral</span>
+                </div>
+
+                <div class="risk-metrics">
+                    <div class="risk-card">
+                        <div class="risk-value" id="volatilityValue">--</div>
+                        <div class="risk-label">Portfolio Volatility</div>
+                    </div>
+                    <div class="risk-card">
+                        <div class="risk-value" id="correlationValue">--</div>
+                        <div class="risk-label">Avg Correlation</div>
+                    </div>
+                    <div class="risk-card">
+                        <div class="risk-value" id="sharpeValue">--</div>
+                        <div class="risk-label">Sharpe Ratio</div>
+                    </div>
+                    <div class="risk-card">
+                        <div class="risk-value" id="maxDrawdownValue">--</div>
+                        <div class="risk-label">Max Drawdown</div>
+                    </div>
+                </div>
+
                 <div class="metrics" id="metrics"></div>
 
                 <div class="notification is-info is-light">
@@ -227,15 +317,19 @@
     </div>
 
     <script>
-        // Cached data
-        const assets = {
-            btc: { name: 'Bitcoin', returns: [15, 25, 35, 50], class: 'btc' },
-            eth: { name: 'Ethereum', returns: [12, 22, 32, 45], class: 'eth' },
-            sol: { name: 'Solana', returns: [10, 20, 30, 40], class: 'sol' },
-            vti: { name: 'VTI', returns: [6, 8, 10, 12], class: 'vti' },
-            voo: { name: 'VOO', returns: [6, 8, 10, 12], class: 'voo' },
-            spy: { name: 'SPY', returns: [6, 8, 10, 12], class: 'spy' }
+        // Enhanced data structure with volatility and correlation
+        let marketData = {
+            btc: { name: 'Bitcoin', returns: 45, volatility: 65, correlation: 0.3, class: 'btc' },
+            eth: { name: 'Ethereum', returns: 35, volatility: 58, correlation: 0.7, class: 'eth' },
+            sol: { name: 'Solana', returns: 30, volatility: 75, correlation: 0.6, class: 'sol' },
+            vti: { name: 'VTI', returns: 10, volatility: 15, correlation: 0.9, class: 'vti' },
+            voo: { name: 'VOO', returns: 10, volatility: 15, correlation: 0.95, class: 'voo' },
+            spy: { name: 'SPY', returns: 10, volatility: 15, correlation: 0.98, class: 'spy' }
         };
+
+        // Market cycle detection
+        let currentCycle = 'neutral';
+        let cycleMultipliers = { bull: 1.3, bear: 0.7, neutral: 1.0 };
 
         const goals = [
             { amt: 100000, label: '100K', color: 'btc' },
@@ -269,17 +363,153 @@
             consList: document.getElementById('consList'),
             motivationText: document.getElementById('motivationText'),
             motivationAuthor: document.getElementById('motivationAuthor'),
-            canvas: document.getElementById('growthChart')
+            canvas: document.getElementById('growthChart'),
+            errorMessages: document.getElementById('errorMessages'),
+            dataStatus: document.getElementById('dataStatus'),
+            cycleIndicator: document.getElementById('cycleIndicator'),
+            volatilityValue: document.getElementById('volatilityValue'),
+            correlationValue: document.getElementById('correlationValue'),
+            sharpeValue: document.getElementById('sharpeValue'),
+            maxDrawdownValue: document.getElementById('maxDrawdownValue')
         };
 
         // Cache allocation inputs
         const allocInputs = {};
-        Object.keys(assets).forEach(key => {
+        Object.keys(marketData).forEach(key => {
             allocInputs[key] = document.getElementById(key + 'Alloc');
         });
 
         let currentQuote = Math.floor(Math.random() * quotes.length);
-        let cachedData = {};
+        let dataLastUpdated = 0;
+        let errors = [];
+
+        // Persistence layer using in-memory storage
+        class PortfolioStorage {
+            constructor() {
+                this.data = this.loadData();
+            }
+
+            loadData() {
+                try {
+                    const saved = this.getCookie('portfolioData');
+                    return saved ? JSON.parse(saved) : this.getDefaults();
+                } catch (e) {
+                    return this.getDefaults();
+                }
+            }
+
+            saveData(data) {
+                this.data = { ...this.data, ...data };
+                this.setCookie('portfolioData', JSON.stringify(this.data), 30);
+            }
+
+            getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return null;
+            }
+
+            setCookie(name, value, days) {
+                const expires = new Date(Date.now() + days * 864e5).toUTCString();
+                document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+            }
+
+            getDefaults() {
+                return {
+                    current: 600,
+                    monthlyIncome: 1060,
+                    monthlyExpenses: 480,
+                    allocations: { btc: 20, eth: 15, sol: 10, vti: 25, voo: 20, spy: 10 }
+                };
+            }
+        }
+
+        const storage = new PortfolioStorage();
+
+        // Error handling system
+        function addError(message) {
+            errors.push(message);
+            updateErrorDisplay();
+        }
+
+        function clearErrors() {
+            errors = [];
+            updateErrorDisplay();
+        }
+
+        function updateErrorDisplay() {
+            const html = errors.map(error => `<div class="error-message">${error}</div>`).join('');
+            elements.errorMessages.innerHTML = html;
+        }
+
+        // Market data fetching (simulated - would use real API)
+        async function fetchMarketData() {
+            try {
+                elements.dataStatus.style.display = 'block';
+                
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Simulate market data updates with some randomness
+                const variance = () => (Math.random() - 0.5) * 0.1;
+                
+                marketData.btc.returns = Math.max(0, 45 + variance() * 100);
+                marketData.eth.returns = Math.max(0, 35 + variance() * 80);
+                marketData.sol.returns = Math.max(0, 30 + variance() * 90);
+                marketData.vti.returns = Math.max(0, 10 + variance() * 20);
+                marketData.voo.returns = Math.max(0, 10 + variance() * 20);
+                marketData.spy.returns = Math.max(0, 10 + variance() * 20);
+                
+                // Update cycle based on general market performance
+                const avgReturn = Object.values(marketData).reduce((sum, asset) => sum + asset.returns, 0) / Object.keys(marketData).length;
+                currentCycle = avgReturn > 20 ? 'bull' : avgReturn < 5 ? 'bear' : 'neutral';
+                
+                dataLastUpdated = Date.now();
+                elements.dataStatus.style.display = 'none';
+                
+            } catch (error) {
+                addError('Failed to fetch market data. Using cached values.');
+                elements.dataStatus.style.display = 'none';
+            }
+        }
+
+        // Allocation constraints and validation
+        function validateAllocations() {
+            clearErrors();
+            const allocs = getAllocations();
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
+            
+            // Reset input styling
+            Object.values(allocInputs).forEach(input => {
+                input.classList.remove('is-danger');
+            });
+            
+            // Check total allocation
+            if (total > 100) {
+                addError('Total allocation exceeds 100%');
+                return false;
+            }
+            
+            // Check individual constraints
+            const cryptoTotal = allocs.btc + allocs.eth + allocs.sol;
+            if (cryptoTotal > 60) {
+                addError('Crypto allocation exceeds recommended 60% maximum');
+                ['btc', 'eth', 'sol'].forEach(key => {
+                    if (allocs[key] > 0) allocInputs[key].classList.add('is-danger');
+                });
+            }
+            
+            // Check for negative values
+            Object.keys(allocs).forEach(key => {
+                if (allocs[key] < 0) {
+                    addError(`${marketData[key].name} allocation cannot be negative`);
+                    allocInputs[key].classList.add('is-danger');
+                }
+            });
+            
+            return errors.length === 0;
+        }
 
         function rotateQuote() {
             const quote = quotes[currentQuote];
@@ -290,10 +520,48 @@
 
         function getAllocations() {
             const allocs = {};
-            Object.keys(assets).forEach(key => {
-                allocs[key] = +allocInputs[key].value || 0;
+            Object.keys(marketData).forEach(key => {
+                allocs[key] = Math.max(0, +allocInputs[key].value || 0);
             });
             return allocs;
+        }
+
+        function calculatePortfolioRisk() {
+            const allocs = getAllocations();
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
+            if (total === 0) return { volatility: 0, correlation: 0, sharpe: 0, drawdown: 0 };
+            
+            let weightedVolatility = 0;
+            let weightedCorrelation = 0;
+            let weightedReturn = 0;
+            
+            Object.keys(allocs).forEach(key => {
+                const weight = allocs[key] / total;
+                const asset = marketData[key];
+                weightedVolatility += weight * weight * asset.volatility * asset.volatility;
+                weightedCorrelation += weight * asset.correlation;
+                weightedReturn += weight * asset.returns;
+            });
+            
+            const portfolioVol = Math.sqrt(weightedVolatility);
+            const sharpeRatio = portfolioVol > 0 ? (weightedReturn - 3) / portfolioVol : 0; // Assuming 3% risk-free rate
+            const maxDrawdown = portfolioVol * 2; // Simplified calculation
+            
+            return {
+                volatility: portfolioVol,
+                correlation: weightedCorrelation,
+                sharpe: sharpeRatio,
+                drawdown: maxDrawdown
+            };
+        }
+
+        function updateCycleIndicator() {
+            const indicator = elements.cycleIndicator;
+            const cycleNames = { bull: 'Bull Market', bear: 'Bear Market', neutral: 'Neutral' };
+            const cycleEmojis = { bull: '📈', bear: '📉', neutral: '📊' };
+            
+            indicator.className = `cycle-indicator cycle-${currentCycle}`;
+            indicator.innerHTML = `<span>${cycleEmojis[currentCycle]}</span><span>Market Cycle: ${cycleNames[currentCycle]}</span>`;
         }
 
         function getBlendedReturn() {
@@ -301,11 +569,12 @@
             const total = Object.values(allocs).reduce((a, b) => a + b, 0);
             if (total === 0) return 0;
             
-            return Object.keys(allocs).reduce((sum, key) => {
+            const baseReturn = Object.keys(allocs).reduce((sum, key) => {
                 const weight = allocs[key] / total;
-                const avg = assets[key].returns.reduce((a, b) => a + b) / assets[key].returns.length;
-                return sum + weight * avg;
+                return sum + weight * marketData[key].returns;
             }, 0);
+            
+            return baseReturn * cycleMultipliers[currentCycle];
         }
 
         function simulateGrowth(goal) {
@@ -341,23 +610,51 @@
             
             ctx.clearRect(0, 0, container.clientWidth, container.clientHeight);
             
-            // Generate data points
-            const data = [{year: new Date().getFullYear(), value: current}];
+            // Generate data points with volatility bands
+            const data = [{year: new Date().getFullYear(), value: current, upper: current, lower: current}];
             let value = current;
+            const risk = calculatePortfolioRisk();
             
             for (let i = 5; i <= 30; i += 5) {
                 for (let j = 0; j < 60; j++) {
                     value = (value + monthly) * (1 + annualReturn / 12);
                 }
-                data.push({year: data[0].year + i, value});
+                const volatilityRange = value * (risk.volatility / 100) * Math.sqrt(i / 5);
+                data.push({
+                    year: data[0].year + i, 
+                    value: value,
+                    upper: value + volatilityRange,
+                    lower: Math.max(0, value - volatilityRange)
+                });
             }
             
             const padding = 60;
             const w = container.clientWidth - padding * 2;
             const h = container.clientHeight - padding * 2;
-            const maxValue = Math.max(...data.map(d => d.value));
+            const maxValue = Math.max(...data.map(d => d.upper));
             
-            // Draw grid and line
+            // Draw volatility bands
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.1)';
+            ctx.beginPath();
+            data.forEach((d, i) => {
+                const x = padding + (w / (data.length - 1)) * i;
+                const upperY = padding + h - (d.upper / maxValue) * h;
+                const lowerY = padding + h - (d.lower / maxValue) * h;
+                if (i === 0) {
+                    ctx.moveTo(x, upperY);
+                } else {
+                    ctx.lineTo(x, upperY);
+                }
+            });
+            for (let i = data.length - 1; i >= 0; i--) {
+                const x = padding + (w / (data.length - 1)) * i;
+                const lowerY = padding + h - (data[i].lower / maxValue) * h;
+                ctx.lineTo(x, lowerY);
+            }
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw grid
             ctx.strokeStyle = '#e2e8f0';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 5; i++) {
@@ -368,6 +665,7 @@
                 ctx.stroke();
             }
             
+            // Draw main line
             ctx.strokeStyle = '#667eea';
             ctx.lineWidth = 3;
             ctx.beginPath();
@@ -400,23 +698,35 @@
         }
 
         function updateAll() {
+            if (!validateAllocations()) return;
+            
             const available = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
             const allocs = getAllocations();
             const total = Object.values(allocs).reduce((a, b) => a + b, 0);
             const blendedReturn = getBlendedReturn();
+            const risk = calculatePortfolioRisk();
+            
+            // Update risk metrics
+            elements.volatilityValue.textContent = risk.volatility.toFixed(1) + '%';
+            elements.correlationValue.textContent = risk.correlation.toFixed(2);
+            elements.sharpeValue.textContent = risk.sharpe.toFixed(2);
+            elements.maxDrawdownValue.textContent = risk.drawdown.toFixed(1) + '%';
+            
+            // Update cycle indicator
+            updateCycleIndicator();
             
             // Update metrics
             let metricsHTML = `<div class="metric-card btc">
-                <div class="metric-value">$${available.toLocaleString()}</div>
+                <div class="metric-value">${available.toLocaleString()}</div>
                 <div class="metric-label">Monthly Available</div>
             </div>`;
             
             Object.keys(allocs).forEach(key => {
                 if (allocs[key] > 0) {
                     const amount = Math.floor(available * allocs[key] / 100);
-                    metricsHTML += `<div class="metric-card ${assets[key].class}">
-                        <div class="metric-value">$${amount.toLocaleString()}</div>
-                        <div class="metric-label">${assets[key].name} (${allocs[key]}%)</div>
+                    metricsHTML += `<div class="metric-card ${marketData[key].class}">
+                        <div class="metric-value">${amount.toLocaleString()}</div>
+                        <div class="metric-label">${marketData[key].name} (${allocs[key]}%)</div>
                     </div>`;
                 }
             });
@@ -427,7 +737,7 @@
             </div>`;
             
             elements.metrics.innerHTML = metricsHTML;
-            elements.scenarioInfo.textContent = `Total allocation: ${total}% | Expected return: ${blendedReturn.toFixed(1)}%`;
+            elements.scenarioInfo.textContent = `Total allocation: ${total}% | Expected return: ${blendedReturn.toFixed(1)}% | Volatility: ${risk.volatility.toFixed(1)}%`;
             
             // Update goals
             elements.goals.innerHTML = goals.map(g => {
@@ -450,36 +760,70 @@
             const etfAlloc = allocs.vti + allocs.voo + allocs.spy;
             
             const pros = [
-                `${cryptoAlloc}% crypto for growth potential`,
-                `${etfAlloc}% ETFs for stability`,
-                "Real-time portfolio rebalancing",
-                "Diversified across asset classes",
-                "Compound growth optimization"
+                `${cryptoAlloc.toFixed(1)}% crypto for growth potential`,
+                `${etfAlloc.toFixed(1)}% ETFs for stability`,
+                `Sharpe ratio: ${risk.sharpe.toFixed(2)}`,
+                `Market cycle: ${currentCycle}`,
+                "Real-time risk assessment"
             ];
             
             const cons = [
-                cryptoAlloc > 50 ? "High crypto exposure risk" : "Crypto volatility present",
-                total !== 100 ? "Allocation doesn't equal 100%" : "Market correlation risk",
-                "No defensive assets included",
-                "Assumes consistent contributions",
-                "Simplified return projections"
+                `Portfolio volatility: ${risk.volatility.toFixed(1)}%`,
+                `Max drawdown risk: ${risk.drawdown.toFixed(1)}%`,
+                total !== 100 ? `Allocation: ${total}% (not 100%)` : "High correlation risk",
+                cryptoAlloc > 50 ? "Excessive crypto exposure" : "Crypto volatility present",
+                "Simplified correlation model"
             ];
             
             elements.prosList.innerHTML = pros.map(p => `<li>${p}</li>`).join('');
             elements.consList.innerHTML = cons.map(c => `<li>${c}</li>`).join('');
             
+            // Save data
+            storage.saveData({
+                current: +elements.current.value,
+                monthlyIncome: +elements.monthlyIncome.value,
+                monthlyExpenses: +elements.monthlyExpenses.value,
+                allocations: allocs
+            });
+            
             setTimeout(drawChart, 50);
+        }
+
+        // Load saved data
+        function loadSavedData() {
+            const data = storage.data;
+            elements.current.value = data.current;
+            elements.monthlyIncome.value = data.monthlyIncome;
+            elements.monthlyExpenses.value = data.monthlyExpenses;
+            
+            Object.keys(data.allocations).forEach(key => {
+                if (allocInputs[key]) {
+                    allocInputs[key].value = data.allocations[key];
+                }
+            });
         }
 
         // Initialize
         [...Object.values(elements), ...Object.values(allocInputs)].forEach(el => {
-            if (el.tagName === 'INPUT') el.addEventListener('input', updateAll);
+            if (el.tagName === 'INPUT') {
+                el.addEventListener('input', updateAll);
+            }
         });
         
         window.addEventListener('resize', drawChart);
-        rotateQuote();
+        
+        // Initial setup
+        loadSavedData();
+        fetchMarketData().then(() => {
+            rotateQuote();
+            updateAll();
+        });
+        
+        // Update market data every 5 minutes
+        setInterval(fetchMarketData, 300000);
+        
+        // Rotate quotes every 6 seconds
         setInterval(rotateQuote, 6000);
-        updateAll();
     </script>
 </body>
 </html>
