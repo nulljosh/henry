@@ -1,182 +1,289 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Marlin • Portfolio Manager</title>
+    <title>Marlin • Enhanced Portfolio Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
-        .container { max-width: 1000px; margin: 1rem auto; padding: 0 1rem; }
-        .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .goal-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; margin: 0.5rem 0; border-radius: 6px; background: rgba(0,0,0,0.03); }
-        .progress-container { width: 80px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; overflow: hidden; }
-        .progress-bar { height: 100%; border-radius: 2px; transition: width 0.3s ease; }
-        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0; }
-        .metric-card { padding: 1rem; border-radius: 6px; text-align: center; color: white; }
-        .metric-value { font-size: 1.25rem; font-weight: 700; }
-        .metric-label { font-size: 0.75rem; opacity: 0.9; }
-        .pros-cons { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
-        @media (min-width: 768px) { .pros-cons { grid-template-columns: 1fr 1fr; } }
-        .pros { padding: 1rem; border-radius: 6px; background: rgba(76, 175, 80, 0.1); border-left: 3px solid #4caf50; }
-        .cons { padding: 1rem; border-radius: 6px; background: rgba(244, 67, 54, 0.1); border-left: 3px solid #f44336; }
-        .success { background: linear-gradient(45deg, #00d4aa, #00b4d8); }
-        .info { background: linear-gradient(45deg, #0077be, #00b4d8); }
-        .primary { background: linear-gradient(45deg, #7b68ee, #9370db); }
-        .warning { background: linear-gradient(45deg, #ffa500, #ff8c00); }
-        .danger { background: linear-gradient(45deg, #ff6b6b, #ff5252); }
-        .link { background: linear-gradient(45deg, #48cae4, #0077be); }
-        .chart-container { 
-            width: 100%; 
-            height: 400px; 
-            position: relative; 
-            margin: 1rem 0; 
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        #growthChart { 
-            width: 100%; 
-            height: 100%; 
+        .container { max-width: 1200px; margin: 1rem auto; padding: 0 1rem; }
+        .main-card { 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .input:focus, .select select:focus { border-color: #667eea; box-shadow: 0 0 0 0.125em rgba(102, 126, 234, 0.25); }
+        .goal-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1rem; 
+            margin: 0.5rem 0; 
             border-radius: 8px; 
-            display: block;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(247,250,252,0.8) 100%);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
-        .motivation { background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center; transition: all 0.3s ease; }
+        .goal-item:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .progress-container { width: 100px; height: 6px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .metric-card { 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            text-align: center; 
+            color: white; 
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card:hover { transform: translateY(-2px); }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        .metric-card:hover::before { transform: translateX(100%); }
+        .metric-value { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .metric-label { font-size: 0.8rem; opacity: 0.9; }
+        .pros-cons { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1.5rem 0; }
+        @media (min-width: 768px) { .pros-cons { grid-template-columns: 1fr 1fr; } }
+        .pros, .cons { padding: 1.5rem; border-radius: 12px; }
+        .pros { background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%); border-left: 4px solid #4caf50; }
+        .cons { background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(255, 87, 34, 0.1) 100%); border-left: 4px solid #f44336; }
+        .btc { background: linear-gradient(135deg, #f7931a, #ff9500); }
+        .eth { background: linear-gradient(135deg, #627eea, #8a92b2); }
+        .sol { background: linear-gradient(135deg, #9945ff, #14f195); }
+        .vti { background: linear-gradient(135deg, #1f4e79, #2d5aa0); }
+        .voo { background: linear-gradient(135deg, #0f4c75, #3282b8); }
+        .spy { background: linear-gradient(135deg, #b71c1c, #d32f2f); }
+        .chart-container { width: 100%; height: 350px; position: relative; margin: 1rem 0; }
+        .motivation { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        .motivation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
         .header-section { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 1.5rem; 
+            margin-bottom: 2rem; 
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
         }
-        .header-left { 
-            display: flex; 
-            align-items: center; 
-            gap: 1rem; 
+        .logo { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .slogan { font-size: 0.9rem; color: #666; font-style: italic; font-weight: 600; }
+        .allocation-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
         }
-        .header-right {
-            text-align: right;
+        .allocation-item { text-align: center; }
+        .allocation-item label { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; display: block; }
+        .allocation-item input { width: 60px; text-align: center; }
+        .allocation-item input.is-danger { border-color: #f44336; }
+        .risk-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 87, 34, 0.05);
+            border-radius: 8px;
         }
-        .logo { flex-shrink: 0; }
-        .header-text .title { margin-bottom: 0.25rem; }
-        .header-text .subtitle { margin-bottom: 0; color: #666; }
-        .slogan {
-            font-size: 0.9rem;
+        .risk-card {
+            padding: 1rem;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .risk-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .risk-label {
+            font-size: 0.8rem;
             color: #666;
-            font-style: italic;
-            font-weight: 500;
         }
-        .motivation-text { font-size: 1.1rem; font-weight: 600; }
-        .motivation-author { font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem; }
+        .cycle-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        .cycle-bull { background: rgba(76, 175, 80, 0.1); color: #4caf50; }
+        .cycle-bear { background: rgba(244, 67, 54, 0.1); color: #f44336; }
+        .cycle-neutral { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         @media (max-width: 768px) {
-            .header-section {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            .header-right {
-                text-align: center;
-            }
+            .header-section { flex-direction: column; gap: 1rem; text-align: center; }
+            .metrics { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="card">
+        <div class="card main-card">
             <div class="card-content">
                 <div class="header-section">
                     <div class="header-left">
                         <svg width="48" height="48" viewBox="0 0 100 100" class="logo">
-                            <!-- Marlin body -->
-                            <ellipse cx="45" cy="50" rx="30" ry="8" fill="#2c5aa0" stroke="#1a4480" stroke-width="1"/>
-                            <!-- Marlin head -->
-                            <ellipse cx="20" cy="50" rx="12" ry="6" fill="#2c5aa0" stroke="#1a4480" stroke-width="1"/>
-                            <!-- Marlin spear/bill -->
-                            <path d="M8 50 L32 48 L32 52 Z" fill="#4a4a4a" stroke="#333" stroke-width="1"/>
-                            <!-- Dorsal fin -->
-                            <path d="M40 42 L50 30 L60 42 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
-                            <!-- Tail fin -->
-                            <path d="M75 45 L90 35 L95 50 L90 65 L75 55 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
-                            <!-- Pectoral fin -->
-                            <path d="M35 55 L42 65 L50 58 Z" fill="#1a4480" stroke="#0f2240" stroke-width="1"/>
-                            <!-- Eye -->
+                            <ellipse cx="45" cy="50" rx="30" ry="8" fill="#667eea" stroke="#5a67d8" stroke-width="1"/>
+                            <ellipse cx="20" cy="50" rx="12" ry="6" fill="#667eea" stroke="#5a67d8" stroke-width="1"/>
+                            <path d="M8 50 L32 48 L32 52 Z" fill="#4a5568" stroke="#2d3748" stroke-width="1"/>
+                            <path d="M40 42 L50 30 L60 42 Z" fill="#5a67d8" stroke="#4c51bf" stroke-width="1"/>
+                            <path d="M75 45 L90 35 L95 50 L90 65 L75 55 Z" fill="#5a67d8" stroke="#4c51bf" stroke-width="1"/>
+                            <path d="M35 55 L42 65 L50 58 Z" fill="#5a67d8" stroke="#4c51bf" stroke-width="1"/>
                             <circle cx="25" cy="48" r="2" fill="white"/>
                             <circle cx="26" cy="47" r="1" fill="black"/>
-                            <!-- Gills -->
-                            <path d="M32 47 Q35 50 32 53" stroke="#0f2240" stroke-width="1" fill="none"/>
+                            <path d="M32 47 Q35 50 32 53" stroke="#4c51bf" stroke-width="1" fill="none"/>
                         </svg>
-                        <div class="header-text">
-                            <h1 class="title">MarlinVest</h1>
-                        </div>
+                        <h1 class="title">Marlin</h1>
                     </div>
-                    <div class="header-right">
-                        <div class="slogan">Fast as fuck portfolio management</div>
-                    </div>
+                    <div class="slogan">Fast as fuck portfolio management</div>
                 </div>
 
                 <div class="motivation">
                     <div class="motivation-text" id="motivationText">This is America! You don't get to be CEO without being a little bit of a killer.</div>
-                    <div class="motivation-author" id="motivationAuthor">- Gavin Belson</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;" id="motivationAuthor">- Gavin Belson</div>
                 </div>
 
                 <div class="columns is-multiline">
-                    <div class="column is-3">
-                        <label class="label">Portfolio ($)</label>
-                        <input class="input" type="number" id="current" value="600">
+                    <div class="column is-4">
+                        <label class="label">Current Portfolio ($)</label>
+                        <input class="input" type="number" id="current" value="600" min="0">
                     </div>
-                    <div class="column is-3">
+                    <div class="column is-4">
                         <label class="label">Monthly Income ($)</label>
-                        <input class="input" type="number" id="monthlyIncome" value="1060">
+                        <input class="input" type="number" id="monthlyIncome" value="1060" min="0">
                     </div>
-                    <div class="column is-3">
+                    <div class="column is-4">
                         <label class="label">Monthly Expenses ($)</label>
-                        <input class="input" type="number" id="monthlyExpenses" value="480">
-                    </div>
-                    <div class="column is-3">
-                        <label class="label">Bitcoin Return</label>
-                        <select id="btcScenario" class="select is-fullwidth">
-                            <option value="15">Conservative (15%)</option>
-                            <option value="25">Moderate (25%)</option>
-                            <option value="35" selected>Optimistic (35%)</option>
-                            <option value="50">Bull (50%)</option>
-                        </select>
-                    </div>
-                    <div class="column is-3">
-                        <label class="label">S&P 500 Return</label>
-                        <select id="spScenario" class="select is-fullwidth">
-                            <option value="7">Conservative (7%)</option>
-                            <option value="10" selected>Moderate (10%)</option>
-                            <option value="12">Optimistic (12%)</option>
-                            <option value="15">Bull (15%)</option>
-                        </select>
-                    </div>
-                    <div class="column is-3">
-                        <label class="label">Tax Rate</label>
-                        <select id="taxRate" class="select is-fullwidth">
-                            <option value="0">0% (Tax-Free)</option>
-                            <option value="15">15% (LTCG)</option>
-                            <option value="25" selected>25% (Mixed)</option>
-                            <option value="37">37% (High)</option>
-                        </select>
+                        <input class="input" type="number" id="monthlyExpenses" value="480" min="0">
                     </div>
                 </div>
 
-                <div class="metrics">
-                    <div class="metric-card success">
-                        <div class="metric-value" id="monthlyAvailable">$580</div>
-                        <div class="metric-label">Monthly Available</div>
+                <div class="allocation-controls">
+                    <div class="allocation-item">
+                        <label>Bitcoin %</label>
+                        <input type="number" id="btcAlloc" value="20" min="0" max="100" class="input">
                     </div>
-                    <div class="metric-card info">
-                        <div class="metric-value" id="btcAllocation">$290</div>
-                        <div class="metric-label">Bitcoin (50%)</div>
+                    <div class="allocation-item">
+                        <label>Ethereum %</label>
+                        <input type="number" id="ethAlloc" value="15" min="0" max="100" class="input">
                     </div>
-                    <div class="metric-card primary">
-                        <div class="metric-value" id="spAllocation">$290</div>
-                        <div class="metric-label">S&P 500 (50%)</div>
+                    <div class="allocation-item">
+                        <label>Solana %</label>
+                        <input type="number" id="solAlloc" value="10" min="0" max="100" class="input">
                     </div>
-                    <div class="metric-card warning">
-                        <div class="metric-value" id="effectiveRate">22.5%</div>
-                        <div class="metric-label">Blended Return</div>
+                    <div class="allocation-item">
+                        <label>VTI %</label>
+                        <input type="number" id="vtiAlloc" value="25" min="0" max="100" class="input">
+                    </div>
+                    <div class="allocation-item">
+                        <label>VOO %</label>
+                        <input type="number" id="vooAlloc" value="20" min="0" max="100" class="input">
+                    </div>
+                    <div class="allocation-item">
+                        <label>SPY %</label>
+                        <input type="number" id="spyAlloc" value="10" min="0" max="100" class="input">
                     </div>
                 </div>
+
+                <div id="errorMessages"></div>
+                <div id="dataStatus" class="notification is-info is-light" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    Loading market data...
+                </div>
+
+                <div class="cycle-indicator" id="cycleIndicator">
+                    <span>📊</span>
+                    <span>Market Cycle: Neutral</span>
+                </div>
+
+                <div class="risk-metrics">
+                    <div class="risk-card">
+                        <div class="risk-value" id="volatilityValue">--</div>
+                        <div class="risk-label">Portfolio Volatility</div>
+                    </div>
+                    <div class="risk-card">
+                        <div class="risk-value" id="correlationValue">--</div>
+                        <div class="risk-label">Avg Correlation</div>
+                    </div>
+                    <div class="risk-card">
+                        <div class="risk-value" id="sharpeValue">--</div>
+                        <div class="risk-label">Sharpe Ratio</div>
+                    </div>
+                    <div class="risk-card">
+                        <div class="risk-value" id="maxDrawdownValue">--</div>
+                        <div class="risk-label">Max Drawdown</div>
+                    </div>
+                </div>
+
+                <div class="metrics" id="metrics"></div>
 
                 <div class="notification is-info is-light">
-                    <div id="scenarioInfo">Bitcoin 35% + S&P 10% | 50/50 allocation</div>
+                    <div id="scenarioInfo">Portfolio allocation updated in real-time</div>
                 </div>
 
                 <div class="box">
@@ -185,7 +292,7 @@
                 </div>
 
                 <div class="box">
-                    <h2 class="title is-4">Portfolio Growth Over Time</h2>
+                    <h2 class="title is-4">Portfolio Growth Projection</h2>
                     <div class="chart-container">
                         <canvas id="growthChart"></canvas>
                     </div>
@@ -210,76 +317,276 @@
     </div>
 
     <script>
+        // Enhanced data structure with volatility and correlation
+        let marketData = {
+            btc: { name: 'Bitcoin', returns: 45, volatility: 65, correlation: 0.3, class: 'btc' },
+            eth: { name: 'Ethereum', returns: 35, volatility: 58, correlation: 0.7, class: 'eth' },
+            sol: { name: 'Solana', returns: 30, volatility: 75, correlation: 0.6, class: 'sol' },
+            vti: { name: 'VTI', returns: 10, volatility: 15, correlation: 0.9, class: 'vti' },
+            voo: { name: 'VOO', returns: 10, volatility: 15, correlation: 0.95, class: 'voo' },
+            spy: { name: 'SPY', returns: 10, volatility: 15, correlation: 0.98, class: 'spy' }
+        };
+
+        // Market cycle detection
+        let currentCycle = 'neutral';
+        let cycleMultipliers = { bull: 1.3, bear: 0.7, neutral: 1.0 };
+
         const goals = [
-            { amt: 100000, label: '100K', color: 'success' },
-            { amt: 250000, label: '250K', color: 'info' },
-            { amt: 500000, label: '500K', color: 'primary' },
-            { amt: 1000000, label: '1M', color: 'warning' },
-            { amt: 2500000, label: '2.5M', color: 'danger' },
-            { amt: 5000000, label: '5M', color: 'link' }
+            { amt: 100000, label: '100K', color: 'btc' },
+            { amt: 250000, label: '250K', color: 'eth' },
+            { amt: 500000, label: '500K', color: 'vti' },
+            { amt: 1000000, label: '1M', color: 'sol' },
+            { amt: 2500000, label: '2.5M', color: 'voo' },
+            { amt: 5000000, label: '5M', color: 'spy' }
         ];
 
-        const motivationalQuotes = [
+        const quotes = [
             { text: "This is America! You don't get to be CEO without being a little bit of a killer.", author: "Gavin Belson" },
-            { text: "I don't want to live in a world where someone else makes the world a better place better than we do.", author: "Gavin Belson" },
-            { text: "You know what's cooler than a million dollars? A billion dollars.", author: "Jared Dunn (channeling Sean Parker)" },
-            { text: "I've been known to fuck myself.", author: "Erlich Bachman" },
+            { text: "You know what's cooler than a million dollars? A billion dollars.", author: "Sean Parker" },
             { text: "Always blue! Always blue! Always blue!", author: "Jared Dunn" },
-            { text: "We're going to make the world a better place, through minimal message-oriented transport layers.", author: "Richard Hendricks" },
-            { text: "I'm not a businessman, I'm a business, man.", author: "Erlich Bachman" },
-            { text: "Success is 1% inspiration, 98% perspiration, and 2% attention to detail.", author: "Jared Dunn" },
-            { text: "We're making the world a better place through constructing elegant hierarchies for maximum code reuse and extensibility.", author: "Richard Hendricks" },
-            { text: "I don't know about you people, but I don't want to live in a world where someone else makes the world a better place better than we do.", author: "Gavin Belson" },
-            { text: "Aviato. My aviato. A-V-I-A-T-O. Aviato.", author: "Erlich Bachman" },
-            { text: "I'm gonna build a box and it's gonna be glorious.", author: "Gilfoyle" },
-            { text: "You just brought piss to a shit fight, you little cunt.", author: "Gilfoyle" },
-            { text: "I like to think of myself as a people person.", author: "Jared Dunn" },
-            { text: "Rigby, you're about to get fucked by the long dick of the law.", author: "Erlich Bachman" },
-            { text: "I've always been about the products, not the politics.", author: "Richard Hendricks" },
             { text: "Middle-out! Middle-out! Middle-out!", author: "Richard Hendricks" },
-            { text: "I eat that shit for breakfast.", author: "Erlich Bachman" },
-            { text: "You're gonna be rich, and you're gonna be successful, and you're gonna be happy.", author: "Jared Dunn" },
-            { text: "Jin Yang! Jin Yang! Jin Yang!", author: "Erlich Bachman" },
-            { text: "The only thing I'm guilty of is being a goddamn American patriot.", author: "Gavin Belson" },
-            { text: "I'm not superstitious, but I am a little stitious.", author: "Jared Dunn" },
-            { text: "Fuck you, Danesh. And fuck your algorithm.", author: "Gilfoyle" },
-            { text: "I don't want to sound like a dick or nothin', but it says on your chart that you're fucked up.", author: "Erlich Bachman" },
-            { text: "Welcome to the machine.", author: "Gilfoyle" },
+            { text: "I'm not a businessman, I'm a business, man.", author: "Erlich Bachman" },
             { text: "Consider the middle-out algorithm.", author: "Richard Hendricks" },
-            { text: "You know, I've been thinking about efficiency a lot lately.", author: "Jared Dunn" },
             { text: "I'm CEO, bitch!", author: "Gavin Belson" },
-            { text: "My uncle used to say, 'you look like someone starved a virgin to death.'", author: "Gilfoyle" },
             { text: "Kiss my piss.", author: "Erlich Bachman" }
         ];
 
-        let currentQuoteIndex = Math.floor(Math.random() * motivationalQuotes.length);
+        // Cache DOM elements
+        const elements = {
+            current: document.getElementById('current'),
+            monthlyIncome: document.getElementById('monthlyIncome'),
+            monthlyExpenses: document.getElementById('monthlyExpenses'),
+            metrics: document.getElementById('metrics'),
+            scenarioInfo: document.getElementById('scenarioInfo'),
+            goals: document.getElementById('goals'),
+            prosList: document.getElementById('prosList'),
+            consList: document.getElementById('consList'),
+            motivationText: document.getElementById('motivationText'),
+            motivationAuthor: document.getElementById('motivationAuthor'),
+            canvas: document.getElementById('growthChart'),
+            errorMessages: document.getElementById('errorMessages'),
+            dataStatus: document.getElementById('dataStatus'),
+            cycleIndicator: document.getElementById('cycleIndicator'),
+            volatilityValue: document.getElementById('volatilityValue'),
+            correlationValue: document.getElementById('correlationValue'),
+            sharpeValue: document.getElementById('sharpeValue'),
+            maxDrawdownValue: document.getElementById('maxDrawdownValue')
+        };
 
-        function rotateMotivation() {
-            const quote = motivationalQuotes[currentQuoteIndex];
-            document.getElementById('motivationText').textContent = quote.text;
-            document.getElementById('motivationAuthor').textContent = `- ${quote.author}`;
-            currentQuoteIndex = (currentQuoteIndex + 1) % motivationalQuotes.length;
+        // Cache allocation inputs
+        const allocInputs = {};
+        Object.keys(marketData).forEach(key => {
+            allocInputs[key] = document.getElementById(key + 'Alloc');
+        });
+
+        let currentQuote = Math.floor(Math.random() * quotes.length);
+        let dataLastUpdated = 0;
+        let errors = [];
+
+        // Persistence layer using in-memory storage
+        class PortfolioStorage {
+            constructor() {
+                this.data = this.loadData();
+            }
+
+            loadData() {
+                try {
+                    const saved = this.getCookie('portfolioData');
+                    return saved ? JSON.parse(saved) : this.getDefaults();
+                } catch (e) {
+                    return this.getDefaults();
+                }
+            }
+
+            saveData(data) {
+                this.data = { ...this.data, ...data };
+                this.setCookie('portfolioData', JSON.stringify(this.data), 30);
+            }
+
+            getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return null;
+            }
+
+            setCookie(name, value, days) {
+                const expires = new Date(Date.now() + days * 864e5).toUTCString();
+                document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+            }
+
+            getDefaults() {
+                return {
+                    current: 600,
+                    monthlyIncome: 1060,
+                    monthlyExpenses: 480,
+                    allocations: { btc: 20, eth: 15, sol: 10, vti: 25, voo: 20, spy: 10 }
+                };
+            }
+        }
+
+        const storage = new PortfolioStorage();
+
+        // Error handling system
+        function addError(message) {
+            errors.push(message);
+            updateErrorDisplay();
+        }
+
+        function clearErrors() {
+            errors = [];
+            updateErrorDisplay();
+        }
+
+        function updateErrorDisplay() {
+            const html = errors.map(error => `<div class="error-message">${error}</div>`).join('');
+            elements.errorMessages.innerHTML = html;
+        }
+
+        // Market data fetching (simulated - would use real API)
+        async function fetchMarketData() {
+            try {
+                elements.dataStatus.style.display = 'block';
+                
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Simulate market data updates with some randomness
+                const variance = () => (Math.random() - 0.5) * 0.1;
+                
+                marketData.btc.returns = Math.max(0, 45 + variance() * 100);
+                marketData.eth.returns = Math.max(0, 35 + variance() * 80);
+                marketData.sol.returns = Math.max(0, 30 + variance() * 90);
+                marketData.vti.returns = Math.max(0, 10 + variance() * 20);
+                marketData.voo.returns = Math.max(0, 10 + variance() * 20);
+                marketData.spy.returns = Math.max(0, 10 + variance() * 20);
+                
+                // Update cycle based on general market performance
+                const avgReturn = Object.values(marketData).reduce((sum, asset) => sum + asset.returns, 0) / Object.keys(marketData).length;
+                currentCycle = avgReturn > 20 ? 'bull' : avgReturn < 5 ? 'bear' : 'neutral';
+                
+                dataLastUpdated = Date.now();
+                elements.dataStatus.style.display = 'none';
+                
+            } catch (error) {
+                addError('Failed to fetch market data. Using cached values.');
+                elements.dataStatus.style.display = 'none';
+            }
+        }
+
+        // Allocation constraints and validation
+        function validateAllocations() {
+            clearErrors();
+            const allocs = getAllocations();
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
+            
+            // Reset input styling
+            Object.values(allocInputs).forEach(input => {
+                input.classList.remove('is-danger');
+            });
+            
+            // Check total allocation
+            if (total > 100) {
+                addError('Total allocation exceeds 100%');
+                return false;
+            }
+            
+            // Check individual constraints
+            const cryptoTotal = allocs.btc + allocs.eth + allocs.sol;
+            if (cryptoTotal > 60) {
+                addError('Crypto allocation exceeds recommended 60% maximum');
+                ['btc', 'eth', 'sol'].forEach(key => {
+                    if (allocs[key] > 0) allocInputs[key].classList.add('is-danger');
+                });
+            }
+            
+            // Check for negative values
+            Object.keys(allocs).forEach(key => {
+                if (allocs[key] < 0) {
+                    addError(`${marketData[key].name} allocation cannot be negative`);
+                    allocInputs[key].classList.add('is-danger');
+                }
+            });
+            
+            return errors.length === 0;
+        }
+
+        function rotateQuote() {
+            const quote = quotes[currentQuote];
+            elements.motivationText.textContent = quote.text;
+            elements.motivationAuthor.textContent = `- ${quote.author}`;
+            currentQuote = (currentQuote + 1) % quotes.length;
+        }
+
+        function getAllocations() {
+            const allocs = {};
+            Object.keys(marketData).forEach(key => {
+                allocs[key] = Math.max(0, +allocInputs[key].value || 0);
+            });
+            return allocs;
+        }
+
+        function calculatePortfolioRisk() {
+            const allocs = getAllocations();
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
+            if (total === 0) return { volatility: 0, correlation: 0, sharpe: 0, drawdown: 0 };
+            
+            let weightedVolatility = 0;
+            let weightedCorrelation = 0;
+            let weightedReturn = 0;
+            
+            Object.keys(allocs).forEach(key => {
+                const weight = allocs[key] / total;
+                const asset = marketData[key];
+                weightedVolatility += weight * weight * asset.volatility * asset.volatility;
+                weightedCorrelation += weight * asset.correlation;
+                weightedReturn += weight * asset.returns;
+            });
+            
+            const portfolioVol = Math.sqrt(weightedVolatility);
+            const sharpeRatio = portfolioVol > 0 ? (weightedReturn - 3) / portfolioVol : 0; // Assuming 3% risk-free rate
+            const maxDrawdown = portfolioVol * 2; // Simplified calculation
+            
+            return {
+                volatility: portfolioVol,
+                correlation: weightedCorrelation,
+                sharpe: sharpeRatio,
+                drawdown: maxDrawdown
+            };
+        }
+
+        function updateCycleIndicator() {
+            const indicator = elements.cycleIndicator;
+            const cycleNames = { bull: 'Bull Market', bear: 'Bear Market', neutral: 'Neutral' };
+            const cycleEmojis = { bull: '📈', bear: '📉', neutral: '📊' };
+            
+            indicator.className = `cycle-indicator cycle-${currentCycle}`;
+            indicator.innerHTML = `<span>${cycleEmojis[currentCycle]}</span><span>Market Cycle: ${cycleNames[currentCycle]}</span>`;
+        }
+
+        function getBlendedReturn() {
+            const allocs = getAllocations();
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
+            if (total === 0) return 0;
+            
+            const baseReturn = Object.keys(allocs).reduce((sum, key) => {
+                const weight = allocs[key] / total;
+                return sum + weight * marketData[key].returns;
+            }, 0);
+            
+            return baseReturn * cycleMultipliers[currentCycle];
         }
 
         function simulateGrowth(goal) {
-            const current = +document.getElementById('current').value;
-            const income = +document.getElementById('monthlyIncome').value;
-            const expenses = +document.getElementById('monthlyExpenses').value;
-            const monthly = Math.max(0, income - expenses);
-            const btcRate = +document.getElementById('btcScenario').value / 100;
-            const spRate = +document.getElementById('spScenario').value / 100;
+            const current = +elements.current.value || 0;
+            const monthly = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
+            const annualReturn = getBlendedReturn() / 100;
             
             if (current >= goal || monthly <= 0) return current >= goal ? 0 : 50;
             
-            let btcValue = current * 0.5;
-            let spValue = current * 0.5;
-            let months = 0;
-            
-            while ((btcValue + spValue) < goal && months < 600) {
-                btcValue += monthly * 0.5;
-                spValue += monthly * 0.5;
-                btcValue *= (1 + btcRate / 12);
-                spValue *= (1 + spRate / 12);
+            let value = current, months = 0;
+            while (value < goal && months < 600) {
+                value = (value + monthly) * (1 + annualReturn / 12);
                 months++;
             }
             
@@ -287,183 +594,236 @@
         }
 
         function drawChart() {
-            const canvas = document.getElementById('growthChart');
-            const ctx = canvas.getContext('2d');
-            
-            // Get the container dimensions
-            const container = canvas.parentElement;
-            const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
-            
-            // Set canvas size with high DPI support
+            const ctx = elements.canvas.getContext('2d');
+            const container = elements.canvas.parentElement;
             const dpr = window.devicePixelRatio || 1;
-            canvas.width = containerWidth * dpr;
-            canvas.height = containerHeight * dpr;
-            canvas.style.width = containerWidth + 'px';
-            canvas.style.height = containerHeight + 'px';
+            
+            elements.canvas.width = container.clientWidth * dpr;
+            elements.canvas.height = container.clientHeight * dpr;
+            elements.canvas.style.width = container.clientWidth + 'px';
+            elements.canvas.style.height = container.clientHeight + 'px';
             ctx.scale(dpr, dpr);
             
-            const current = +document.getElementById('current').value;
-            const income = +document.getElementById('monthlyIncome').value;
-            const expenses = +document.getElementById('monthlyExpenses').value;
-            const monthly = Math.max(0, income - expenses);
-            const btcRate = +document.getElementById('btcScenario').value / 100;
-            const spRate = +document.getElementById('spScenario').value / 100;
+            const current = +elements.current.value || 0;
+            const monthly = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
+            const annualReturn = getBlendedReturn() / 100;
             
-            ctx.clearRect(0, 0, containerWidth, containerHeight);
+            ctx.clearRect(0, 0, container.clientWidth, container.clientHeight);
             
-            // Calculate decades
-            const decades = [];
-            const currentYear = new Date().getFullYear();
-            let btcValue = current * 0.5;
-            let spValue = current * 0.5;
+            // Generate data points with volatility bands
+            const data = [{year: new Date().getFullYear(), value: current, upper: current, lower: current}];
+            let value = current;
+            const risk = calculatePortfolioRisk();
             
-            decades.push({ year: currentYear, value: current });
-            
-            for (let year = currentYear + 10; year <= currentYear + 30; year += 10) {
-                const monthsToAdd = (year - currentYear) * 12 - (decades.length - 1) * 120;
-                
-                for (let i = 0; i < monthsToAdd; i++) {
-                    btcValue += monthly * 0.5;
-                    spValue += monthly * 0.5;
-                    btcValue *= (1 + btcRate / 12);
-                    spValue *= (1 + spRate / 12);
+            for (let i = 5; i <= 30; i += 5) {
+                for (let j = 0; j < 60; j++) {
+                    value = (value + monthly) * (1 + annualReturn / 12);
                 }
-                
-                decades.push({ year: year, value: btcValue + spValue });
+                const volatilityRange = value * (risk.volatility / 100) * Math.sqrt(i / 5);
+                data.push({
+                    year: data[0].year + i, 
+                    value: value,
+                    upper: value + volatilityRange,
+                    lower: Math.max(0, value - volatilityRange)
+                });
             }
             
-            const padding = 70;
-            const chartWidth = containerWidth - padding * 2;
-            const chartHeight = containerHeight - padding * 2;
-            const maxValue = Math.max(...decades.map(d => d.value));
-            const minValue = 0;
-            const valueRange = maxValue - minValue || 1;
+            const padding = 60;
+            const w = container.clientWidth - padding * 2;
+            const h = container.clientHeight - padding * 2;
+            const maxValue = Math.max(...data.map(d => d.upper));
             
-            // Grid lines
-            ctx.strokeStyle = '#e0e0e0';
+            // Draw volatility bands
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.1)';
+            ctx.beginPath();
+            data.forEach((d, i) => {
+                const x = padding + (w / (data.length - 1)) * i;
+                const upperY = padding + h - (d.upper / maxValue) * h;
+                const lowerY = padding + h - (d.lower / maxValue) * h;
+                if (i === 0) {
+                    ctx.moveTo(x, upperY);
+                } else {
+                    ctx.lineTo(x, upperY);
+                }
+            });
+            for (let i = data.length - 1; i >= 0; i--) {
+                const x = padding + (w / (data.length - 1)) * i;
+                const lowerY = padding + h - (data[i].lower / maxValue) * h;
+                ctx.lineTo(x, lowerY);
+            }
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw grid
+            ctx.strokeStyle = '#e2e8f0';
             ctx.lineWidth = 1;
-            
             for (let i = 0; i <= 5; i++) {
-                const y = padding + (chartHeight / 5) * i;
+                const y = padding + (h / 5) * i;
                 ctx.beginPath();
                 ctx.moveTo(padding, y);
-                ctx.lineTo(padding + chartWidth, y);
+                ctx.lineTo(padding + w, y);
                 ctx.stroke();
-                
-                const value = maxValue - (valueRange / 5) * i;
-                ctx.fillStyle = '#666';
-                ctx.font = '11px Arial';
-                ctx.textAlign = 'right';
-                const valueText = value >= 1000000 ? (value / 1000000).toFixed(1) + 'M' : (value / 1000).toFixed(0) + 'K';
-                ctx.fillText(valueText, padding - 10, y + 4);
             }
             
-            // Main line
-            ctx.strokeStyle = '#7b68ee';
+            // Draw main line
+            ctx.strokeStyle = '#667eea';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            
-            decades.forEach((decade, i) => {
-                const x = padding + (chartWidth / (decades.length - 1)) * i;
-                const y = padding + chartHeight - ((decade.value - minValue) / valueRange) * chartHeight;
-                
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+            data.forEach((d, i) => {
+                const x = padding + (w / (data.length - 1)) * i;
+                const y = padding + h - (d.value / maxValue) * h;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
             });
-            
             ctx.stroke();
             
-            // Data points
-            decades.forEach((decade, i) => {
-                const x = padding + (chartWidth / (decades.length - 1)) * i;
-                const y = padding + chartHeight - ((decade.value - minValue) / valueRange) * chartHeight;
+            // Draw points and labels
+            ctx.fillStyle = '#667eea';
+            data.forEach((d, i) => {
+                const x = padding + (w / (data.length - 1)) * i;
+                const y = padding + h - (d.value / maxValue) * h;
                 
                 ctx.beginPath();
-                ctx.arc(x, y, 6, 0, 2 * Math.PI);
-                ctx.fillStyle = '#7b68ee';
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
                 ctx.fill();
                 
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, 2 * Math.PI);
-                ctx.fillStyle = 'white';
-                ctx.fill();
-                
-                // Year labels
-                ctx.fillStyle = '#333';
-                ctx.font = '12px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(decade.year, x, containerHeight - 15);
-                
-                // Value labels
+                ctx.fillStyle = '#4a5568';
                 ctx.font = '11px Arial';
-                const valueText = decade.value >= 1000000 ? (decade.value / 1000000).toFixed(1) + 'M' : (decade.value / 1000).toFixed(0) + 'K';
-                ctx.fillText(valueText, x, y - 12);
+                ctx.textAlign = 'center';
+                ctx.fillText(d.year, x, container.clientHeight - 10);
+                
+                const valueText = d.value >= 1000000 ? (d.value / 1000000).toFixed(1) + 'M' : (d.value / 1000).toFixed(0) + 'K';
+                ctx.fillText(valueText, x, y - 10);
+                ctx.fillStyle = '#667eea';
             });
         }
 
         function updateAll() {
-            const income = +document.getElementById('monthlyIncome').value;
-            const expenses = +document.getElementById('monthlyExpenses').value;
-            const available = Math.max(0, income - expenses);
-            const btcRate = +document.getElementById('btcScenario').value;
-            const spRate = +document.getElementById('spScenario').value;
-            const taxRate = +document.getElementById('taxRate').value / 100;
+            if (!validateAllocations()) return;
             
-            const blendedReturn = (btcRate + spRate) / 2;
-            const effectiveRate = blendedReturn * (1 - taxRate * 0.3);
+            const available = Math.max(0, (+elements.monthlyIncome.value || 0) - (+elements.monthlyExpenses.value || 0));
+            const allocs = getAllocations();
+            const total = Object.values(allocs).reduce((a, b) => a + b, 0);
+            const blendedReturn = getBlendedReturn();
+            const risk = calculatePortfolioRisk();
             
-            document.getElementById('monthlyAvailable').textContent = '$' + available.toLocaleString();
-            document.getElementById('btcAllocation').textContent = '$' + (available * 0.5).toLocaleString();
-            document.getElementById('spAllocation').textContent = '$' + (available * 0.5).toLocaleString();
-            document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(1) + '%';
-            document.getElementById('scenarioInfo').textContent = 'Bitcoin ' + btcRate + '% + S&P ' + spRate + '% | 50/50 allocation';
+            // Update risk metrics
+            elements.volatilityValue.textContent = risk.volatility.toFixed(1) + '%';
+            elements.correlationValue.textContent = risk.correlation.toFixed(2);
+            elements.sharpeValue.textContent = risk.sharpe.toFixed(2);
+            elements.maxDrawdownValue.textContent = risk.drawdown.toFixed(1) + '%';
             
-            const pros = [
-                "50/50 diversification reduces risk",
-                "Dollar-cost averaging smooths volatility",
-                "Tax considerations included",
-                "Multiple scenario planning",
-                "Compound growth over time"
-            ];
+            // Update cycle indicator
+            updateCycleIndicator();
             
-            const cons = [
-                "High Bitcoin volatility",
-                "Crypto regulatory risks",
-                "No defensive assets",
-                "Assumes consistent savings",
-                "Simplified calculations"
-            ];
+            // Update metrics
+            let metricsHTML = `<div class="metric-card btc">
+                <div class="metric-value">${available.toLocaleString()}</div>
+                <div class="metric-label">Monthly Available</div>
+            </div>`;
             
-            document.getElementById('prosList').innerHTML = pros.map(p => '<li>' + p + '</li>').join('');
-            document.getElementById('consList').innerHTML = cons.map(c => '<li>' + c + '</li>').join('');
+            Object.keys(allocs).forEach(key => {
+                if (allocs[key] > 0) {
+                    const amount = Math.floor(available * allocs[key] / 100);
+                    metricsHTML += `<div class="metric-card ${marketData[key].class}">
+                        <div class="metric-value">${amount.toLocaleString()}</div>
+                        <div class="metric-label">${marketData[key].name} (${allocs[key]}%)</div>
+                    </div>`;
+                }
+            });
             
-            const goalsDiv = document.getElementById('goals');
-            goalsDiv.innerHTML = goals.map(g => {
+            metricsHTML += `<div class="metric-card eth">
+                <div class="metric-value">${blendedReturn.toFixed(1)}%</div>
+                <div class="metric-label">Blended Return</div>
+            </div>`;
+            
+            elements.metrics.innerHTML = metricsHTML;
+            elements.scenarioInfo.textContent = `Total allocation: ${total}% | Expected return: ${blendedReturn.toFixed(1)}% | Volatility: ${risk.volatility.toFixed(1)}%`;
+            
+            // Update goals
+            elements.goals.innerHTML = goals.map(g => {
                 const years = simulateGrowth(g.amt);
                 const display = years >= 50 ? "50+" : years;
                 const progress = Math.min(100, (1 / Math.max(1, years)) * 100);
-                
-                return '<div class="goal-item"><div><strong>' + g.label + '</strong></div><div style="display: flex; align-items: center; gap: 1rem;"><div class="progress-container"><div class="progress-bar ' + g.color + '" style="width: ' + progress + '%"></div></div><div>' + display + ' years</div></div></div>';
+                return `<div class="goal-item">
+                    <div><strong>${g.label}</strong></div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="progress-container">
+                            <div class="progress-bar ${g.color}" style="width: ${progress}%"></div>
+                        </div>
+                        <div>${display} years</div>
+                    </div>
+                </div>`;
             }).join('');
             
-            setTimeout(drawChart, 100); // Small delay to ensure container is sized
+            // Update pros/cons
+            const cryptoAlloc = allocs.btc + allocs.eth + allocs.sol;
+            const etfAlloc = allocs.vti + allocs.voo + allocs.spy;
+            
+            const pros = [
+                `${cryptoAlloc.toFixed(1)}% crypto for growth potential`,
+                `${etfAlloc.toFixed(1)}% ETFs for stability`,
+                `Sharpe ratio: ${risk.sharpe.toFixed(2)}`,
+                `Market cycle: ${currentCycle}`,
+                "Real-time risk assessment"
+            ];
+            
+            const cons = [
+                `Portfolio volatility: ${risk.volatility.toFixed(1)}%`,
+                `Max drawdown risk: ${risk.drawdown.toFixed(1)}%`,
+                total !== 100 ? `Allocation: ${total}% (not 100%)` : "High correlation risk",
+                cryptoAlloc > 50 ? "Excessive crypto exposure" : "Crypto volatility present",
+                "Simplified correlation model"
+            ];
+            
+            elements.prosList.innerHTML = pros.map(p => `<li>${p}</li>`).join('');
+            elements.consList.innerHTML = cons.map(c => `<li>${c}</li>`).join('');
+            
+            // Save data
+            storage.saveData({
+                current: +elements.current.value,
+                monthlyIncome: +elements.monthlyIncome.value,
+                monthlyExpenses: +elements.monthlyExpenses.value,
+                allocations: allocs
+            });
+            
+            setTimeout(drawChart, 50);
         }
 
-        // Initialize with random quote and set up rotation
-        rotateMotivation();
-        setInterval(rotateMotivation, 8000);
+        // Load saved data
+        function loadSavedData() {
+            const data = storage.data;
+            elements.current.value = data.current;
+            elements.monthlyIncome.value = data.monthlyIncome;
+            elements.monthlyExpenses.value = data.monthlyExpenses;
+            
+            Object.keys(data.allocations).forEach(key => {
+                if (allocInputs[key]) {
+                    allocInputs[key].value = data.allocations[key];
+                }
+            });
+        }
 
-        ['current', 'monthlyIncome', 'monthlyExpenses', 'btcScenario', 'spScenario', 'taxRate'].forEach(id => {
-            document.getElementById(id).addEventListener('change', updateAll);
+        // Initialize
+        [...Object.values(elements), ...Object.values(allocInputs)].forEach(el => {
+            if (el.tagName === 'INPUT') {
+                el.addEventListener('input', updateAll);
+            }
         });
-
-        // Redraw chart on window resize
-        window.addEventListener('resize', () => {
-            setTimeout(drawChart, 100);
+        
+        window.addEventListener('resize', drawChart);
+        
+        // Initial setup
+        loadSavedData();
+        fetchMarketData().then(() => {
+            rotateQuote();
+            updateAll();
         });
-
-        updateAll();
+        
+        // Update market data every 5 minutes
+        setInterval(fetchMarketData, 300000);
+        
+        // Rotate quotes every 6 seconds
+        setInterval(rotateQuote, 6000);
     </script>
 </body>
 </html>
