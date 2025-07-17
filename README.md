@@ -1,4 +1,4 @@
-# Marlin
+# [Marlin](https://fuckingjoshua.com/marlin)
 
 A fund/portfolio management system for tracking investments and performance.
 
@@ -12,6 +12,7 @@ Marlin is a lightweight portfolio management tool designed for tracking investme
 - Performance metrics and reporting
 - Fund management capabilities
 - Investment data visualization
+- [Bitcoin](https://fuckingjoshua.com/marlin/bitcoin)
 
 ## Usage
 
