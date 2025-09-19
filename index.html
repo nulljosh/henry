@@ -7,10 +7,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; }
-        
         .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
         .header h1 { font-size: 20px; font-weight: 600; color: #111827; }
-        
         .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
         .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; overflow: hidden; }
         
@@ -35,11 +33,10 @@
         .chart-section { border-top: 1px solid #e5e7eb; background: #f9fafb; padding: 24px; }
         .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden; }
         .chart { width: 100%; height: 160px; }
-        
         .tooltip { position: absolute; top: 8px; left: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 20; display: none; font-size: 14px; }
         
         .stocks-section { border-top: 1px solid #e5e7eb; background: #dbeafe; padding: 24px; }
-        .stock-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .stock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
         .stock-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
         .stock-symbol { font-weight: 500; color: #6b7280; }
         .stock-subtitle { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
@@ -79,7 +76,7 @@
             </table>
 
             <div class="chart-section">
-                <h3 style="font-weight: 500; margin-bottom: 16px;">Portfolio Growth (25% S&P, 75% Individual Picks)</h3>
+                <h3 style="font-weight: 500; margin-bottom: 16px;">Portfolio Growth (100% Individual Stock Picks - 2027+ Targets)</h3>
                 
                 <div class="chart-container">
                     <svg id="chart" viewBox="0 0 600 180" class="chart">
@@ -95,28 +92,52 @@
                 <div class="stock-grid">
                     <div class="stock-card">
                         <div class="stock-symbol">HOOD</div>
-                        <div class="stock-subtitle">Current → 2026 Target</div>
-                        <div class="stock-price">$121 → $200</div>
-                        <div class="stock-gain">+65% potential</div>
+                        <div class="stock-subtitle">Current → 2027 Target</div>
+                        <div class="stock-price">$121 → $300</div>
+                        <div class="stock-gain">+148% potential</div>
                     </div>
                     <div class="stock-card">
                         <div class="stock-symbol">PLTR</div>
-                        <div class="stock-subtitle">Current → 2026 Target</div>
-                        <div class="stock-price">$177 → $300</div>
-                        <div class="stock-gain">+70% potential</div>
+                        <div class="stock-subtitle">Current → 2028 Target</div>
+                        <div class="stock-price">$177 → $450</div>
+                        <div class="stock-gain">+154% potential</div>
                     </div>
                     <div class="stock-card">
                         <div class="stock-symbol">APP</div>
-                        <div class="stock-subtitle">$620 → 2026 Target</div>
-                        <div class="stock-price">$620 → $725</div>
-                        <div class="stock-gain">+17% potential</div>
+                        <div class="stock-subtitle">Current → 2027 Target</div>
+                        <div class="stock-price">$620 → $1,000</div>
+                        <div class="stock-gain">+61% potential</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-symbol">NVDA</div>
+                        <div class="stock-subtitle">Current → 2027 Target</div>
+                        <div class="stock-price">$176 → $300</div>
+                        <div class="stock-gain">+70% potential</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-symbol">TSLA</div>
+                        <div class="stock-subtitle">Current → 2028 Target</div>
+                        <div class="stock-price">$423 → $550</div>
+                        <div class="stock-gain">+30% potential</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-symbol">GOOGL</div>
+                        <div class="stock-subtitle">Current → 2028 Target</div>
+                        <div class="stock-price">$250 → $500</div>
+                        <div class="stock-gain">+100% potential</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-symbol">COIN</div>
+                        <div class="stock-subtitle">Current → 2027 Target</div>
+                        <div class="stock-price">$321 → $600</div>
+                        <div class="stock-gain">+87% potential</div>
                     </div>
                 </div>
                 
                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px;">
-                    <div style="font-weight: 500; color: #374151; margin-bottom: 8px;">2026 Targets Set 🎯</div>
-                    <div style="color: #059669;">HOOD +65%, PLTR +70%, APP +17% potential gains</div>
-                    <div style="color: #2563eb; font-size: 12px; margin-top: 4px;">You'll hit $2K savings by March 2026 (after iPhone debt cleared)</div>
+                    <div style="font-weight: 500; color: #374151; margin-bottom: 8px;">2027-2028 Moonshot Targets 🚀</div>
+                    <div style="color: #059669;">HOOD +148%, PLTR +154%, APP +61%, NVDA +70%, TSLA +30%, GOOGL +100%, COIN +87%</div>
+                    <div style="color: #2563eb; font-size: 12px; margin-top: 4px;">Average +93% gains - high risk, high reward strategy</div>
                 </div>
             </div>
 
@@ -145,8 +166,8 @@
             { category: 'Wallet / Savings', amount: 1271, type: 'asset' },
             { category: 'Income', amount: 1060, type: 'income' },
             { category: 'Food', amount: 335, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 150, type: 'expense' },
             { category: 'iPhone (Back Pay)', amount: 300, type: 'expense' },
+            { category: 'iPhone (Monthly)', amount: 150, type: 'expense' },
             { category: 'Vape', amount: 144, type: 'expense' },
             { category: 'Weed', amount: 100, type: 'expense' }
         ];
@@ -167,20 +188,13 @@
         }
 
         function projectValue(months) {
-            const r = 0.01; // S&P 500: 1% monthly
-            const individualR = 0.015; // Individual stocks: 1.5% monthly
+            const r = 0.015; // Individual stocks: 1.5% monthly
             const surplus = calculateSurplus();
             
-            const monthlySP = surplus * 0.25;
-            const monthlyIndividual = surplus * 0.75;
+            const fv = get('Wallet / Savings') * Math.pow(1 + r, months);
+            const annuity = surplus * ((Math.pow(1 + r, months) - 1) / r);
             
-            const spFV = (get('Wallet / Savings') * 0.25) * Math.pow(1 + r, months);
-            const spAnnuity = monthlySP * ((Math.pow(1 + r, months) - 1) / r);
-            
-            const indFV = (get('Wallet / Savings') * 0.75) * Math.pow(1 + individualR, months);
-            const indAnnuity = monthlyIndividual * ((Math.pow(1 + individualR, months) - 1) / individualR);
-            
-            return spFV + spAnnuity + indFV + indAnnuity;
+            return fv + annuity;
         }
 
         function generateChartData() {
