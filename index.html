@@ -32,7 +32,7 @@
         
         .chart-section { border-top: 1px solid #e5e7eb; background: #f9fafb; padding: 24px; }
         .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden; }
-        .chart { width: 100%; height: 160px; }
+        .chart { width: 100%; height: 240px; }
         .tooltip { position: absolute; top: 8px; left: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 20; display: none; font-size: 14px; }
         
         .stocks-section { border-top: 1px solid #e5e7eb; background: #dbeafe; padding: 24px; }
@@ -146,7 +146,7 @@
                 <h3 style="font-weight: 500; margin-bottom: 16px;">Portfolio Growth</h3>
                 
                 <div class="chart-container">
-                    <svg id="chart" viewBox="0 0 600 180" class="chart">
+                    <svg id="chart" viewBox="0 0 600 260" class="chart">
                         <!-- Dynamic chart content -->
                     </svg>
                     <div id="tooltip" class="tooltip"></div>
@@ -237,11 +237,13 @@
 
         function generateChartData() {
             const chartData = [];
-            for (let i = 0; i < 25; i++) {
+            for (let i = 0; i <= 24; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
+                const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
                 chartData.push({
-                    month: date.toLocaleDateString('en', { month: 'short', year: '2-digit' }),
-                    val: projectValue(i)
+                    month: monthYear.replace(/(\d{2})$/, "'$1"),
+                    val: projectValue(i),
+                    monthIndex: i
                 });
             }
             return chartData;
@@ -286,50 +288,102 @@
         function updateChart() {
             const chartData = generateChartData();
             const maxVal = Math.max(...chartData.map(d => d.val));
+            const minVal = Math.min(...chartData.map(d => d.val));
             const svg = document.getElementById('chart');
-            
+
             svg.innerHTML = '';
-            
+
+            // Add grid lines
+            for (let i = 0; i <= 4; i++) {
+                const y = 40 + (i * 40);
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', '40');
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', '560');
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#e5e7eb');
+                line.setAttribute('stroke-width', '1');
+                svg.appendChild(line);
+
+                // Add Y-axis labels
+                const val = maxVal - (i * (maxVal - minVal) / 4);
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', '30');
+                label.setAttribute('y', y + 4);
+                label.setAttribute('text-anchor', 'end');
+                label.setAttribute('font-size', '10');
+                label.setAttribute('fill', '#6b7280');
+                label.textContent = '$' + Math.round(val).toLocaleString();
+                svg.appendChild(label);
+            }
+
             // Create polyline
-            const points = chartData.map((d, i) => `${40 + (i * 520/24)},${140 - (d.val/maxVal) * 100}`).join(' ');
+            const points = chartData.map((d, i) => `${60 + (i * 480/(chartData.length-1))},${200 - ((d.val-minVal)/(maxVal-minVal)) * 160}`).join(' ');
             const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
             polyline.setAttribute('points', points);
             polyline.setAttribute('fill', 'none');
             polyline.setAttribute('stroke', '#4ade80');
             polyline.setAttribute('stroke-width', '3');
             svg.appendChild(polyline);
-            
+
             // Add circles and hover areas
             chartData.forEach((d, i) => {
+                const x = 60 + (i * 480/(chartData.length-1));
+                const y = 200 - ((d.val-minVal)/(maxVal-minVal)) * 160;
+
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', 40 + (i * 520/24));
-                circle.setAttribute('cy', 140 - (d.val/maxVal) * 100);
-                circle.setAttribute('r', '3');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '4');
                 circle.setAttribute('fill', '#4ade80');
                 svg.appendChild(circle);
-                
+
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('x', 35 + (i * 520/24));
+                rect.setAttribute('x', x - 15);
                 rect.setAttribute('y', 35);
-                rect.setAttribute('width', '10');
-                rect.setAttribute('height', '110');
+                rect.setAttribute('width', '30');
+                rect.setAttribute('height', '170');
                 rect.setAttribute('fill', 'transparent');
                 rect.style.cursor = 'pointer';
                 rect.addEventListener('mouseenter', () => showTooltip(i, d));
                 rect.addEventListener('mouseleave', hideTooltip);
                 svg.appendChild(rect);
             });
-            
+
+            // Add "Current" marker at month 0
+            const currentX = 60;
+            const currentY = 200 - ((chartData[0].val-minVal)/(maxVal-minVal)) * 160;
+            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            marker.setAttribute('cx', currentX);
+            marker.setAttribute('cy', currentY);
+            marker.setAttribute('r', '6');
+            marker.setAttribute('fill', '#2563eb');
+            marker.setAttribute('stroke', 'white');
+            marker.setAttribute('stroke-width', '2');
+            svg.appendChild(marker);
+
+            const currentLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            currentLabel.setAttribute('x', currentX);
+            currentLabel.setAttribute('y', currentY - 12);
+            currentLabel.setAttribute('text-anchor', 'middle');
+            currentLabel.setAttribute('font-size', '10');
+            currentLabel.setAttribute('font-weight', '600');
+            currentLabel.setAttribute('fill', '#2563eb');
+            currentLabel.textContent = 'NOW';
+            svg.appendChild(currentLabel);
+
             // Add month labels
-            chartData.filter((_, i) => i % 4 === 0).forEach((d, i) => {
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', 40 + (i * 4 * 520/24));
-                text.setAttribute('y', '160');
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('class', 'text-xs');
-                text.setAttribute('fill', '#6b7280');
-                text.textContent = d.month;
-                svg.appendChild(text);
+            chartData.forEach((d, i) => {
+                if (i % 3 === 0) {
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', 60 + (i * 480/(chartData.length-1)));
+                    text.setAttribute('y', '220');
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '11');
+                    text.setAttribute('fill', '#6b7280');
+                    text.textContent = d.month;
+                    svg.appendChild(text);
+                }
             });
         }
 
