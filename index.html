@@ -423,8 +423,73 @@
             updateSummary();
         }
 
+        // Stock price auto-update functionality
+        const stockPrices = {
+            'PLTR': { current: 179, target: 450, year: 2028 },
+            'HOOD': { current: 139, target: 300, year: 2027 },
+            'GOOGL': { current: 240, target: 500, year: 2028 },
+            'COIN': { current: 332, target: 600, year: 2027 },
+            'NVDA': { current: 182, target: 300, year: 2027 },
+            'APP': { current: 701, target: 1000, year: 2027 },
+            'META': { current: 746, target: 1000, year: 2028 },
+            'TSLA': { current: 440, target: 550, year: 2028 }
+        };
+
+        async function fetchStockPrice(symbol) {
+            try {
+                const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const price = data.chart.result[0].meta.regularMarketPrice;
+                return Math.round(price);
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                return null;
+            }
+        }
+
+        async function updateStockPrices() {
+            console.log('Updating stock prices from Yahoo Finance...');
+
+            for (const symbol in stockPrices) {
+                const newPrice = await fetchStockPrice(symbol);
+                if (newPrice) {
+                    stockPrices[symbol].current = newPrice;
+                    updateStockCard(symbol);
+                }
+                // Small delay between requests to be nice to Yahoo
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+
+            console.log('Stock prices updated!');
+        }
+
+        function updateStockCard(symbol) {
+            const stock = stockPrices[symbol];
+            const gainPercent = Math.round(((stock.target - stock.current) / stock.current) * 100);
+
+            // Find the stock card and update it
+            const cards = document.querySelectorAll('.stock-card');
+            cards.forEach(card => {
+                const symbolDiv = card.querySelector('.stock-symbol');
+                if (symbolDiv && symbolDiv.textContent === symbol) {
+                    const priceDiv = card.querySelector('.stock-price');
+                    const gainDiv = card.querySelector('.stock-gain');
+
+                    priceDiv.textContent = `$${stock.current} → $${stock.target}`;
+                    gainDiv.textContent = `+${gainPercent}% potential`;
+                }
+            });
+        }
+
         // Initialize
         updateAll();
+
+        // Update stock prices on load
+        updateStockPrices();
+
+        // Update stock prices every 5 minutes
+        setInterval(updateStockPrices, 300000);
     </script>
 </body>
 </html>
