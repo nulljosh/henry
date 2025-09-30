@@ -160,70 +160,7 @@
                 </div>
 
                 <div class="stock-grid">
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/PLTR" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">PLTR</div>
-                            <div class="stock-subtitle">Current → 2028 Target</div>
-                            <div class="stock-price">$179 → $450</div>
-                            <div class="stock-gain">+151% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/HOOD" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">HOOD</div>
-                            <div class="stock-subtitle">Current → 2027 Target</div>
-                            <div class="stock-price">$139 → $300</div>
-                            <div class="stock-gain">+116% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/GOOGL" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">GOOGL</div>
-                            <div class="stock-subtitle">Current → 2028 Target</div>
-                            <div class="stock-price">$240 → $500</div>
-                            <div class="stock-gain">+108% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/COIN" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">COIN</div>
-                            <div class="stock-subtitle">Current → 2027 Target</div>
-                            <div class="stock-price">$332 → $600</div>
-                            <div class="stock-gain">+81% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/NVDA" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">NVDA</div>
-                            <div class="stock-subtitle">Current → 2027 Target</div>
-                            <div class="stock-price">$182 → $300</div>
-                            <div class="stock-gain">+65% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/APP" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">APP</div>
-                            <div class="stock-subtitle">Current → 2027 Target</div>
-                            <div class="stock-price">$701 → $1,000</div>
-                            <div class="stock-gain">+43% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/META" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">META</div>
-                            <div class="stock-subtitle">Current → 2028 Target</div>
-                            <div class="stock-price">$746 → $1,000</div>
-                            <div class="stock-gain">+34% potential</div>
-                        </a>
-                    </div>
-                    <div class="stock-card">
-                        <a href="https://finance.yahoo.com/quote/TSLA" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="stock-symbol">TSLA</div>
-                            <div class="stock-subtitle">Current → 2028 Target</div>
-                            <div class="stock-price">$440 → $550</div>
-                            <div class="stock-gain">+25% potential</div>
-                        </a>
-                    </div>
+                    <!-- Stock cards will be dynamically rendered here -->
                 </div>
                 
                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px;">
@@ -476,22 +413,50 @@
             const stock = stockPrices[symbol];
             const gainPercent = Math.round(((stock.target - stock.current) / stock.current) * 100);
 
-            // Find the stock card and update it
-            const cards = document.querySelectorAll('.stock-card');
-            cards.forEach(card => {
-                const symbolDiv = card.querySelector('.stock-symbol');
-                if (symbolDiv && symbolDiv.textContent === symbol) {
-                    const priceDiv = card.querySelector('.stock-price');
-                    const gainDiv = card.querySelector('.stock-gain');
+            // Update the stock data
+            stock.gainPercent = gainPercent;
 
-                    priceDiv.textContent = `$${stock.current} → $${stock.target}`;
-                    gainDiv.textContent = `+${gainPercent}% potential`;
-                }
+            // Re-render all cards in sorted order
+            renderStockCards();
+        }
+
+        function renderStockCards() {
+            // Sort stocks by gain percentage (highest first)
+            const sortedStocks = Object.entries(stockPrices)
+                .sort((a, b) => {
+                    const gainA = ((a[1].target - a[1].current) / a[1].current) * 100;
+                    const gainB = ((b[1].target - b[1].current) / b[1].current) * 100;
+                    return gainB - gainA;
+                });
+
+            // Get the stock grid container
+            const stockGrid = document.querySelector('.stock-grid');
+            stockGrid.innerHTML = '';
+
+            // Render each stock card in sorted order
+            sortedStocks.forEach(([symbol, stock]) => {
+                const gainPercent = Math.round(((stock.target - stock.current) / stock.current) * 100);
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'stock-card';
+                cardDiv.innerHTML = `
+                    <a href="https://finance.yahoo.com/quote/${symbol}" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="stock-symbol">${symbol}</div>
+                        <div class="stock-subtitle">Current → ${stock.year} Target</div>
+                        <div class="stock-price">$${stock.current} → $${stock.target}</div>
+                        <div class="stock-gain">+${gainPercent}% potential</div>
+                    </a>
+                `;
+
+                stockGrid.appendChild(cardDiv);
             });
         }
 
         // Initialize
         updateAll();
+
+        // Render initial stock cards in sorted order
+        renderStockCards();
 
         // Update stock prices on load
         updateStockPrices();
