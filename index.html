@@ -154,9 +154,16 @@
             </div>
 
             <div class="stocks-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                     <h3 style="font-weight: 500; margin: 0;">Stock Assumptions (Individual Picks)</h3>
-                    <div id="lastUpdated" style="font-size: 12px; color: #6b7280;">Loading prices...</div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <select id="sortBy" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
+                            <option value="gain">Sort by Potential %</option>
+                            <option value="price">Sort by Current Price</option>
+                            <option value="alpha">Sort by Ticker</option>
+                        </select>
+                        <div id="lastUpdated" style="font-size: 12px; color: #6b7280;">Loading...</div>
+                    </div>
                 </div>
 
                 <div class="stock-grid">
@@ -363,8 +370,8 @@
             updateSummary();
         }
 
-        // Stock price auto-update functionality
-        const stockPrices = {
+        // Stock data
+        const stocks = {
             'PLTR': { current: 179, target: 450, year: 2028 },
             'HOOD': { current: 139, target: 300, year: 2027 },
             'GOOGL': { current: 240, target: 500, year: 2028 },
@@ -375,94 +382,63 @@
             'TSLA': { current: 440, target: 550, year: 2028 }
         };
 
-        async function fetchStockPrice(symbol) {
+        // Fetch live price from Yahoo Finance
+        async function fetchPrice(symbol) {
             try {
-                const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                const price = data.chart.result[0].meta.regularMarketPrice;
-                return Math.round(price);
-            } catch (error) {
-                console.error(`Error fetching ${symbol}:`, error);
+                const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`);
+                const data = await res.json();
+                return Math.round(data.chart.result[0].meta.regularMarketPrice);
+            } catch (e) {
+                console.error(`Error fetching ${symbol}:`, e);
                 return null;
             }
         }
 
-        async function updateStockPrices() {
-            console.log('Updating stock prices from Yahoo Finance...');
-
-            for (const symbol in stockPrices) {
-                const newPrice = await fetchStockPrice(symbol);
-                if (newPrice) {
-                    stockPrices[symbol].current = newPrice;
-                    updateStockCard(symbol);
-                }
-                // Small delay between requests to be nice to Yahoo
-                await new Promise(resolve => setTimeout(resolve, 200));
+        // Update all stock prices
+        async function updatePrices() {
+            for (const sym in stocks) {
+                const price = await fetchPrice(sym);
+                if (price) stocks[sym].current = price;
+                await new Promise(r => setTimeout(r, 200));
             }
-
-            // Update the "last updated" timestamp
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-            document.getElementById('lastUpdated').textContent = `Last updated: ${timeString}`;
-
-            console.log('Stock prices updated!');
+            const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            document.getElementById('lastUpdated').textContent = `Updated: ${time}`;
+            renderCards();
         }
 
-        function updateStockCard(symbol) {
-            const stock = stockPrices[symbol];
-            const gainPercent = Math.round(((stock.target - stock.current) / stock.current) * 100);
-
-            // Update the stock data
-            stock.gainPercent = gainPercent;
-
-            // Re-render all cards in sorted order
-            renderStockCards();
-        }
-
-        function renderStockCards() {
-            // Sort stocks by gain percentage (highest first)
-            const sortedStocks = Object.entries(stockPrices)
-                .sort((a, b) => {
-                    const gainA = ((a[1].target - a[1].current) / a[1].current) * 100;
-                    const gainB = ((b[1].target - b[1].current) / b[1].current) * 100;
-                    return gainB - gainA;
-                });
-
-            // Get the stock grid container
-            const stockGrid = document.querySelector('.stock-grid');
-            stockGrid.innerHTML = '';
-
-            // Render each stock card in sorted order
-            sortedStocks.forEach(([symbol, stock]) => {
-                const gainPercent = Math.round(((stock.target - stock.current) / stock.current) * 100);
-
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'stock-card';
-                cardDiv.innerHTML = `
-                    <a href="https://finance.yahoo.com/quote/${symbol}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="stock-symbol">${symbol}</div>
-                        <div class="stock-subtitle">Current → ${stock.year} Target</div>
-                        <div class="stock-price">$${stock.current} → $${stock.target}</div>
-                        <div class="stock-gain">+${gainPercent}% potential</div>
-                    </a>
-                `;
-
-                stockGrid.appendChild(cardDiv);
+        // Sort and render stock cards
+        function renderCards() {
+            const sortBy = document.getElementById('sortBy').value;
+            const sorted = Object.entries(stocks).sort((a, b) => {
+                if (sortBy === 'gain') {
+                    const gA = ((a[1].target - a[1].current) / a[1].current) * 100;
+                    const gB = ((b[1].target - b[1].current) / b[1].current) * 100;
+                    return gB - gA;
+                }
+                if (sortBy === 'price') return b[1].current - a[1].current;
+                if (sortBy === 'alpha') return a[0].localeCompare(b[0]);
             });
+
+            const grid = document.querySelector('.stock-grid');
+            grid.innerHTML = sorted.map(([sym, s]) => {
+                const gain = Math.round(((s.target - s.current) / s.current) * 100);
+                return `<div class="stock-card">
+                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="stock-symbol">${sym}</div>
+                        <div class="stock-subtitle">Current → ${s.year} Target</div>
+                        <div class="stock-price">$${s.current} → $${s.target}</div>
+                        <div class="stock-gain">+${gain}% potential</div>
+                    </a>
+                </div>`;
+            }).join('');
         }
 
         // Initialize
         updateAll();
-
-        // Render initial stock cards in sorted order
-        renderStockCards();
-
-        // Update stock prices on load
-        updateStockPrices();
-
-        // Update stock prices every 5 minutes
-        setInterval(updateStockPrices, 300000);
+        renderCards();
+        updatePrices();
+        setInterval(updatePrices, 300000);
+        document.getElementById('sortBy').addEventListener('change', renderCards);
     </script>
 </body>
 </html>
