@@ -437,7 +437,7 @@
         updateAll();
         renderCards();
         updatePrices();
-        setInterval(updatePrices, 300000);
+        setInterval(updatePrices, 60000); // Update every 1 minute
         document.getElementById('sortBy').addEventListener('change', renderCards);
     </script>
 </body>
