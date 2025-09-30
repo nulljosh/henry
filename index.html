@@ -31,8 +31,8 @@
         .calculated { color: #7c3aed; font-weight: 600; }
         
         .chart-section { border-top: 1px solid #e5e7eb; background: #f9fafb; padding: 24px; }
-        .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden; }
-        .chart { width: 100%; height: 240px; }
+        .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden; overflow-x: auto; }
+        .chart { width: 100%; height: 240px; min-width: 600px; }
         .tooltip { position: absolute; top: 8px; left: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 20; display: none; font-size: 14px; }
         
         .stocks-section { border-top: 1px solid #e5e7eb; background: #dbeafe; padding: 24px; }
@@ -50,6 +50,9 @@
         @media (max-width: 768px) {
             .container { padding: 16px; }
             .header { padding: 12px 16px; }
+            .chart-section { padding: 16px; }
+            .chart-container { padding: 12px; }
+            .chart { min-width: 500px; height: 200px; }
             .stocks-section { padding: 16px; }
             .stock-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .summary-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -65,6 +68,9 @@
         @media (max-width: 480px) {
             .container { padding: 12px; }
             .header { padding: 8px 12px; }
+            .chart-section { padding: 12px; }
+            .chart-container { padding: 8px; }
+            .chart { min-width: 400px; height: 180px; }
             .stocks-section { padding: 12px; }
             .stock-grid { grid-template-columns: 1fr; gap: 12px; }
             .stock-card {
@@ -237,7 +243,42 @@
 
         function generateChartData() {
             const chartData = [];
-            for (let i = 0; i <= 24; i++) {
+            const r = 0.015; // 1.5% monthly growth rate
+            const currentValue = get('Wallet / Savings');
+            const surplus = calculateSurplus();
+            const monthsAgo = 12; // Start from 12 months ago (Oct/Nov 2024)
+
+            // Calculate starting value that would grow to currentValue
+            // Working backwards with same growth rate to reach $0 at monthsAgo
+            // We want: startValue * (1+r)^24 + surplus * annuity = currentValue
+            // Solving for a path that starts near 0
+
+            const totalMonthsFromStart = monthsAgo;
+            // This is the theoretical starting value
+            const backProjectedStart = (currentValue - (surplus * ((Math.pow(1 + r, totalMonthsFromStart) - 1) / r))) / Math.pow(1 + r, totalMonthsFromStart);
+
+            // Generate past data (from -24 to 0) using forward projection from theoretical start
+            for (let i = -monthsAgo; i <= 0; i++) {
+                const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
+                const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
+
+                // Months elapsed since the start (at -24)
+                const monthsElapsed = monthsAgo + i;
+
+                // Project forward from the theoretical start
+                const fv = Math.max(0, backProjectedStart) * Math.pow(1 + r, monthsElapsed);
+                const annuity = monthsElapsed > 0 ? surplus * ((Math.pow(1 + r, monthsElapsed) - 1) / r) : 0;
+                const val = Math.max(0, fv + annuity);
+
+                chartData.push({
+                    month: monthYear.replace(/(\d{2})$/, "'$1"),
+                    val: val,
+                    monthIndex: i
+                });
+            }
+
+            // Generate future data (from 1 to 24)
+            for (let i = 1; i <= 24; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
                 chartData.push({
@@ -246,6 +287,7 @@
                     monthIndex: i
                 });
             }
+
             return chartData;
         }
 
@@ -326,17 +368,20 @@
             polyline.setAttribute('stroke-width', '3');
             svg.appendChild(polyline);
 
-            // Add circles and hover areas
+            // Add circles and hover areas (only every 3rd point for cleaner look)
             chartData.forEach((d, i) => {
                 const x = 60 + (i * 480/(chartData.length-1));
                 const y = 200 - ((d.val-minVal)/(maxVal-minVal)) * 160;
 
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', x);
-                circle.setAttribute('cy', y);
-                circle.setAttribute('r', '4');
-                circle.setAttribute('fill', '#4ade80');
-                svg.appendChild(circle);
+                // Only show circles every 6 months
+                if (i % 6 === 0 || d.monthIndex === 0) {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', x);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', '4');
+                    circle.setAttribute('fill', '#4ade80');
+                    svg.appendChild(circle);
+                }
 
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 rect.setAttribute('x', x - 15);
@@ -350,31 +395,34 @@
                 svg.appendChild(rect);
             });
 
-            // Add "Current" marker at month 0
-            const currentX = 60;
-            const currentY = 200 - ((chartData[0].val-minVal)/(maxVal-minVal)) * 160;
-            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            marker.setAttribute('cx', currentX);
-            marker.setAttribute('cy', currentY);
-            marker.setAttribute('r', '6');
-            marker.setAttribute('fill', '#2563eb');
-            marker.setAttribute('stroke', 'white');
-            marker.setAttribute('stroke-width', '2');
-            svg.appendChild(marker);
+            // Add "NOW" marker at month 0 (which is at index 24 in the array)
+            const nowIndex = chartData.findIndex(d => d.monthIndex === 0);
+            if (nowIndex >= 0) {
+                const currentX = 60 + (nowIndex * 480/(chartData.length-1));
+                const currentY = 200 - ((chartData[nowIndex].val-minVal)/(maxVal-minVal)) * 160;
+                const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                marker.setAttribute('cx', currentX);
+                marker.setAttribute('cy', currentY);
+                marker.setAttribute('r', '6');
+                marker.setAttribute('fill', '#2563eb');
+                marker.setAttribute('stroke', 'white');
+                marker.setAttribute('stroke-width', '2');
+                svg.appendChild(marker);
 
-            const currentLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            currentLabel.setAttribute('x', currentX);
-            currentLabel.setAttribute('y', currentY - 12);
-            currentLabel.setAttribute('text-anchor', 'middle');
-            currentLabel.setAttribute('font-size', '10');
-            currentLabel.setAttribute('font-weight', '600');
-            currentLabel.setAttribute('fill', '#2563eb');
-            currentLabel.textContent = 'NOW';
-            svg.appendChild(currentLabel);
+                const currentLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                currentLabel.setAttribute('x', currentX);
+                currentLabel.setAttribute('y', currentY - 12);
+                currentLabel.setAttribute('text-anchor', 'middle');
+                currentLabel.setAttribute('font-size', '10');
+                currentLabel.setAttribute('font-weight', '600');
+                currentLabel.setAttribute('fill', '#2563eb');
+                currentLabel.textContent = 'NOW';
+                svg.appendChild(currentLabel);
+            }
 
-            // Add month labels
+            // Add month labels (every 6 months for better spacing)
             chartData.forEach((d, i) => {
-                if (i % 3 === 0) {
+                if (i % 6 === 0 || d.monthIndex === 0) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', 60 + (i * 480/(chartData.length-1)));
                     text.setAttribute('y', '220');
@@ -426,13 +474,13 @@
 
         // Stock data
         const stocks = {
-            'PLTR': { current: 180, target: 450, year: 2028 },
-            'HOOD': { current: 140, target: 300, year: 2027 },
+            'PLTR': { current: 178, target: 450, year: 2028 },
+            'HOOD': { current: 136, target: 300, year: 2027 },
             'GOOGL': { current: 240, target: 500, year: 2028 },
             'COIN': { current: 332, target: 600, year: 2027 },
-            'NVDA': { current: 184, target: 300, year: 2027 },
-            'APP': { current: 706, target: 1000, year: 2027 },
-            'META': { current: 729, target: 1000, year: 2028 },
+            'NVDA': { current: 186, target: 300, year: 2027 },
+            'APP': { current: 708, target: 1000, year: 2027 },
+            'META': { current: 744, target: 1000, year: 2028 },
             'TSLA': { current: 438, target: 550, year: 2028 }
         };
 
