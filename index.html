@@ -364,11 +364,11 @@
             const viewBox = svg.getAttribute('viewBox').split(' ');
             const viewBoxHeight = parseFloat(viewBox[3]);
 
-            // Calculate responsive dimensions based on viewBox
-            const marginTop = viewBoxHeight * 0.133; // 40 for 300, scales proportionally
-            const marginBottom = viewBoxHeight * 0.1; // 30 for 300
+            // Calculate responsive dimensions based on viewBox - tighter margins
+            const marginTop = 30;
+            const marginBottom = 40;
             const chartHeight = viewBoxHeight - marginTop - marginBottom;
-            const labelY = viewBoxHeight - 20;
+            const labelY = viewBoxHeight - 10;
             const hoverHeight = chartHeight;
 
             svg.innerHTML = '';
