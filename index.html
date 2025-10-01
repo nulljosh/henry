@@ -175,11 +175,16 @@
                 <div class="stock-grid">
                     <!-- Stock cards will be dynamically rendered here -->
                 </div>
-                
-                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px;">
+
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px; margin-top: 16px;">
                     <div style="font-weight: 500; color: #374151; margin-bottom: 8px;">2027-2028 Moonshot Targets 🚀</div>
                     <div style="color: #059669;">PLTR +151%, HOOD +122%, GOOGL +102%, COIN +81%, NVDA +64%, APP +41%, META +34%, TSLA +24%</div>
                     <div style="color: #2563eb; font-size: 12px; margin-top: 4px;">Average +78% gains - high risk, high reward strategy</div>
+                </div>
+
+                <h3 style="font-weight: 500; margin: 24px 0 16px 0;">Indices</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <!-- Index cards will be dynamically rendered here -->
                 </div>
             </div>
 
@@ -472,17 +477,23 @@
             updateSummary();
         }
 
-        // Stock data
+        // Stock data (ordered by growth potential)
         const stocks = {
-            'PLTR': { current: 184, target: 450, year: 2028 },
-            'HOOD': { current: 139, target: 300, year: 2027 },
-            'GOOGL': { current: 243, target: 500, year: 2028 },
-            'COIN': { current: 308, target: 600, year: 2027 },
-            'NVDA': { current: 186, target: 300, year: 2027 },
-            'APP': { current: 702, target: 1000, year: 2027 },
-            'META': { current: 734, target: 1000, year: 2028 },
-            'TSLA': { current: 460, target: 550, year: 2028 },
-            '^GSPC': { current: 6715, target: 7000, year: 2025, fullWidth: true }
+            'PLTR': { current: 184, target: 450, year: 2028 },  // +145%
+            'HOOD': { current: 139, target: 300, year: 2027 },  // +116%
+            'GOOGL': { current: 243, target: 500, year: 2028 }, // +106%
+            'COIN': { current: 308, target: 600, year: 2027 },  // +95%
+            'NVDA': { current: 186, target: 300, year: 2027 },  // +61%
+            'APP': { current: 702, target: 1000, year: 2027 },  // +42%
+            'META': { current: 734, target: 1000, year: 2028 }, // +36%
+            'TSLA': { current: 460, target: 550, year: 2028 }   // +20%
+        };
+
+        // Index data (ordered by growth potential)
+        const indices = {
+            'QQQ': { current: 603.59, target: 670, year: 2025, name: 'Nasdaq 100 (QQQ)' },      // +11%
+            '^GSPC': { current: 6715, target: 7000, year: 2025, name: 'S&P 500' },              // +4%
+            '^GSPTSE': { current: 30128.61, target: 31359, year: 2025, name: 'TSX Composite' }  // +4%
         };
 
         // Fetch live price from Yahoo Finance
@@ -504,19 +515,21 @@
                 if (price) stocks[sym].current = price;
                 await new Promise(r => setTimeout(r, 200));
             }
+            for (const sym in indices) {
+                const price = await fetchPrice(sym);
+                if (price) indices[sym].current = price;
+                await new Promise(r => setTimeout(r, 200));
+            }
             const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
             document.getElementById('lastUpdated').textContent = `Updated: ${time}`;
             renderCards();
+            renderIndices();
         }
 
         // Sort and render stock cards
         function renderCards() {
             const sortBy = document.getElementById('sortBy').value;
             const sorted = Object.entries(stocks).sort((a, b) => {
-                // Always put S&P 500 last
-                if (a[0] === '^GSPC') return 1;
-                if (b[0] === '^GSPC') return -1;
-
                 if (sortBy === 'gain') {
                     const gA = ((a[1].target - a[1].current) / a[1].current) * 100;
                     const gB = ((b[1].target - b[1].current) / b[1].current) * 100;
@@ -529,13 +542,27 @@
             const grid = document.querySelector('.stock-grid');
             grid.innerHTML = sorted.map(([sym, s]) => {
                 const gain = Math.round(((s.target - s.current) / s.current) * 100);
-                const displaySym = sym === '^GSPC' ? 'S&P 500' : sym;
-                const gridColumn = s.fullWidth ? 'style="grid-column: 1 / -1;"' : '';
-                return `<div class="stock-card" ${gridColumn}>
+                return `<div class="stock-card">
                     <a href="https://finance.yahoo.com/quote/${sym}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="stock-symbol">${displaySym}</div>
+                        <div class="stock-symbol">${sym}</div>
                         <div class="stock-subtitle">Current → ${s.year} Target</div>
                         <div class="stock-price">$${s.current.toLocaleString()} → $${s.target.toLocaleString()}</div>
+                        <div class="stock-gain">+${gain}% potential</div>
+                    </a>
+                </div>`;
+            }).join('');
+        }
+
+        // Render index cards
+        function renderIndices() {
+            const grid = document.querySelector('.stocks-section > div:last-child');
+            grid.innerHTML = Object.entries(indices).map(([sym, idx]) => {
+                const gain = Math.round(((idx.target - idx.current) / idx.current) * 100);
+                return `<div class="stock-card">
+                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="stock-symbol">${idx.name}</div>
+                        <div class="stock-subtitle">Current → ${idx.year} Target</div>
+                        <div class="stock-price">$${idx.current.toLocaleString()} → $${idx.target.toLocaleString()}</div>
                         <div class="stock-gain">+${gain}% potential</div>
                     </a>
                 </div>`;
@@ -545,6 +572,7 @@
         // Initialize
         updateAll();
         renderCards();
+        renderIndices();
         updatePrices();
         setInterval(updatePrices, 60000); // Update every 1 minute
         document.getElementById('sortBy').addEventListener('change', renderCards);
