@@ -593,6 +593,12 @@
         updatePrices();
         setInterval(updatePrices, 60000); // Update every 1 minute
         document.getElementById('sortBy').addEventListener('change', renderCards);
+
+        // Auto-open portfolio on mobile
+        if (window.innerWidth <= 480) {
+            document.getElementById('portfolioContent').classList.add('open');
+            document.getElementById('portfolioArrow').classList.add('open');
+        }
     </script>
 </body>
 </html>
