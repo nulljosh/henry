@@ -51,8 +51,8 @@
             .container { padding: 16px; }
             .header { padding: 12px 16px; }
             .chart-section { padding: 16px; }
-            .chart-container { padding: 12px; }
-            .chart { min-width: 500px; height: 200px; }
+            .chart-container { padding: 16px 8px; overflow-x: auto; }
+            .chart { min-width: 700px; height: 280px; }
             .stocks-section { padding: 16px; }
             .stock-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .summary-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -69,8 +69,17 @@
             .container { padding: 12px; }
             .header { padding: 8px 12px; }
             .chart-section { padding: 12px; }
-            .chart-container { padding: 8px; }
-            .chart { min-width: 400px; height: 180px; }
+            .chart-container {
+                padding: 12px 4px;
+                margin-left: -4px;
+                margin-right: -4px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .chart {
+                min-width: 650px;
+                height: 260px;
+            }
             .stocks-section { padding: 12px; }
             .stock-grid { grid-template-columns: 1fr; gap: 12px; }
             .stock-card {
