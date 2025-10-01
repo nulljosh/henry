@@ -481,7 +481,8 @@
             'NVDA': { current: 186, target: 300, year: 2027 },
             'APP': { current: 702, target: 1000, year: 2027 },
             'META': { current: 734, target: 1000, year: 2028 },
-            'TSLA': { current: 460, target: 550, year: 2028 }
+            'TSLA': { current: 460, target: 550, year: 2028 },
+            '^GSPC': { current: 6715, target: 7000, year: 2025, fullWidth: true }
         };
 
         // Fetch live price from Yahoo Finance
@@ -512,6 +513,10 @@
         function renderCards() {
             const sortBy = document.getElementById('sortBy').value;
             const sorted = Object.entries(stocks).sort((a, b) => {
+                // Always put S&P 500 last
+                if (a[0] === '^GSPC') return 1;
+                if (b[0] === '^GSPC') return -1;
+
                 if (sortBy === 'gain') {
                     const gA = ((a[1].target - a[1].current) / a[1].current) * 100;
                     const gB = ((b[1].target - b[1].current) / b[1].current) * 100;
@@ -524,11 +529,13 @@
             const grid = document.querySelector('.stock-grid');
             grid.innerHTML = sorted.map(([sym, s]) => {
                 const gain = Math.round(((s.target - s.current) / s.current) * 100);
-                return `<div class="stock-card">
+                const displaySym = sym === '^GSPC' ? 'S&P 500' : sym;
+                const gridColumn = s.fullWidth ? 'style="grid-column: 1 / -1;"' : '';
+                return `<div class="stock-card" ${gridColumn}>
                     <a href="https://finance.yahoo.com/quote/${sym}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="stock-symbol">${sym}</div>
+                        <div class="stock-symbol">${displaySym}</div>
                         <div class="stock-subtitle">Current → ${s.year} Target</div>
-                        <div class="stock-price">$${s.current} → $${s.target}</div>
+                        <div class="stock-price">$${s.current.toLocaleString()} → $${s.target.toLocaleString()}</div>
                         <div class="stock-gain">+${gain}% potential</div>
                     </a>
                 </div>`;
