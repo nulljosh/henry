@@ -31,20 +31,20 @@
         .calculated { color: #7c3aed; font-weight: 600; }
         
         .chart-section { border-top: 1px solid #e5e7eb; background: #f9fafb; padding: 24px; }
-        .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden; overflow-x: auto; }
-        .chart { width: 100%; height: 240px; min-width: 600px; }
+        .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; overflow-x: auto; }
+        .chart { width: 100%; height: 320px; min-width: 100%; }
         .tooltip { position: absolute; top: 8px; left: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 20; display: none; font-size: 14px; }
         
-        .stocks-section { border-top: 1px solid #e5e7eb; background: #dbeafe; padding: 24px; }
-        .stock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
-        .stock-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; transition: transform 0.2s; }
-        .stock-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .stock-card a { text-decoration: none; color: inherit; display: block; }
-        .stock-card a:hover .stock-symbol { text-decoration: underline; }
-        .stock-symbol { font-weight: 500; color: #6b7280; }
-        .stock-subtitle { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
-        .stock-price { font-size: 18px; font-weight: 600; color: #059669; }
-        .stock-gain { font-size: 12px; color: #166534; }
+        .stocks-section { border-top: 1px solid #e5e7eb; background: #f9fafb; padding: 24px; }
+        .stock-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .index-list { display: flex; flex-direction: column; gap: 8px; }
+        .stock-row { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+        .stock-row:hover { border-color: #10b981; box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1); }
+        .stock-row a { text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .stock-left { display: flex; align-items: center; gap: 12px; }
+        .stock-symbol { font-weight: 600; color: #374151; font-size: 14px; min-width: 60px; }
+        .stock-prices { font-size: 13px; color: #6b7280; }
+        .stock-gain { font-size: 14px; font-weight: 600; color: #059669; min-width: 80px; text-align: right; }
 
         /* Mobile responsive breakpoints */
         @media (max-width: 768px) {
@@ -127,30 +127,27 @@
         .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
         .footer .heart { animation: heartbeat 2s ease-in-out infinite; display: inline-block; vertical-align: middle; }
         @keyframes heartbeat { 0% { transform: scale(1); } 10% { transform: scale(1.2); } 20% { transform: scale(1); } 30% { transform: scale(1.15); } 40% { transform: scale(1); } 100% { transform: scale(1); } }
+
+        .collapse-header { cursor: pointer; padding: 16px 24px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .collapse-header:hover { background: #f3f4f6; }
+        .collapse-arrow { transition: transform 0.2s; font-size: 12px; color: #6b7280; }
+        .collapse-arrow.open { transform: rotate(180deg); }
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .collapsible-content.open { max-height: 2000px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Marlin</h1>
+        <div>
+            <h1>Marlin</h1>
+            <div id="lastUpdated" style="font-size: 11px; color: #9ca3af; margin-top: 2px;">Loading...</div>
+        </div>
     </div>
 
     <div class="container">
-        <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTable">
-                    <!-- Dynamic content -->
-                </tbody>
-            </table>
-
-            <div class="chart-section">
-                <h3 style="font-weight: 500; margin-bottom: 16px;">Portfolio Growth</h3>
-                
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="chart-section" style="border-top: none; padding-top: 24px;">
+                <h3 style="font-weight: 600; margin-bottom: 16px; color: #111827;">Portfolio Growth</h3>
                 <div class="chart-container">
                     <svg id="chart" viewBox="0 0 600 260" class="chart">
                         <!-- Dynamic chart content -->
@@ -158,52 +155,52 @@
                     <div id="tooltip" class="tooltip"></div>
                 </div>
             </div>
+        </div>
 
-            <div class="stocks-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
-                    <h3 style="font-weight: 500; margin: 0;">Stock Assumptions (Individual Picks)</h3>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <select id="sortBy" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
-                            <option value="gain">Sort by Potential %</option>
-                            <option value="price">Sort by Current Price</option>
-                            <option value="alpha">Sort by Ticker</option>
-                        </select>
-                        <div id="lastUpdated" style="font-size: 12px; color: #6b7280;">Loading...</div>
+        <div class="card">
+            <div class="collapse-header" onclick="toggleBudget()">
+                <h3 style="font-weight: 600; margin: 0; color: #111827; font-size: 16px;">Budget Details</h3>
+                <span class="collapse-arrow" id="budgetArrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="budgetContent">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTable">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="collapse-header" onclick="togglePortfolio()">
+                <h3 style="font-weight: 600; margin: 0; color: #111827; font-size: 16px;">Portfolio Targets</h3>
+                <span class="collapse-arrow" id="portfolioArrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="portfolioContent">
+                <div class="stocks-section" style="border-top: none; padding-top: 0;">
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%); border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px; margin-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-weight: 600; color: #059669; font-size: 14px;">🚀 Avg +78% upside by 2027-2028</div>
+                            <select id="sortBy" style="padding: 6px 10px; border-radius: 4px; border: 1px solid #10b981; font-size: 12px; color: #059669; background: white; font-weight: 500;">
+                                <option value="gain">By Potential %</option>
+                                <option value="price">By Price</option>
+                                <option value="alpha">By Ticker</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div class="stock-grid">
-                    <!-- Stock cards will be dynamically rendered here -->
-                </div>
-
-                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%); border: 1px solid #10b981; border-radius: 12px; padding: 20px; margin-top: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div style="font-weight: 600; color: #059669; font-size: 16px;">🚀 2027-2028 Moonshot Targets</div>
-                        <div style="font-size: 13px; color: #6b7280; font-weight: 500;">Avg +78% upside</div>
+                    <div class="stock-list">
+                        <!-- Stock rows will be dynamically rendered here -->
                     </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; color: #059669; font-weight: 500; font-size: 14px;">
-                        <span>PLTR +145%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>HOOD +116%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>GOOGL +106%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>COIN +95%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>NVDA +61%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>APP +42%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>META +36%</span>
-                        <span style="color: #d1d5db;">•</span>
-                        <span>TSLA +20%</span>
-                    </div>
-                    <div style="color: #6b7280; font-size: 12px; margin-top: 12px; font-style: italic;">High conviction, high reward portfolio targets</div>
-                </div>
 
-                <h3 style="font-weight: 500; margin: 24px 0 16px 0;">Indices</h3>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-                    <!-- Index cards will be dynamically rendered here -->
+                    <h3 style="font-weight: 600; margin: 32px 0 16px 0; color: #111827;">Market Indices</h3>
+                    <div class="index-list">
+                        <!-- Index rows will be dynamically rendered here -->
+                    </div>
                 </div>
             </div>
 
@@ -539,13 +536,13 @@
                 if (price) indices[sym].current = price;
                 await new Promise(r => setTimeout(r, 200));
             }
-            const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
             document.getElementById('lastUpdated').textContent = `Updated: ${time}`;
             renderCards();
             renderIndices();
         }
 
-        // Sort and render stock cards
+        // Sort and render stock rows
         function renderCards() {
             const sortBy = document.getElementById('sortBy').value;
             const sorted = Object.entries(stocks).sort((a, b) => {
@@ -558,34 +555,51 @@
                 if (sortBy === 'alpha') return a[0].localeCompare(b[0]);
             });
 
-            const grid = document.querySelector('.stock-grid');
-            grid.innerHTML = sorted.map(([sym, s]) => {
+            const list = document.querySelector('.stock-list');
+            list.innerHTML = sorted.map(([sym, s]) => {
                 const gain = Math.round(((s.target - s.current) / s.current) * 100);
-                return `<div class="stock-card">
-                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="stock-symbol">${sym}</div>
-                        <div class="stock-subtitle">Current → ${s.year} Target</div>
-                        <div class="stock-price">$${s.current.toLocaleString()} → $${s.target.toLocaleString()}</div>
-                        <div class="stock-gain">+${gain}% potential</div>
+                return `<div class="stock-row">
+                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">
+                        <div class="stock-left">
+                            <div class="stock-symbol">${sym}</div>
+                            <div class="stock-prices">$${s.current.toLocaleString()} → $${s.target.toLocaleString()}</div>
+                        </div>
+                        <div class="stock-gain">+${gain}%</div>
                     </a>
                 </div>`;
             }).join('');
         }
 
-        // Render index cards
+        // Render index rows
         function renderIndices() {
-            const grid = document.querySelector('.stocks-section > div:last-child');
-            grid.innerHTML = Object.entries(indices).map(([sym, idx]) => {
+            const list = document.querySelector('.index-list');
+            list.innerHTML = Object.entries(indices).map(([sym, idx]) => {
                 const gain = Math.round(((idx.target - idx.current) / idx.current) * 100);
-                return `<div class="stock-card">
-                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="stock-symbol">${idx.name}</div>
-                        <div class="stock-subtitle">Current → ${idx.year} Target</div>
-                        <div class="stock-price">$${idx.current.toLocaleString()} → $${idx.target.toLocaleString()}</div>
-                        <div class="stock-gain">+${gain}% potential</div>
+                return `<div class="stock-row">
+                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">
+                        <div class="stock-left">
+                            <div class="stock-symbol">${idx.name}</div>
+                            <div class="stock-prices">$${idx.current.toLocaleString()} → $${idx.target.toLocaleString()}</div>
+                        </div>
+                        <div class="stock-gain">+${gain}%</div>
                     </a>
                 </div>`;
             }).join('');
+        }
+
+        // Toggle sections
+        function toggleBudget() {
+            const content = document.getElementById('budgetContent');
+            const arrow = document.getElementById('budgetArrow');
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
+
+        function togglePortfolio() {
+            const content = document.getElementById('portfolioContent');
+            const arrow = document.getElementById('portfolioArrow');
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
         }
 
         // Initialize
