@@ -149,10 +149,25 @@
             <div class="chart-section" style="border-top: none; padding-top: 24px;">
                 <h3 style="font-weight: 600; margin-bottom: 16px; color: #111827;">Portfolio Growth</h3>
                 <div class="chart-container">
-                    <svg id="chart" viewBox="0 0 600 260" class="chart">
+                    <svg id="chart" viewBox="0 0 1000 300" class="chart" preserveAspectRatio="xMidYMid meet">
                         <!-- Dynamic chart content -->
                     </svg>
                     <div id="tooltip" class="tooltip"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: #ecfdf5;">
+                        <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #059669;">12.7%</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: #166534;">Progress</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: #eff6ff;">
+                        <div id="monthlyTarget" style="font-size: 18px; font-weight: 600; color: #2563eb;">$417</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: #1e40af;">Monthly Target</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: #faf5ff;">
+                        <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #7c3aed;">-$69</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: #6b21a8;">Monthly Surplus</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,23 +215,6 @@
                     <h3 style="font-weight: 600; margin: 32px 0 16px 0; color: #111827;">Market Indices</h3>
                     <div class="index-list">
                         <!-- Index rows will be dynamically rendered here -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="summary-section">
-                <div class="summary-grid">
-                    <div class="summary-card green-bg">
-                        <div id="progressValue" class="summary-value green-text">12.7%</div>
-                        <div class="summary-label" style="color: #166534;">Progress</div>
-                    </div>
-                    <div class="summary-card blue-bg">
-                        <div id="monthlyTarget" class="summary-value blue-text">$417</div>
-                        <div class="summary-label" style="color: #1e40af;">Monthly Target</div>
-                    </div>
-                    <div class="summary-card purple-bg">
-                        <div id="monthlySurplus" class="summary-value purple-text">-$69</div>
-                        <div class="summary-label" style="color: #6b21a8;">Monthly Surplus</div>
                     </div>
                 </div>
             </div>
@@ -358,11 +356,11 @@
 
             // Add grid lines
             for (let i = 0; i <= 4; i++) {
-                const y = 40 + (i * 40);
+                const y = 40 + (i * 50);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', '40');
+                line.setAttribute('x1', '60');
                 line.setAttribute('y1', y);
-                line.setAttribute('x2', '560');
+                line.setAttribute('x2', '960');
                 line.setAttribute('y2', y);
                 line.setAttribute('stroke', '#e5e7eb');
                 line.setAttribute('stroke-width', '1');
@@ -371,17 +369,17 @@
                 // Add Y-axis labels
                 const val = maxVal - (i * (maxVal - minVal) / 4);
                 const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', '30');
+                label.setAttribute('x', '50');
                 label.setAttribute('y', y + 4);
                 label.setAttribute('text-anchor', 'end');
-                label.setAttribute('font-size', '10');
+                label.setAttribute('font-size', '11');
                 label.setAttribute('fill', '#6b7280');
                 label.textContent = '$' + Math.round(val).toLocaleString();
                 svg.appendChild(label);
             }
 
             // Create polyline
-            const points = chartData.map((d, i) => `${60 + (i * 480/(chartData.length-1))},${200 - ((d.val-minVal)/(maxVal-minVal)) * 160}`).join(' ');
+            const points = chartData.map((d, i) => `${80 + (i * 860/(chartData.length-1))},${240 - ((d.val-minVal)/(maxVal-minVal)) * 200}`).join(' ');
             const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
             polyline.setAttribute('points', points);
             polyline.setAttribute('fill', 'none');
@@ -391,24 +389,24 @@
 
             // Add circles and hover areas (only every 3rd point for cleaner look)
             chartData.forEach((d, i) => {
-                const x = 60 + (i * 480/(chartData.length-1));
-                const y = 200 - ((d.val-minVal)/(maxVal-minVal)) * 160;
+                const x = 80 + (i * 860/(chartData.length-1));
+                const y = 240 - ((d.val-minVal)/(maxVal-minVal)) * 200;
 
                 // Only show circles every 6 months
                 if (i % 6 === 0 || d.monthIndex === 0) {
                     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                     circle.setAttribute('cx', x);
                     circle.setAttribute('cy', y);
-                    circle.setAttribute('r', '4');
+                    circle.setAttribute('r', '5');
                     circle.setAttribute('fill', '#4ade80');
                     svg.appendChild(circle);
                 }
 
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('x', x - 15);
+                rect.setAttribute('x', x - 20);
                 rect.setAttribute('y', 35);
-                rect.setAttribute('width', '30');
-                rect.setAttribute('height', '170');
+                rect.setAttribute('width', '40');
+                rect.setAttribute('height', '210');
                 rect.setAttribute('fill', 'transparent');
                 rect.style.cursor = 'pointer';
                 rect.addEventListener('mouseenter', () => showTooltip(i, d));
@@ -419,12 +417,12 @@
             // Add "NOW" marker at month 0 (which is at index 24 in the array)
             const nowIndex = chartData.findIndex(d => d.monthIndex === 0);
             if (nowIndex >= 0) {
-                const currentX = 60 + (nowIndex * 480/(chartData.length-1));
-                const currentY = 200 - ((chartData[nowIndex].val-minVal)/(maxVal-minVal)) * 160;
+                const currentX = 80 + (nowIndex * 860/(chartData.length-1));
+                const currentY = 240 - ((chartData[nowIndex].val-minVal)/(maxVal-minVal)) * 200;
                 const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 marker.setAttribute('cx', currentX);
                 marker.setAttribute('cy', currentY);
-                marker.setAttribute('r', '6');
+                marker.setAttribute('r', '7');
                 marker.setAttribute('fill', '#2563eb');
                 marker.setAttribute('stroke', 'white');
                 marker.setAttribute('stroke-width', '2');
@@ -432,9 +430,9 @@
 
                 const currentLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 currentLabel.setAttribute('x', currentX);
-                currentLabel.setAttribute('y', currentY - 12);
+                currentLabel.setAttribute('y', currentY - 14);
                 currentLabel.setAttribute('text-anchor', 'middle');
-                currentLabel.setAttribute('font-size', '10');
+                currentLabel.setAttribute('font-size', '12');
                 currentLabel.setAttribute('font-weight', '600');
                 currentLabel.setAttribute('fill', '#2563eb');
                 currentLabel.textContent = 'NOW';
@@ -445,10 +443,10 @@
             chartData.forEach((d, i) => {
                 if (i % 6 === 0 || d.monthIndex === 0) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', 60 + (i * 480/(chartData.length-1)));
-                    text.setAttribute('y', '220');
+                    text.setAttribute('x', 80 + (i * 860/(chartData.length-1)));
+                    text.setAttribute('y', '270');
                     text.setAttribute('text-anchor', 'middle');
-                    text.setAttribute('font-size', '11');
+                    text.setAttribute('font-size', '12');
                     text.setAttribute('fill', '#6b7280');
                     text.textContent = d.month;
                     svg.appendChild(text);
