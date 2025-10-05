@@ -200,9 +200,14 @@
 </head>
 <body>
     <div class="header">
-        <div>
-            <h1>Marlin</h1>
-            <div id="lastUpdated" style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Loading...</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div>
+                <h1 style="display: flex; align-items: center; gap: 8px;">
+                    Marlin
+                    <span style="font-size: 11px; font-weight: 500; background: rgba(0, 122, 255, 0.1); color: #007aff; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">USD</span>
+                </h1>
+                <div id="lastUpdated" style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Loading...</div>
+            </div>
         </div>
         <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
             <svg id="darkModeIcon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: var(--text-primary);">
@@ -232,7 +237,7 @@
                         <input type="checkbox" id="potentialIncomeToggle" onchange="togglePotentialIncome()">
                         <span class="toggle-slider"></span>
                     </label>
-                    <span class="toggle-label" id="currentIncomeLabel">($1,060)</span>
+                    <span class="toggle-label" id="currentIncomeLabel">($774)</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
@@ -290,6 +295,17 @@
                         </div>
                     </div>
 
+                    <div id="portfolioValueCard" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 16px; border-radius: 12px; background: linear-gradient(135deg, rgba(239, 246, 255, 0.5) 0%, rgba(219, 234, 254, 0.5) 100%); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                            <div id="currentPortfolioValue" style="font-size: 20px; font-weight: 600; color: #007aff; letter-spacing: -0.5px;">$0</div>
+                            <div style="font-size: 11px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; color: var(--text-secondary);">Current Value</div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; border-radius: 12px; background: linear-gradient(135deg, rgba(236, 253, 245, 0.5) 0%, rgba(209, 250, 229, 0.5) 100%); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                            <div id="targetPortfolioValue" style="font-size: 20px; font-weight: 600; color: #059669; letter-spacing: -0.5px;">$0</div>
+                            <div style="font-size: 11px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; color: var(--text-secondary);">Target Value</div>
+                        </div>
+                    </div>
+
                     <div class="stock-list">
                         <!-- Stock rows will be dynamically rendered here -->
                     </div>
@@ -301,9 +317,27 @@
                 </div>
             </div>
         </div>
+
+        <!-- AI Portfolio Insights -->
+        <div class="card" style="margin-top: 24px;">
+            <div style="padding: 24px; border-bottom: 1px solid var(--border-color);">
+                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #7c3aed;">
+                        <path d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    AI Portfolio Insights
+                </h3>
+            </div>
+            <div style="padding: 24px; background: var(--bg-secondary);">
+                <div id="aiInsights" style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">
+                    <!-- Insights will be dynamically generated -->
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="footer" style="padding-bottom: 40px;">Made with <svg class="heart" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="#FF4136"/></svg> in Vancouver, BC</div>
+    <div class="footer" style="padding-bottom: 40px;">Made with <svg class="heart" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.0 0 0 0 0-7.78z" fill="#FF4136"/></svg> in Vancouver, BC</div>
 
     <script>
         // Dark mode handling
@@ -331,15 +365,16 @@
 
         initDarkMode();
 
+        // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
-            { category: 'Goal', amount: 3000, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 1384.25, type: 'asset' },
-            { category: 'iPhone Sale (One-time)', amount: 800, type: 'one-time' },
-            { category: 'Potential Income', amount: 1735, type: 'asset' },
-            { category: 'Income', amount: 1060, type: 'income' },
-            { category: 'Food', amount: 335, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 105, type: 'expense' },
-            { category: 'Vape', amount: 50, type: 'expense' }
+            { category: 'Goal', amount: 2190, type: 'goal' },
+            { category: 'Wallet / Savings', amount: 1010.50, type: 'asset' },
+            { category: 'iPhone Sale (One-time)', amount: 584, type: 'one-time' },
+            { category: 'Potential Income', amount: 1267, type: 'asset' },
+            { category: 'Income', amount: 774, type: 'income' },
+            { category: 'Food', amount: 245, type: 'expense' },
+            { category: 'iPhone (Monthly)', amount: 77, type: 'expense' },
+            { category: 'Vape', amount: 37, type: 'expense' }
         ];
 
         let usePotentialIncome = false;
@@ -629,21 +664,40 @@
             updateSummary();
         }
 
-        // Stock data (ordered by growth potential)
+        // Stock data (your actual portfolio)
         const stocks = {
-            'PLTR': { current: 177.00, target: 450, year: 2028 },  // +154%
-            'COIN': { current: 382.66, target: 600, year: 2027 },  // +57%
-            'NVDA': { current: 187.94, target: 300, year: 2027 },  // +60%
-            'HOOD': { current: 149.80, target: 300, year: 2027 },  // +100%
-            'GOOGL': { current: 246.00, target: 500, year: 2028 }, // +103%
-            'APP': { current: 676.79, target: 1000, year: 2027 },  // +48%
-            'META': { current: 718.08, target: 1000, year: 2028 }, // +39%
-            'TSLA': { current: 424.26, target: 550, year: 2028 }   // +30%
+            'PLTR': { current: 175.43, target: 450, year: 2028, shares: 0.5599 },  // +156%
+            'HOOD': { current: 148.83, target: 300, year: 2027, shares: 0.6086 },  // +102%
+            'GOOGL': { current: 245.24, target: 500, year: 2028, shares: 0.326 }, // +104%
+            'NVDA': { current: 187.66, target: 300, year: 2027, shares: 1.0348 },  // +60%
+            'APP': { current: 682.85, target: 1000, year: 2027, shares: 0.1152 },  // +46%
+            'COIN': { current: 378.75, target: 600, year: 2027, shares: 0.0376 },  // +58%
+            'META': { current: 711.90, target: 1000, year: 2028, shares: 0.0203 }, // +40%
+            'TSLA': { current: 429.90, target: 550, year: 2028, shares: 0.0576 },  // +28%
+            'AAPL': { current: 257.90, target: 350, year: 2027, shares: 0.2842 },  // +36%
+            'MSFT': { current: 516.99, target: 650, year: 2027, shares: 0.0193 },  // +26%
+            'JPM': { current: 310.48, target: 380, year: 2027, shares: 0.0349 },   // +22%
+            'SPY': { current: 669.54, target: 740, year: 2026, shares: 0.1386 },   // +11%
+            'T': { current: 27.06, target: 32, year: 2026, shares: 2.2694 }        // +18%
         };
+
+        // Calculate portfolio values
+        function calculatePortfolioValue() {
+            let currentValue = 0;
+            let targetValue = 0;
+
+            for (const sym in stocks) {
+                const stock = stocks[sym];
+                currentValue += stock.current * stock.shares;
+                targetValue += stock.target * stock.shares;
+            }
+
+            return { currentValue, targetValue };
+        }
 
         // Index data (ordered by growth potential)
         const indices = {
-            'QQQ': { current: 606.00, target: 670, year: 2025, name: 'Nasdaq 100 (QQQ)' },      // +11%
+            'QQQ': { current: 603.13, target: 670, year: 2025, name: 'Nasdaq 100 (QQQ)', shares: 0.1067 },      // +11%
             '^GSPC': { current: 6746.82, target: 7000, year: 2025, name: 'S&P 500' },           // +4%
             '^GSPTSE': { current: 30457.70, target: 31359, year: 2025, name: 'TSX Composite' }     // +3%
         };
@@ -678,6 +732,13 @@
             renderIndices();
         }
 
+        // Update portfolio value display
+        function updatePortfolioDisplay() {
+            const { currentValue, targetValue } = calculatePortfolioValue();
+            document.getElementById('currentPortfolioValue').textContent = `$${Math.round(currentValue).toLocaleString()}`;
+            document.getElementById('targetPortfolioValue').textContent = `$${Math.round(targetValue).toLocaleString()}`;
+        }
+
         // Sort and render stock rows
         function renderCards() {
             const sortBy = document.getElementById('sortBy').value;
@@ -704,6 +765,9 @@
                     </a>
                 </div>`;
             }).join('');
+
+            // Update portfolio values after rendering
+            updatePortfolioDisplay();
         }
 
         // Render index rows
@@ -738,11 +802,54 @@
             arrow.classList.toggle('open');
         }
 
+        // Generate AI portfolio insights
+        function generateAIInsights() {
+            const { currentValue, targetValue } = calculatePortfolioValue();
+            const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
+
+            // Analyze portfolio composition
+            const techStocks = ['PLTR', 'NVDA', 'GOOGL', 'META', 'AAPL', 'MSFT', 'APP', 'COIN'];
+            const techExposure = Object.entries(stocks)
+                .filter(([sym]) => techStocks.includes(sym))
+                .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
+            const techPercent = (techExposure / currentValue * 100).toFixed(0);
+
+            // Find top holdings
+            const topHolding = Object.entries(stocks)
+                .map(([sym, stock]) => ({ sym, value: stock.current * stock.shares }))
+                .sort((a, b) => b.value - a.value)[0];
+
+            const insights = `
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed;">📊 Portfolio Overview</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Your portfolio is currently worth <strong>$${Math.round(currentValue).toLocaleString()}</strong> with a projected value of <strong>$${Math.round(targetValue).toLocaleString()}</strong> by 2027-2028, representing a potential gain of <strong style="color: #059669;">+${potentialGain}%</strong>.</p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed;">⚠️ Risk Assessment</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Your portfolio is <strong>${techPercent}% tech-focused</strong>, which offers high growth potential but increased volatility. Consider diversifying into defensive sectors (healthcare, utilities, consumer staples) to reduce risk.</p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed;">💡 Recommendations</strong>
+                    <ul style="margin: 8px 0 0 20px; color: var(--text-secondary);">
+                        <li style="margin-bottom: 8px;">Your largest holding is <strong>${topHolding.sym}</strong> ($${ Math.round(topHolding.value)}). Consider rebalancing if it exceeds 15-20% of your portfolio.</li>
+                        <li style="margin-bottom: 8px;">Focus monthly DCA on your highest-conviction stocks (PLTR, NVDA, HOOD) to maximize target gains.</li>
+                        <li style="margin-bottom: 8px;">Set stop-losses at -15% to protect downside while maintaining upside potential.</li>
+                        <li>Review quarterly to ensure target prices remain realistic based on market conditions.</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('aiInsights').innerHTML = insights;
+        }
+
         // Initialize
         updateAll();
         renderCards();
         renderIndices();
         updatePrices();
+        generateAIInsights();
         setInterval(updatePrices, 60000); // Update every 1 minute
         document.getElementById('sortBy').addEventListener('change', renderCards);
 
