@@ -31,6 +31,7 @@
         .income { color: #059669; font-weight: 600; }
         .expense { color: #dc2626; }
         .calculated { color: #7c3aed; font-weight: 600; }
+        .one-time { color: #f59e0b; font-weight: 600; }
         
         .chart-section { border-top: 1px solid #e5e7eb; background: #f9fafb; padding: 24px; }
         .chart-container { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; }
@@ -210,13 +211,13 @@
     <script>
         let data = [
             { category: 'Goal', amount: 5000, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 1480, type: 'asset' },
+            { category: 'Wallet / Savings', amount: 1384.25, type: 'asset' },
+            { category: 'iPhone Sale (One-time)', amount: 800, type: 'one-time' },
+            { category: 'Potential Income', amount: 1735, type: 'asset' },
             { category: 'Income', amount: 1060, type: 'income' },
             { category: 'Food', amount: 335, type: 'expense' },
-            { category: 'iPhone (Back Pay)', amount: 300, type: 'expense' },
             { category: 'iPhone (Monthly)', amount: 105, type: 'expense' },
-            { category: 'Vape', amount: 144, type: 'expense' },
-            { category: 'Weed', amount: 100, type: 'expense' }
+            { category: 'Vape', amount: 50, type: 'expense' }
         ];
 
         function get(category) {
@@ -226,7 +227,7 @@
 
         function calculateSurplus() {
             const income = get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('iPhone (Back Pay)') + get('Vape') + get('Weed');
+            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('iPhone (Back Pay)') + get('Vape');
             return income - totalExpenses;
         }
 
@@ -315,6 +316,14 @@
             });
 
             // Add calculated rows
+            const incomeDiff = get('Potential Income') - get('Income');
+            const incomeDiffRow = document.createElement('tr');
+            incomeDiffRow.innerHTML = `
+                <td style="font-weight: 500;">Income Difference</td>
+                <td class="calculated">$${incomeDiff.toLocaleString()}</td>
+            `;
+            tbody.appendChild(incomeDiffRow);
+
             const surplusRow = document.createElement('tr');
             surplusRow.innerHTML = `
                 <td style="font-weight: 500;">Monthly Surplus</td>
