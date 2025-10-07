@@ -101,7 +101,6 @@
 
         .stocks-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
         .stock-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-        .index-list { display: flex; flex-direction: column; gap: 8px; }
         .stock-row { background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
         .stock-row:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
         .stock-row:active { transform: scale(0.98); }
@@ -309,11 +308,6 @@
 
                     <div class="stock-list">
                         <!-- Stock rows will be dynamically rendered here -->
-                    </div>
-
-                    <h3 style="font-weight: 600; margin: 32px 0 16px 0; color: var(--text-primary); letter-spacing: -0.3px;">Market Indices</h3>
-                    <div class="index-list">
-                        <!-- Index rows will be dynamically rendered here -->
                     </div>
                 </div>
             </div>
@@ -674,12 +668,11 @@
             'NVDA': { current: 187.66, target: 300, year: 2027, shares: 1.0348 },  // +60%
             'APP': { current: 682.85, target: 1000, year: 2027, shares: 0.1152 },  // +46%
             'COIN': { current: 378.75, target: 600, year: 2027, shares: 0.0376 },  // +58%
-            'META': { current: 711.90, target: 1000, year: 2028, shares: 0.0203 }, // +40%
             'TSLA': { current: 429.90, target: 550, year: 2028, shares: 0.0576 },  // +28%
             'AAPL': { current: 257.90, target: 350, year: 2027, shares: 0.2842 },  // +36%
-            'MSFT': { current: 516.99, target: 650, year: 2027, shares: 0.0193 },  // +26%
-            'JPM': { current: 310.48, target: 380, year: 2027, shares: 0.0349 },   // +22%
             'SPY': { current: 669.54, target: 740, year: 2026, shares: 0.1386 },   // +11%
+            'QQQ': { current: 603.13, target: 670, year: 2025, shares: 0.1067 },   // +11%
+            'XIU': { current: 34.50, target: 35.50, year: 2025, shares: 0 },       // +3%
             'T': { current: 27.06, target: 32, year: 2026, shares: 2.2694 }        // +18%
         };
 
@@ -697,12 +690,8 @@
             return { currentValue, targetValue };
         }
 
-        // Index data (ordered by growth potential)
-        const indices = {
-            'QQQ': { current: 603.13, target: 670, year: 2025, name: 'Nasdaq 100 (QQQ)', shares: 0.1067 },      // +11%
-            '^GSPC': { current: 6746.82, target: 7000, year: 2025, name: 'S&P 500' },           // +4%
-            '^GSPTSE': { current: 30457.70, target: 31359, year: 2025, name: 'TSX Composite' }     // +3%
-        };
+        // Index data (keeping empty for now - all moved to stocks)
+        const indices = {};
 
         // Fetch live price from Yahoo Finance
         async function fetchPrice(symbol) {
@@ -723,15 +712,9 @@
                 if (price) stocks[sym].current = price;
                 await new Promise(r => setTimeout(r, 200));
             }
-            for (const sym in indices) {
-                const price = await fetchPrice(sym);
-                if (price) indices[sym].current = price;
-                await new Promise(r => setTimeout(r, 200));
-            }
             const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
             document.getElementById('lastUpdated').textContent = `Updated: ${time}`;
             renderCards();
-            renderIndices();
         }
 
         // Update portfolio value display
@@ -773,23 +756,6 @@
             updatePortfolioDisplay();
         }
 
-        // Render index rows
-        function renderIndices() {
-            const list = document.querySelector('.index-list');
-            list.innerHTML = Object.entries(indices).map(([sym, idx]) => {
-                const gain = Math.round(((idx.target - idx.current) / idx.current) * 100);
-                return `<div class="stock-row">
-                    <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">
-                        <div class="stock-left">
-                            <div class="stock-symbol">${idx.name}</div>
-                            <div class="stock-prices">$${idx.current.toLocaleString()} → $${idx.target.toLocaleString()}</div>
-                        </div>
-                        <div class="stock-gain">+${gain}%</div>
-                    </a>
-                </div>`;
-            }).join('');
-        }
-
         // Toggle sections
         function toggleBudget() {
             const content = document.getElementById('budgetContent');
@@ -811,7 +777,7 @@
             const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
 
             // Analyze portfolio composition
-            const techStocks = ['PLTR', 'NVDA', 'GOOGL', 'META', 'AAPL', 'MSFT', 'APP', 'COIN'];
+            const techStocks = ['PLTR', 'NVDA', 'GOOGL', 'AAPL', 'APP', 'COIN'];
             const techExposure = Object.entries(stocks)
                 .filter(([sym]) => techStocks.includes(sym))
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
@@ -850,7 +816,6 @@
         // Initialize
         updateAll();
         renderCards();
-        renderIndices();
         updatePrices();
         generateAIInsights();
         setInterval(updatePrices, 60000); // Update every 1 minute
