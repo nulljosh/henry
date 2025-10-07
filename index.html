@@ -206,7 +206,11 @@
                     Marlin
                     <span style="font-size: 11px; font-weight: 500; background: rgba(0, 122, 255, 0.1); color: #007aff; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">USD</span>
                 </h1>
-                <div id="lastUpdated" style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Loading...</div>
+                <div style="display: flex; gap: 12px; margin-top: 2px;">
+                    <div id="lastUpdated" style="font-size: 11px; color: var(--text-secondary);">Loading...</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">•</div>
+                    <div id="nextPayday" style="font-size: 11px; color: var(--text-secondary);">Next pay: 10/22, 11/19, 12/17</div>
+                </div>
             </div>
         </div>
         <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
