@@ -241,17 +241,17 @@
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: #ecfdf5;">
-                        <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #059669;">12.7%</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: #166534;">Progress</div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3);">
+                        <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">12.7%</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
                     </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: #eff6ff;">
-                        <div id="monthlyTarget" style="font-size: 18px; font-weight: 600; color: #2563eb;">$417</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: #1e40af;">Monthly Target</div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3);">
+                        <div id="monthlyTarget" style="font-size: 18px; font-weight: 600; color: #93c5fd;">$417</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Target</div>
                     </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: #faf5ff;">
-                        <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #7c3aed;">-$69</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: #6b21a8;">Monthly Surplus</div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(196, 181, 253, 0.3);">
+                        <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #c4b5fd;">-$69</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Surplus</div>
                     </div>
                 </div>
             </div>
@@ -363,7 +363,7 @@
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
             { category: 'Goal', amount: 2190, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 1010.50, type: 'asset' },
+            { category: 'Wallet / Savings', amount: 1022, type: 'asset' },
             { category: 'iPhone Sale (One-time)', amount: 584, type: 'one-time' },
             { category: 'Potential Income', amount: 1267, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
@@ -412,29 +412,23 @@
             const r = 0.015; // 1.5% monthly growth rate
             const currentValue = get('Wallet / Savings');
             const surplus = calculateSurplus();
-            const monthsAgo = 12; // Start from 12 months ago (Oct/Nov 2024)
+            const monthsAgo = 12; // Start from 12 months ago (Oct 2024)
 
-            // Calculate starting value that would grow to currentValue
-            // Working backwards with same growth rate to reach $0 at monthsAgo
-            // We want: startValue * (1+r)^24 + surplus * annuity = currentValue
-            // Solving for a path that starts near 0
-
-            const totalMonthsFromStart = monthsAgo;
-            // This is the theoretical starting value
-            const backProjectedStart = (currentValue - (surplus * ((Math.pow(1 + r, totalMonthsFromStart) - 1) / r))) / Math.pow(1 + r, totalMonthsFromStart);
-
-            // Generate past data (from -24 to 0) using forward projection from theoretical start
+            // Generate past data (from -12 to 0) - started from $0 in Oct 2024
             for (let i = -monthsAgo; i <= 0; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
 
-                // Months elapsed since the start (at -24)
-                const monthsElapsed = monthsAgo + i;
-
-                // Project forward from the theoretical start
-                const fv = Math.max(0, backProjectedStart) * Math.pow(1 + r, monthsElapsed);
-                const annuity = monthsElapsed > 0 ? surplus * ((Math.pow(1 + r, monthsElapsed) - 1) / r) : 0;
-                const val = Math.max(0, fv + annuity);
+                let val;
+                if (i === 0) {
+                    // At NOW, show the actual current wallet balance
+                    val = currentValue;
+                } else {
+                    // Linear growth from $0 (Oct 2024) to current value (now)
+                    // monthsElapsed goes from 0 to 12 as i goes from -12 to 0
+                    const monthsElapsed = monthsAgo + i;
+                    val = (currentValue / monthsAgo) * monthsElapsed;
+                }
 
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
