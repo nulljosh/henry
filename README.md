@@ -23,10 +23,9 @@ A fund/portfolio management system for tracking investments and performance.
 | TSLA | 0.0688 | $31.30 | +11.36% |
 | COIN | 0.0376 | $14.43 | +16.36% |
 | SPY | 0.1386 | $92.98 | +1.49% |
-| QQQ | 0.1067 | $64.76 | +0.54% |
-| T | 2.2694 | $58.96 | -10.30% |
+| IAU | 1.6    | $125.82| +0.23% |
 
-*Last updated: Oct 6, 2025 (includes pending orders)*
+*Last updated: Oct 8, 2025 (includes pending orders)*
 
 ## Features
 
