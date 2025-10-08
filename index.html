@@ -660,18 +660,17 @@
 
         // Stock data (your actual portfolio)
         const stocks = {
-            'PLTR': { current: 175.43, target: 450, year: 2028, shares: 0.5599 },  // +156%
+            'PLTR': { current: 175.43, target: 450, year: 2028, shares: 0.5764 },  // +156%
             'HOOD': { current: 148.83, target: 300, year: 2027, shares: 0.5191 },  // +102%
             'GOOGL': { current: 245.24, target: 500, year: 2028, shares: 0.326 }, // +104%
-            'NVDA': { current: 187.66, target: 300, year: 2027, shares: 1.006 },  // +60%
-            'APP': { current: 682.85, target: 1000, year: 2027, shares: 0.1225 },  // +46%
-            'COIN': { current: 378.75, target: 600, year: 2027, shares: 0.0376 },  // +58%
+            'NVDA': { current: 187.66, target: 300, year: 2027, shares: 0.9551 },  // +60%
+            'APP': { current: 682.85, target: 1000, year: 2027, shares: 0.1275 },  // +46%
+            'COIN': { current: 378.75, target: 600, year: 2027, shares: 0.0576 },  // +58%
             'TSLA': { current: 429.90, target: 550, year: 2028, shares: 0.0688 },  // +28%
             'AAPL': { current: 257.90, target: 350, year: 2027, shares: 0.2842 },  // +36%
             'SPY': { current: 669.54, target: 740, year: 2026, shares: 0.1386 },   // +11%
             'QQQ': { current: 603.13, target: 670, year: 2025, shares: 0.1067 },   // +11%
-            'XIU': { current: 34.50, target: 35.50, year: 2025, shares: 0 },       // +3%
-            'T': { current: 27.06, target: 32, year: 2026, shares: 2.2694 }        // +18%
+            'IAU': { current: 76.18, target: 100, year: 2026, shares: 0.6256 }     // +31%
         };
 
         // Calculate portfolio values
@@ -775,35 +774,54 @@
             const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
 
             // Analyze portfolio composition
-            const techStocks = ['PLTR', 'NVDA', 'GOOGL', 'AAPL', 'APP', 'COIN'];
+            const techStocks = ['PLTR', 'NVDA', 'GOOGL', 'AAPL', 'APP', 'COIN', 'HOOD'];
             const techExposure = Object.entries(stocks)
                 .filter(([sym]) => techStocks.includes(sym))
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
             const techPercent = (techExposure / currentValue * 100).toFixed(0);
 
+            // Calculate safe haven exposure (gold, bonds, etc.)
+            const safeHavenStocks = ['IAU'];
+            const safeHavenExposure = Object.entries(stocks)
+                .filter(([sym]) => safeHavenStocks.includes(sym))
+                .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
+            const safeHavenPercent = (safeHavenExposure / currentValue * 100).toFixed(0);
+
             // Find top holdings
-            const topHolding = Object.entries(stocks)
+            const topHoldings = Object.entries(stocks)
                 .map(([sym, stock]) => ({ sym, value: stock.current * stock.shares }))
-                .sort((a, b) => b.value - a.value)[0];
+                .sort((a, b) => b.value - a.value)
+                .slice(0, 3);
 
             const insights = `
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">📊 Portfolio Overview</strong>
+                    <strong style="color: #7c3aed;">📊 Portfolio Overview (Oct 8, 2025)</strong>
                     <p style="margin: 8px 0; color: var(--text-secondary);">Your portfolio is currently worth <strong>$${Math.round(currentValue).toLocaleString()}</strong> with a projected value of <strong>$${Math.round(targetValue).toLocaleString()}</strong> by 2027-2028, representing a potential gain of <strong style="color: #059669;">+${potentialGain}%</strong>.</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">⚠️ Risk Assessment</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">Your portfolio is <strong>${techPercent}% tech-focused</strong>, which offers high growth potential but increased volatility. Consider diversifying into defensive sectors (healthcare, utilities, consumer staples) to reduce risk.</p>
+                    <strong style="color: #7c3aed;">🌟 Market Context</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Gold is hitting all-time highs near $4,000/oz as investors seek safe havens amid market uncertainty. Your <strong>IAU position</strong> provides valuable downside protection. Tech stocks remain volatile but offer significant upside potential through 2027-2028.</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">💡 Recommendations</strong>
+                    <strong style="color: #7c3aed;">⚖️ Asset Allocation</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">
+                        • <strong>${techPercent}% Tech/Growth</strong> (PLTR, NVDA, GOOGL, AAPL, APP, COIN, HOOD)<br>
+                        • <strong>${safeHavenPercent}% Safe Haven</strong> (IAU Gold ETF)<br>
+                        • <strong>${(100 - techPercent - safeHavenPercent).toFixed(0)}% Index Funds</strong> (SPY, QQQ)<br>
+                        <br>
+                        Top 3 holdings: ${topHoldings.map(h => `<strong>${h.sym}</strong> ($${Math.round(h.value)})`).join(', ')}
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed;">💡 Action Items</strong>
                     <ul style="margin: 8px 0 0 20px; color: var(--text-secondary);">
-                        <li style="margin-bottom: 8px;">Your largest holding is <strong>${topHolding.sym}</strong> ($${ Math.round(topHolding.value)}). Consider rebalancing if it exceeds 15-20% of your portfolio.</li>
-                        <li style="margin-bottom: 8px;">Focus monthly DCA on your highest-conviction stocks (PLTR, NVDA, HOOD) to maximize target gains.</li>
-                        <li style="margin-bottom: 8px;">Set stop-losses at -15% to protect downside while maintaining upside potential.</li>
-                        <li>Review quarterly to ensure target prices remain realistic based on market conditions.</li>
+                        <li style="margin-bottom: 8px;">Continue DCA into highest-conviction plays: <strong>PLTR</strong> (+156% target), <strong>HOOD</strong> (+102%), <strong>GOOGL</strong> (+104%)</li>
+                        <li style="margin-bottom: 8px;">Monitor IAU - if gold exceeds $4,200/oz, consider taking some profits and rotating into tech dips</li>
+                        <li style="margin-bottom: 8px;">NVDA earnings coming up - watch for volatility and potential entry points around $175-180</li>
+                        <li>Maintain 10-15% portfolio allocation to safe havens (IAU) for downside protection during tech corrections</li>
                     </ul>
                 </div>
             `;
