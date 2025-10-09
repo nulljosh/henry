@@ -236,7 +236,7 @@
                 </div>
 
                 <div class="toggle-container">
-                    <span class="toggle-label">Use Potential Income</span>
+                    <span class="toggle-label">Use Extra Income</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="potentialIncomeToggle" onchange="togglePotentialIncome()">
                         <span class="toggle-slider"></span>
@@ -367,7 +367,7 @@
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
             { category: 'Goal', amount: 2190, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 1022, type: 'asset' },
+            { category: 'Wallet / Savings', amount: 960, type: 'asset' },
             { category: 'iPhone Sale (One-time)', amount: 584, type: 'one-time' },
             { category: 'Potential Income', amount: 1267, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
@@ -402,7 +402,7 @@
         }
 
         function projectValue(months) {
-            const r = 0.015; // Individual stocks: 1.5% monthly
+            const r = 0.01; // Individual stocks: 1.0% monthly (12.7% annual)
             const surplus = calculateSurplus();
             
             const fv = get('Wallet / Savings') * Math.pow(1 + r, months);
@@ -413,7 +413,7 @@
 
         function generateChartData() {
             const chartData = [];
-            const r = 0.015; // 1.5% monthly growth rate
+            const r = 0.01; // 1.0% monthly growth rate (12.7% annual)
             const currentValue = get('Wallet / Savings');
             const surplus = calculateSurplus();
             const monthsAgo = 12; // Start from 12 months ago (Oct 2024)
@@ -554,20 +554,18 @@
             polyline.setAttribute('stroke-width', '3');
             svg.appendChild(polyline);
 
-            // Add circles and hover areas (only every 3rd point for cleaner look)
+            // Add circles and hover areas for all months
             chartData.forEach((d, i) => {
                 const x = 80 + (i * 860/(chartData.length-1));
                 const y = bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight;
 
-                // Only show circles every 6 months
-                if (i % 6 === 0 || d.monthIndex === 0) {
-                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    circle.setAttribute('cx', x);
-                    circle.setAttribute('cy', y);
-                    circle.setAttribute('r', '5');
-                    circle.setAttribute('fill', '#4ade80');
-                    svg.appendChild(circle);
-                }
+                // Show circles for ALL months (past and future)
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', d.monthIndex === 0 ? '0' : '4'); // Hide NOW dot since it has marker
+                circle.setAttribute('fill', '#4ade80');
+                svg.appendChild(circle);
 
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 rect.setAttribute('x', x - 20);
@@ -658,17 +656,17 @@
             updateSummary();
         }
 
-        // Stock data (your actual portfolio)
+        // Stock data (your actual portfolio) - Updated Oct 9, 2025
         const stocks = {
-            'PLTR': { current: 175.43, target: 450, year: 2028, shares: 0.5764 },  // +156%
-            'HOOD': { current: 148.83, target: 300, year: 2027, shares: 0.5191 },  // +102%
-            'GOOGL': { current: 245.24, target: 500, year: 2028, shares: 0.326 }, // +104%
-            'NVDA': { current: 187.66, target: 300, year: 2027, shares: 0.9551 },  // +60%
-            'APP': { current: 682.85, target: 1000, year: 2027, shares: 0.1275 },  // +46%
-            'COIN': { current: 378.75, target: 600, year: 2027, shares: 0.0576 },  // +58%
-            'AAPL': { current: 257.90, target: 350, year: 2027, shares: 0.2842 },  // +36%
-            'SPY': { current: 669.54, target: 740, year: 2026, shares: 0.1386 },   // +11%
-            'IAU': { current: 76.18, target: 100, year: 2026, shares: 1.6506 }     // +31%
+            'PLTR': { current: 179.88, target: 450, year: 2028, shares: 0.5764 },  // +150%
+            'HOOD': { current: 150.00, target: 300, year: 2027, shares: 0.5191 },  // +100%
+            'GOOGL': { current: 245.76, target: 500, year: 2028, shares: 0.326 }, // +103%
+            'NVDA': { current: 189.11, target: 300, year: 2027, shares: 0.9551 },  // +59%
+            'APP': { current: 629.70, target: 1000, year: 2027, shares: 0.1275 },  // +59%
+            'COIN': { current: 388.40, target: 600, year: 2027, shares: 0.0576 },  // +54%
+            'AAPL': { current: 258.03, target: 350, year: 2027, shares: 0.2842 },  // +36%
+            'SPY': { current: 673.38, target: 740, year: 2026, shares: 0.1386 },   // +10%
+            'IAU': { current: 76.33, target: 100, year: 2026, shares: 1.6506 }     // +31%
         };
 
         // Calculate portfolio values
@@ -793,13 +791,15 @@
 
             const insights = `
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">📊 Portfolio Overview (Oct 8, 2025)</strong>
+                    <strong style="color: #7c3aed;">📊 Portfolio Overview (Oct 9, 2025)</strong>
                     <p style="margin: 8px 0; color: var(--text-secondary);">Your portfolio is currently worth <strong>$${Math.round(currentValue).toLocaleString()}</strong> with a projected value of <strong>$${Math.round(targetValue).toLocaleString()}</strong> by 2027-2028, representing a potential gain of <strong style="color: #059669;">+${potentialGain}%</strong>.</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">🌟 Market Context</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">Gold is hitting all-time highs near $4,000/oz as investors seek safe havens amid market uncertainty. Your <strong>IAU position</strong> provides valuable downside protection. Tech stocks remain volatile but offer significant upside potential through 2027-2028.</p>
+                    <strong style="color: #7c3aed;">🌟 Market Context (Today)</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Gold:</strong> Hit ATH $4,059 yesterday, now cooling to $3,957 (-2.5% profit-taking). Still up 50% YoY. Your <strong>IAU position</strong> provides valuable downside protection amid volatility.</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Tech Rally:</strong> S&P 500 erased 2025 losses on AI boom. <strong>NVDA</strong> hit new ATH >$195 on UAE chip export approval. <strong>PLTR</strong> jumped 9% on $142B Saudi defense deal, up 130% YTD. <strong>APP</strong> under SEC investigation (Oct 6), watch for volatility.</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Key Events:</strong> Powell speaks today. Fed rate decision Oct 29.</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
@@ -807,7 +807,7 @@
                     <p style="margin: 8px 0; color: var(--text-secondary);">
                         • <strong>${techPercent}% Tech/Growth</strong> (PLTR, NVDA, GOOGL, AAPL, APP, COIN, HOOD)<br>
                         • <strong>${safeHavenPercent}% Safe Haven</strong> (IAU Gold ETF)<br>
-                        • <strong>${(100 - techPercent - safeHavenPercent).toFixed(0)}% Index Funds</strong> (SPY, QQQ)<br>
+                        • <strong>${(100 - techPercent - safeHavenPercent).toFixed(0)}% Index Funds</strong> (SPY)<br>
                         <br>
                         Top 3 holdings: ${topHoldings.map(h => `<strong>${h.sym}</strong> ($${Math.round(h.value)})`).join(', ')}
                     </p>
@@ -817,9 +817,10 @@
                     <strong style="color: #7c3aed;">💡 Action Items</strong>
                     <ul style="margin: 8px 0 0 20px; color: var(--text-secondary);">
                         <li style="margin-bottom: 8px;">Continue DCA into highest-conviction plays: <strong>PLTR</strong> (+156% target), <strong>HOOD</strong> (+102%), <strong>GOOGL</strong> (+104%)</li>
-                        <li style="margin-bottom: 8px;">Monitor IAU - if gold exceeds $4,200/oz, consider taking some profits and rotating into tech dips</li>
-                        <li style="margin-bottom: 8px;">NVDA earnings coming up - watch for volatility and potential entry points around $175-180</li>
-                        <li>Maintain 10-15% portfolio allocation to safe havens (IAU) for downside protection during tech corrections</li>
+                        <li style="margin-bottom: 8px;">Gold pullback is normal after ATH - don't panic sell IAU. Central banks still buying, long-term trend intact</li>
+                        <li style="margin-bottom: 8px;">Watch NVDA momentum post-ATH. Consider adding on dips toward $180-185 support</li>
+                        <li style="margin-bottom: 8px;">Monitor APP closely - SEC investigation could create volatility or entry opportunity</li>
+                        <li>Stay diversified: maintain 10-15% safe haven allocation (IAU) to cushion tech corrections</li>
                     </ul>
                 </div>
             `;
