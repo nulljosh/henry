@@ -290,7 +290,7 @@
                 <div class="stocks-section" style="border-top: none; padding-top: 0;">
                     <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; margin-top: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="font-weight: 600; color: #059669; font-size: 14px;">🚀 Avg +78% upside by 2027-2028</div>
+                            <div style="font-weight: 600; color: #059669; font-size: 14px;">Avg +78% upside by 2027-2028</div>
                             <select id="sortBy">
                                 <option value="gain">By Potential %</option>
                                 <option value="price">By Price</option>
@@ -325,7 +325,7 @@
                         <path d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2Z" stroke="currentColor" stroke-width="2"/>
                         <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
-                    AI Portfolio Insights
+                    Insights
                 </h3>
             </div>
             <div style="padding: 24px; background: var(--bg-secondary);">
@@ -656,17 +656,17 @@
             updateSummary();
         }
 
-        // Stock data (your actual portfolio) - Updated Oct 9, 2025
+        // Stock data (your actual portfolio) - Updated Oct 10, 2025
         const stocks = {
-            'PLTR': { current: 179.88, target: 450, year: 2028, shares: 0.5764 },  // +150%
-            'HOOD': { current: 150.00, target: 300, year: 2027, shares: 0.5191 },  // +100%
-            'GOOGL': { current: 245.76, target: 500, year: 2028, shares: 0.326 }, // +103%
-            'NVDA': { current: 189.11, target: 300, year: 2027, shares: 0.9551 },  // +59%
+            'PLTR': { current: 182.81, target: 450, year: 2028, shares: 0.5764 },  // +146%
+            'HOOD': { current: 151.50, target: 300, year: 2027, shares: 0.5191 },  // +98%
+            'GOOGL': { current: 245.46, target: 500, year: 2028, shares: 0.326 }, // +104%
+            'NVDA': { current: 194.00, target: 300, year: 2027, shares: 0.9551 },  // +55%
             'APP': { current: 629.70, target: 1000, year: 2027, shares: 0.1275 },  // +59%
-            'COIN': { current: 388.40, target: 600, year: 2027, shares: 0.0576 },  // +54%
-            'AAPL': { current: 258.03, target: 350, year: 2027, shares: 0.2842 },  // +36%
-            'SPY': { current: 673.38, target: 740, year: 2026, shares: 0.1386 },   // +10%
-            'IAU': { current: 76.33, target: 100, year: 2026, shares: 1.6506 }     // +31%
+            'COIN': { current: 387.10, target: 600, year: 2027, shares: 0.0576 },  // +55%
+            'AAPL': { current: 248.64, target: 350, year: 2027, shares: 0.2842 },  // +41%
+            'SPY': { current: 663.19, target: 740, year: 2026, shares: 0.1386 },   // +12%
+            'IAU': { current: 74.58, target: 100, year: 2026, shares: 1.6506 }     // +34%
         };
 
         // Calculate portfolio values
@@ -791,37 +791,25 @@
 
             const insights = `
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">📊 Portfolio Overview (Oct 9, 2025)</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">Your portfolio is currently worth <strong>$${Math.round(currentValue).toLocaleString()}</strong> with a projected value of <strong>$${Math.round(targetValue).toLocaleString()}</strong> by 2027-2028, representing a potential gain of <strong style="color: #059669;">+${potentialGain}%</strong>.</p>
+                    <strong style="color: #7c3aed;">Portfolio</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Current: <strong>$${Math.round(currentValue).toLocaleString()}</strong> → Target: <strong>$${Math.round(targetValue).toLocaleString()}</strong> (+${potentialGain}%) by 2027-2028</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Split: ${techPercent}% tech, ${safeHavenPercent}% gold, ${(100 - techPercent - safeHavenPercent).toFixed(0)}% index. Top holdings: ${topHoldings.map(h => `${h.sym} ($${Math.round(h.value)})`).join(', ')}</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">🌟 Market Context (Today)</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Gold:</strong> Hit ATH $4,059 yesterday, now cooling to $3,957 (-2.5% profit-taking). Still up 50% YoY. Your <strong>IAU position</strong> provides valuable downside protection amid volatility.</p>
-                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Tech Rally:</strong> S&P 500 erased 2025 losses on AI boom. <strong>NVDA</strong> hit new ATH >$195 on UAE chip export approval. <strong>PLTR</strong> jumped 9% on $142B Saudi defense deal, up 130% YTD. <strong>APP</strong> under SEC investigation (Oct 6), watch for volatility.</p>
-                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Key Events:</strong> Powell speaks today. Fed rate decision Oct 29.</p>
+                    <strong style="color: #7c3aed;">Market Update</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Gold</strong> hit $4K (first time ever), now $3,988. <strong>IAU</strong> at $74.58 - pullback is normal profit-taking, still up 54% YTD.</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Tech</strong> ripping on AI hype. <strong>NVDA</strong> $194 (ATH), <strong>PLTR</strong> $182.81 (+142% YTD), <strong>COIN</strong> $387 on crypto strength, <strong>HOOD</strong> $151 (+497% past year). <strong>AAPL</strong> down to $248.</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Fed likely cutting rates 3x this year. Some worry tech is overbought after $16T rally, but momentum strong for now.</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">⚖️ Asset Allocation</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">
-                        • <strong>${techPercent}% Tech/Growth</strong> (PLTR, NVDA, GOOGL, AAPL, APP, COIN, HOOD)<br>
-                        • <strong>${safeHavenPercent}% Safe Haven</strong> (IAU Gold ETF)<br>
-                        • <strong>${(100 - techPercent - safeHavenPercent).toFixed(0)}% Index Funds</strong> (SPY)<br>
-                        <br>
-                        Top 3 holdings: ${topHoldings.map(h => `<strong>${h.sym}</strong> ($${Math.round(h.value)})`).join(', ')}
-                    </p>
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">💡 Action Items</strong>
-                    <ul style="margin: 8px 0 0 20px; color: var(--text-secondary);">
-                        <li style="margin-bottom: 8px;">Continue DCA into highest-conviction plays: <strong>PLTR</strong> (+156% target), <strong>HOOD</strong> (+102%), <strong>GOOGL</strong> (+104%)</li>
-                        <li style="margin-bottom: 8px;">Gold pullback is normal after ATH - don't panic sell IAU. Central banks still buying, long-term trend intact</li>
-                        <li style="margin-bottom: 8px;">Watch NVDA momentum post-ATH. Consider adding on dips toward $180-185 support</li>
-                        <li style="margin-bottom: 8px;">Monitor APP closely - SEC investigation could create volatility or entry opportunity</li>
-                        <li>Stay diversified: maintain 10-15% safe haven allocation (IAU) to cushion tech corrections</li>
-                    </ul>
+                    <strong style="color: #7c3aed;">What to Do</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">• Keep DCA-ing <strong>PLTR</strong> (+146% upside), <strong>GOOGL</strong> (+104%), <strong>HOOD</strong> (+98%)<br>
+                    • <strong>IAU</strong> dip = buying opportunity. Gold bull run isn't over<br>
+                    • <strong>NVDA</strong> at ATH - hold or take some profits. Wait for $180-185 to add more<br>
+                    • <strong>AAPL</strong> at $248 looks cheap. <strong>COIN</strong> riding crypto wave<br>
+                    • Keep 10-15% in gold to hedge tech volatility</p>
                 </div>
             `;
 
