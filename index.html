@@ -113,7 +113,7 @@
         /* Mobile responsive breakpoints */
         @media (max-width: 768px) {
             .container { padding: 16px; }
-            .header { padding: 16px; }
+            .header { padding: 12px 16px; }
             .chart-section { padding: 16px; }
             .chart-container { padding: 16px 8px; overflow-x: auto; }
             .chart { min-width: 700px; height: 280px; }
@@ -124,12 +124,13 @@
             .header h1 { font-size: 18px; }
             .summary-grid { grid-template-columns: 1fr; gap: 12px; }
             .collapse-header { padding: 14px 16px; }
+            .back-button { width: 32px; height: 32px; font-size: 16px; }
         }
 
         @media (max-width: 480px) {
             body { width: 100vw; }
             .container { padding: 8px; width: 100%; max-width: 100vw; }
-            .header { padding: 16px 12px; }
+            .header { padding: 12px; gap: 8px; }
             .chart-section { display: none; }
             .stocks-section { padding: 12px; }
             .table-wrapper { -webkit-overflow-scrolling: touch; width: 100%; }
@@ -147,6 +148,8 @@
             .stock-symbol { font-size: 13px; min-width: 50px; }
             .stock-prices { font-size: 12px; }
             .stock-gain { font-size: 13px; min-width: 60px; }
+            .back-button { width: 30px; height: 30px; font-size: 16px; padding: 4px 8px; }
+            .dark-mode-toggle { width: 32px; height: 32px; }
         }
         
         .summary-section { border-top: 1px solid var(--border-color); padding: 24px; }
@@ -162,9 +165,9 @@
         .purple-text { color: #7c3aed; }
         .summary-label { font-size: 11px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; color: var(--text-secondary); }
 
-        .breadcrumb { margin-bottom: 16px; }
-        .breadcrumb a { color: #007aff; text-decoration: none; font-size: 15px; font-weight: 500; transition: opacity 0.2s ease; }
-        .breadcrumb a:hover { opacity: 0.7; }
+        .back-button { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; width: 36px; height: 36px; text-decoration: none; color: var(--text-primary); font-size: 18px; font-weight: 600; }
+        .back-button:hover { background: var(--input-hover); transform: translateX(-2px); }
+        .back-button:active { transform: scale(0.95) translateX(-2px); }
 
         .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
         .footer .heart { animation: heartbeat 2s ease-in-out infinite; display: inline-block; vertical-align: middle; }
@@ -200,7 +203,8 @@
 </head>
 <body>
     <div class="header">
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="https://fuckingjoshua.com" class="back-button" aria-label="Back to home">‹</a>
             <div>
                 <h1 style="display: flex; align-items: center; gap: 8px;">
                     Marlin
@@ -222,9 +226,6 @@
     </div>
 
     <div class="container">
-        <div class="breadcrumb">
-            <a href="https://fuckingjoshua.com">..</a>
-        </div>
         <div class="card" style="margin-bottom: 24px;">
             <div class="chart-section" style="border-top: none; padding-top: 24px;">
                 <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Portfolio Growth</h3>
@@ -312,6 +313,21 @@
 
                     <div class="stock-list">
                         <!-- Stock rows will be dynamically rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse-header" onclick="toggleCrypto()">
+                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Crypto Watchlist</h3>
+                <span class="collapse-arrow" id="cryptoArrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="cryptoContent">
+                <div class="stocks-section" style="border-top: none; padding-top: 0;">
+                    <div style="background: linear-gradient(135deg, #f0e7ff 0%, #e0d7ff 100%); border-radius: 12px; padding: 16px; margin: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+                        <div style="font-weight: 600; color: #7c3aed; font-size: 14px;">Live crypto prices (not holdings)</div>
+                    </div>
+                    <div class="crypto-list" style="margin: 0 20px 20px 20px;">
+                        <!-- Crypto cards will be dynamically rendered here -->
                     </div>
                 </div>
             </div>
@@ -656,17 +672,26 @@
             updateSummary();
         }
 
-        // Stock data (your actual portfolio) - Updated Oct 10, 2025
+        // Stock data (your actual portfolio)
         const stocks = {
-            'PLTR': { current: 183.00, target: 450, year: 2028, shares: 0.5764 },  // +146%
-            'HOOD': { current: 152.46, target: 300, year: 2027, shares: 0.5191 },  // +97%
-            'GOOGL': { current: 241.53, target: 500, year: 2028, shares: 0.326 }, // +107%
-            'NVDA': { current: 183.00, target: 300, year: 2027, shares: 0.9551 },  // +64%
-            'APP': { current: 573.44, target: 1000, year: 2027, shares: 0.1275 },  // +74%
-            'COIN': { current: 364.35, target: 600, year: 2027, shares: 0.0576 },  // +65%
-            'AAPL': { current: 254.04, target: 350, year: 2027, shares: 0.2842 },  // +38%
-            'SPY': { current: 663.19, target: 740, year: 2026, shares: 0.1386 },   // +12%
-            'IAU': { current: 75.58, target: 100, year: 2026, shares: 1.6506 }     // +32%
+            'PLTR': { current: 183.00, target: 450, year: 2028, shares: 0.5764 },
+            'HOOD': { current: 152.46, target: 300, year: 2027, shares: 0.5191 },
+            'GOOGL': { current: 241.53, target: 500, year: 2028, shares: 0.326 },
+            'NVDA': { current: 183.00, target: 300, year: 2027, shares: 0.9551 },
+            'APP': { current: 573.44, target: 1000, year: 2027, shares: 0.1275 },
+            'COIN': { current: 364.35, target: 600, year: 2027, shares: 0.0576 },
+            'AAPL': { current: 254.04, target: 350, year: 2027, shares: 0.2842 },
+            'SPY': { current: 663.19, target: 740, year: 2026, shares: 0.1386 },
+            'IAU': { current: 75.58, target: 100, year: 2026, shares: 1.6506 }
+        };
+
+        // Crypto watchlist (not holdings, just tracking)
+        const cryptos = {
+            'bitcoin': { symbol: 'BTC', current: 0, change24h: 0 },
+            'ethereum': { symbol: 'ETH', current: 0, change24h: 0 },
+            'solana': { symbol: 'SOL', current: 0, change24h: 0 },
+            'cardano': { symbol: 'ADA', current: 0, change24h: 0 },
+            'polkadot': { symbol: 'DOT', current: 0, change24h: 0 }
         };
 
         // Calculate portfolio values
@@ -683,31 +708,75 @@
             return { currentValue, targetValue };
         }
 
-        // Index data (keeping empty for now - all moved to stocks)
-        const indices = {};
+        // Price cache to avoid API rate limits
+        const priceCache = { stocks: {}, cryptos: {}, lastUpdate: 0 };
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-        // Fetch live price from Yahoo Finance
-        async function fetchPrice(symbol) {
+        // Fetch stock price with better error handling
+        async function fetchStockPrice(symbol) {
             try {
-                const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`);
+                const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`, {
+                    headers: { 'User-Agent': 'Mozilla/5.0' }
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
-                return Math.round(data.chart.result[0].meta.regularMarketPrice);
+                return parseFloat(data.chart.result[0].meta.regularMarketPrice.toFixed(2));
             } catch (e) {
-                console.error(`Error fetching ${symbol}:`, e);
+                console.warn(`Yahoo Finance failed for ${symbol}, using cached price`);
                 return null;
             }
         }
 
-        // Update all stock prices
-        async function updatePrices() {
-            for (const sym in stocks) {
-                const price = await fetchPrice(sym);
-                if (price) stocks[sym].current = price;
-                await new Promise(r => setTimeout(r, 200));
+        // Fetch crypto prices from CoinGecko (no API key needed, no rate limits)
+        async function fetchCryptoPrices() {
+            try {
+                const ids = Object.keys(cryptos).join(',');
+                const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+                const data = await res.json();
+
+                for (const [id, crypto] of Object.entries(cryptos)) {
+                    if (data[id]) {
+                        crypto.current = data[id].usd;
+                        crypto.change24h = data[id].usd_24h_change || 0;
+                    }
+                }
+                return true;
+            } catch (e) {
+                console.error('Error fetching crypto prices:', e);
+                return false;
             }
-            const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-            document.getElementById('lastUpdated').textContent = `Updated: ${time}`;
+        }
+
+        // Update all prices with caching
+        async function updatePrices() {
+            const now = Date.now();
+            if (now - priceCache.lastUpdate < CACHE_DURATION) {
+                console.log('Using cached prices');
+                return;
+            }
+
+            // Update crypto prices (always works, no rate limits)
+            await fetchCryptoPrices();
+            renderCryptoCards();
+
+            // Try to update stock prices (may fail due to rate limits)
+            let successCount = 0;
+            for (const sym in stocks) {
+                const price = await fetchStockPrice(sym);
+                if (price) {
+                    stocks[sym].current = price;
+                    successCount++;
+                }
+                await new Promise(r => setTimeout(r, 300)); // Slower to avoid rate limits
+            }
+
+            priceCache.lastUpdate = now;
+            const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            const status = successCount > 0 ? `Updated ${successCount}/${Object.keys(stocks).length} stocks` : 'Using cached prices';
+            document.getElementById('lastUpdated').textContent = `${time} • ${status}`;
+
             renderCards();
+            generateAIInsights(); // Regenerate insights with new prices
         }
 
         // Update portfolio value display
@@ -749,6 +818,30 @@
             updatePortfolioDisplay();
         }
 
+        // Render crypto cards
+        function renderCryptoCards() {
+            const list = document.querySelector('.crypto-list');
+            if (!list) return;
+
+            const sorted = Object.entries(cryptos).sort((a, b) => b[1].current - a[1].current);
+
+            list.innerHTML = sorted.map(([id, crypto]) => {
+                const changeColor = crypto.change24h >= 0 ? '#30d158' : '#ff453a';
+                const changeSign = crypto.change24h >= 0 ? '+' : '';
+                const price = crypto.current > 0 ? `$${crypto.current.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : 'Loading...';
+
+                return `<div class="stock-row" style="margin-bottom: 8px;">
+                    <a href="https://www.coingecko.com/en/coins/${id}" target="_blank">
+                        <div class="stock-left">
+                            <div class="stock-symbol">${crypto.symbol}</div>
+                            <div class="stock-prices">${price}</div>
+                        </div>
+                        <div class="stock-gain" style="color: ${changeColor};">${changeSign}${crypto.change24h.toFixed(2)}%</div>
+                    </a>
+                </div>`;
+            }).join('');
+        }
+
         // Toggle sections
         function toggleBudget() {
             const content = document.getElementById('budgetContent');
@@ -764,7 +857,14 @@
             arrow.classList.toggle('open');
         }
 
-        // Generate AI portfolio insights
+        function toggleCrypto() {
+            const content = document.getElementById('cryptoContent');
+            const arrow = document.getElementById('cryptoArrow');
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
+
+        // Generate AI portfolio insights (automated based on live data)
         function generateAIInsights() {
             const { currentValue, targetValue } = calculatePortfolioValue();
             const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
@@ -776,40 +876,63 @@
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
             const techPercent = (techExposure / currentValue * 100).toFixed(0);
 
-            // Calculate safe haven exposure (gold, bonds, etc.)
-            const safeHavenStocks = ['IAU'];
+            const safeHavenStocks = ['IAU', 'SPY'];
             const safeHavenExposure = Object.entries(stocks)
                 .filter(([sym]) => safeHavenStocks.includes(sym))
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
             const safeHavenPercent = (safeHavenExposure / currentValue * 100).toFixed(0);
 
-            // Find top holdings
+            // Top holdings by value
             const topHoldings = Object.entries(stocks)
                 .map(([sym, stock]) => ({ sym, value: stock.current * stock.shares }))
                 .sort((a, b) => b.value - a.value)
                 .slice(0, 3);
 
+            // Find stocks with highest upside
+            const topOpportunities = Object.entries(stocks)
+                .map(([sym, stock]) => ({
+                    sym,
+                    upside: ((stock.target - stock.current) / stock.current * 100).toFixed(0),
+                    year: stock.year,
+                    current: stock.current
+                }))
+                .sort((a, b) => parseFloat(b.upside) - parseFloat(a.upside))
+                .slice(0, 3);
+
+            // Crypto market summary
+            const btc = cryptos.bitcoin?.current || 0;
+            const btcChange = cryptos.bitcoin?.change24h || 0;
+            const eth = cryptos.ethereum?.current || 0;
+            const ethChange = cryptos.ethereum?.change24h || 0;
+
             const insights = `
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">Portfolio</strong>
+                    <strong style="color: #7c3aed;">Portfolio Overview</strong>
                     <p style="margin: 8px 0; color: var(--text-secondary);">Current: <strong>$${Math.round(currentValue).toLocaleString()}</strong> → Target: <strong>$${Math.round(targetValue).toLocaleString()}</strong> (+${potentialGain}%) by 2027-2028</p>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">Split: ${techPercent}% tech, ${safeHavenPercent}% gold, ${(100 - techPercent - safeHavenPercent).toFixed(0)}% index. Top holdings: ${topHoldings.map(h => `${h.sym} ($${Math.round(h.value)})`).join(', ')}</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">Allocation: ${techPercent}% tech stocks, ${safeHavenPercent}% defensive. Top holdings: ${topHoldings.map(h => `${h.sym} ($${Math.round(h.value)})`).join(', ')}</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">Market Update</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Gold</strong> hit $4K (first time ever), now $3,988. <strong>IAU</strong> at $74.58 - pullback is normal profit-taking, still up 54% YTD.</p>
-                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>Tech</strong> ripping on AI hype. <strong>NVDA</strong> $194 (ATH), <strong>PLTR</strong> $182.81 (+142% YTD), <strong>COIN</strong> $387 on crypto strength, <strong>HOOD</strong> $151 (+497% past year). <strong>AAPL</strong> down to $248.</p>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">Fed likely cutting rates 3x this year. Some worry tech is overbought after $16T rally, but momentum strong for now.</p>
+                    <strong style="color: #7c3aed;">Top Opportunities</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">${topOpportunities.map(s =>
+                        `<strong>${s.sym}</strong> ($${s.current.toFixed(2)}) has +${s.upside}% upside to target by ${s.year}`
+                    ).join('<br>')}</p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed;">What to Do</strong>
-                    <p style="margin: 8px 0; color: var(--text-secondary);">• Keep DCA-ing <strong>PLTR</strong> (+146% upside), <strong>GOOGL</strong> (+104%), <strong>HOOD</strong> (+98%)<br>
-                    • <strong>IAU</strong> dip = buying opportunity. Gold bull run isn't over<br>
-                    • <strong>NVDA</strong> at ATH - hold or take some profits. Wait for $180-185 to add more<br>
-                    • <strong>AAPL</strong> at $248 looks cheap. <strong>COIN</strong> riding crypto wave<br>
-                    • Keep 10-15% in gold to hedge tech volatility</p>
+                    <strong style="color: #7c3aed;">Crypto Market</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);"><strong>BTC</strong> at $${btc.toLocaleString()} (${btcChange >= 0 ? '+' : ''}${btcChange.toFixed(2)}% 24h) • <strong>ETH</strong> at $${eth.toLocaleString()} (${ethChange >= 0 ? '+' : ''}${ethChange.toFixed(2)}% 24h)</p>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">${btcChange > 5 ? 'Strong crypto momentum. Consider COIN exposure.' : btcChange < -5 ? 'Crypto pullback. Wait for stabilization.' : 'Crypto market stable.'}</p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed;">Suggested Actions</strong>
+                    <p style="margin: 8px 0; color: var(--text-secondary);">
+                    • Continue DCA into top 3 opportunities: ${topOpportunities.map(s => s.sym).join(', ')}<br>
+                    • Maintain ${safeHavenPercent}% defensive allocation for volatility protection<br>
+                    • Rebalance if any single position exceeds 25% of portfolio<br>
+                    • Review targets quarterly as market conditions change
+                    </p>
                 </div>
             `;
 
@@ -819,9 +942,10 @@
         // Initialize
         updateAll();
         renderCards();
+        renderCryptoCards();
         updatePrices();
         generateAIInsights();
-        setInterval(updatePrices, 60000); // Update every 1 minute
+        setInterval(updatePrices, 5 * 60 * 1000); // Update every 5 minutes (avoids rate limits)
         document.getElementById('sortBy').addEventListener('change', renderCards);
 
         // Auto-open portfolio on mobile
