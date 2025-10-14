@@ -389,7 +389,6 @@
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Food', amount: 245, type: 'expense' },
             { category: 'iPhone (Monthly)', amount: 77, type: 'expense' },
-            { category: 'Vape', amount: 37, type: 'expense' },
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
@@ -402,7 +401,7 @@
 
         function calculateSurplus() {
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Vape') + get('Claude');
+            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
             return income - totalExpenses;
         }
 
