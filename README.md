@@ -7,8 +7,8 @@ A fund/portfolio management system for tracking investments and performance.
 **Total**: $797 USD (~$1,178 CAD)
 
 ### Accounts
-- **Vacation Fund** (Chequing): $91.54 USD
-- **TFSA**: $1,089.91 USD (-38.93% all time)
+- **Vacation Fund** (Chequing): $67 USD ($91.54 CAD)
+- **TFSA**: $730 USD ($1,086 CAD, -39.13% all time)
 
 ### Holdings (8 stocks)
 
