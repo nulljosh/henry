@@ -364,11 +364,7 @@
         <!-- AI Portfolio Insights -->
         <div class="card" style="margin-top: 24px;">
             <div style="padding: 24px; border-bottom: 1px solid var(--border-color);">
-                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px;">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #7c3aed;">
-                        <path d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2Z" stroke="currentColor" stroke-width="2"/>
-                        <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
+                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">
                     Market Insights
                 </h3>
             </div>
@@ -461,11 +457,11 @@
             const r = 0.01; // 1.0% monthly growth rate (12.7% annual)
             const currentValue = get('Wallet / Savings');
             const surplus = calculateSurplus();
-            const monthsAgo = 24; // Start from 24 months ago for better centering
+            const monthsAgo = 12; // Started investing Oct 2024 (12 months ago)
 
             let previousValue = 0;
 
-            // Generate past data (from -24 to 0) - started from $0 in Oct 2024
+            // Generate past data (from -12 to 0) - started from $0 in Oct 2024
             for (let i = -monthsAgo; i <= 0; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
@@ -474,14 +470,10 @@
                 if (i === 0) {
                     // At NOW, show the actual current wallet balance
                     val = currentValue;
-                } else if (i >= -12) {
-                    // Linear growth from $0 (Oct 2024) to current value (now)
-                    // Only show growth for the last 12 months
-                    const monthsElapsed = 12 + (i + 12);
-                    val = (currentValue / 12) * monthsElapsed;
                 } else {
-                    // Before Oct 2024, show $0
-                    val = 0;
+                    // Linear growth from $0 (Oct 2024) to current value (now)
+                    const monthsElapsed = monthsAgo + i;
+                    val = (currentValue / monthsAgo) * monthsElapsed;
                 }
 
                 // Ensure monotonic increase - never go down
@@ -656,15 +648,27 @@
                     line.setAttribute('opacity', pct === 1.0 ? '0.4' : '0.2');
                     svg.appendChild(line);
 
+                    // Background for label (better contrast)
+                    if (pct !== 1.0) {
+                        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                        bg.setAttribute('x', '62');
+                        bg.setAttribute('y', milestoneY - 22);
+                        bg.setAttribute('width', '42');
+                        bg.setAttribute('height', '20');
+                        bg.setAttribute('fill', isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)');
+                        bg.setAttribute('rx', '4');
+                        svg.appendChild(bg);
+                    }
+
                     // Milestone label
                     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    label.setAttribute('x', pct === 1.0 ? '958' : '68');
-                    label.setAttribute('y', milestoneY - 6);
-                    label.setAttribute('text-anchor', pct === 1.0 ? 'end' : 'start');
-                    label.setAttribute('font-size', '12');
+                    label.setAttribute('x', pct === 1.0 ? '958' : '83');
+                    label.setAttribute('y', milestoneY - 8);
+                    label.setAttribute('text-anchor', pct === 1.0 ? 'end' : 'middle');
+                    label.setAttribute('font-size', pct === 1.0 ? '12' : '16');
                     label.setAttribute('font-weight', '700');
-                    label.setAttribute('fill', pct === 1.0 ? '#059669' : textColor);
-                    label.setAttribute('opacity', pct === 1.0 ? '0.8' : '0.7');
+                    label.setAttribute('fill', pct === 1.0 ? '#059669' : (isDark ? '#f5f5f7' : '#1d1d1f'));
+                    label.setAttribute('opacity', '1');
                     label.setAttribute('letter-spacing', '0.5');
                     label.textContent = pct === 1.0 ? 'GOAL' : `${pct * 100}%`;
                     svg.appendChild(label);
