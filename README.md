@@ -4,28 +4,26 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Total**: $987 USD (~$1,377 CAD)
+**Total**: $1,181 USD (~$1,618 CAD)
 
 ### Accounts
-- **Vacation Fund** (Chequing): $16.51 USD
-- **TFSA**: $894.05 USD (-35.83% all time)
+- **Vacation Fund** (Chequing): $91.54 USD
+- **TFSA**: $1,089.91 USD (-38.93% all time)
 
-### Holdings (11 stocks)
+### Holdings (8 stocks)
 
 | Ticker | Shares | Value | Return |
 |--------|--------|-------|--------|
-| HOOD | 0.5191 | $75.26 | +24.60% |
-| NVDA | 1.006 | $186.98 | +7.01% |
-| APP | 0.1225 | $70.52 | +17.71% |
-| PLTR | 0.5599 | $100.11 | +5.73% |
-| GOOGL | 0.326 | $81.50 | +5.60% |
-| AAPL | 0.2842 | $72.70 | +6.27% |
-| TSLA | 0.0688 | $31.30 | +11.36% |
-| COIN | 0.0376 | $14.43 | +16.36% |
-| SPY | 0.1386 | $92.98 | +1.49% |
-| IAU | 1.6    | $125.82| +0.23% |
+| NVDA | 0.9551 | $173.47 | +4.37% |
+| IAU | 1.6506 | $133.20 | +5.94% |
+| PLTR | 0.5264 | $94.35 | +6.03% |
+| GOOGL | 0.326 | $82.45 | +6.86% |
+| AAPL | 0.3042 | $75.25 | +2.82% |
+| APP | 0.1217 | $73.51 | +19.30% |
+| HOOD | 0.5409 | $72.16 | +14.20% |
+| SLV | 0.5251 | $25.81 | +2.01% |
 
-*Last updated: Oct 8, 2025 (includes pending orders)*
+*Last updated: Oct 16, 2025*
 
 ## Features
 
