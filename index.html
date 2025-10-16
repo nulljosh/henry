@@ -582,13 +582,16 @@
                 const x = 80 + (i * 860/(chartData.length-1));
                 const y = bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight;
 
-                // Show circles for ALL months (past and future)
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', x);
-                circle.setAttribute('cy', y);
-                circle.setAttribute('r', d.monthIndex === 0 ? '0' : '4'); // Hide NOW dot since it has marker
-                circle.setAttribute('fill', '#4ade80');
-                svg.appendChild(circle);
+                // Show circles only at yearly intervals and endpoints
+                const showDot = (i % 12 === 0 && i !== 12) || i === 0 || i === chartData.length - 1;
+                if (showDot && d.monthIndex !== 0) {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', x);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', '4');
+                    circle.setAttribute('fill', '#4ade80');
+                    svg.appendChild(circle);
+                }
 
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 rect.setAttribute('x', x - 20);
