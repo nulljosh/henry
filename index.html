@@ -324,7 +324,7 @@
             <div class="collapsible-content" id="cryptoContent">
                 <div class="stocks-section" style="border-top: none; padding-top: 0;">
                     <div style="background: linear-gradient(135deg, #f0e7ff 0%, #e0d7ff 100%); border-radius: 12px; padding: 16px; margin: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
-                        <div style="font-weight: 600; color: #7c3aed; font-size: 14px;">Crypto targets by Q1 2026 (not holdings)</div>
+                        <div style="font-weight: 600; color: #7c3aed; font-size: 14px;">Moderately bullish 2030 targets (not holdings)</div>
                     </div>
                     <div class="crypto-list" style="margin: 0 20px 20px 20px;">
                         <!-- Crypto cards will be dynamically rendered here -->
@@ -457,8 +457,8 @@
                 });
             }
 
-            // Generate future data (from 1 to 24)
-            for (let i = 1; i <= 24; i++) {
+            // Generate future data (from 1 to 60 months = 5 years to 2030)
+            for (let i = 1; i <= 60; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
                 chartData.push({
@@ -620,9 +620,9 @@
                 svg.appendChild(currentLabel);
             }
 
-            // Add month labels (every 6 months for better spacing)
+            // Add month labels (every 12 months for better spacing with longer timeline)
             chartData.forEach((d, i) => {
-                if (i % 6 === 0 || d.monthIndex === 0) {
+                if (i % 12 === 0 || d.monthIndex === 0) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', 80 + (i * 860/(chartData.length-1)));
                     text.setAttribute('y', labelY);
@@ -685,9 +685,9 @@
 
         // Crypto watchlist (not holdings, just tracking)
         const cryptos = {
-            'bitcoin': { symbol: 'BTC', current: 108564, change24h: 0, target: 200000, year: 'Q1 2026' },
-            'ethereum': { symbol: 'ETH', current: 3893.65, change24h: 0, target: 7000, year: 'Q1 2026' },
-            'solana': { symbol: 'SOL', current: 187.75, change24h: 0, target: 350, year: 'Q1 2026' }
+            'bitcoin': { symbol: 'BTC', current: 108564, change24h: 0, target: 500000, year: '2030' },
+            'ethereum': { symbol: 'ETH', current: 3893.65, change24h: 0, target: 15000, year: '2030' },
+            'solana': { symbol: 'SOL', current: 187.75, change24h: 0, target: 800, year: '2030' }
         };
 
         // Calculate portfolio values
