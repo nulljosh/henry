@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Spreadsheet</title>
+    <title>Marlin - Portfolio Tracker</title>
+    <meta name="description" content="Personal portfolio and budget management system tracking $884 → $2,190 goal by 2030">
+    <meta property="og:title" content="Marlin - Portfolio Tracker">
+    <meta property="og:description" content="Portfolio tracking with 2030 price targets">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -253,15 +257,15 @@
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3);">
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('progressValue').textContent)" title="Click to copy">
                         <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">12.7%</div>
                         <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
                     </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3);">
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('monthlyTarget').textContent)" title="Click to copy">
                         <div id="monthlyTarget" style="font-size: 18px; font-weight: 600; color: #93c5fd;">$417</div>
                         <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Target</div>
                     </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(196, 181, 253, 0.3);">
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(196, 181, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('monthlySurplus').textContent)" title="Click to copy">
                         <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #c4b5fd;">-$69</div>
                         <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Surplus</div>
                     </div>
@@ -733,16 +737,44 @@
 
         function showTooltip(index, data, event) {
             const tooltip = document.getElementById('tooltip');
+            const goal = get('Goal');
+            const hoverProgress = ((data.val / goal) * 100).toFixed(1);
             tooltip.innerHTML = `
                 <div style="font-weight: 600; font-size: 11px; opacity: 0.7;">${data.month}</div>
                 <div style="color: #059669; font-weight: 600; font-size: 14px;">$${Math.round(data.val).toLocaleString()}</div>
+                <div style="font-size: 10px; opacity: 0.6; margin-top: 2px;">${hoverProgress}% of goal</div>
             `;
             tooltip.style.display = 'block';
+
+            // Update progress card during hover
+            document.getElementById('progressValue').textContent = `${hoverProgress}%`;
         }
 
         function hideTooltip() {
             document.getElementById('tooltip').style.display = 'none';
+            // Reset progress to current actual value
+            const progress = (get('Wallet / Savings') / get('Goal') * 100).toFixed(1);
+            document.getElementById('progressValue').textContent = `${progress}%`;
         }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Brief visual feedback
+                const el = event.target.closest('div');
+                const orig = el.style.transform;
+                el.style.transform = 'scale(0.95)';
+                setTimeout(() => el.style.transform = orig, 100);
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            if (e.key === 'd' || e.key === 'D') toggleDarkMode();
+            if (e.key === 'b' || e.key === 'B') toggleBudget();
+            if (e.key === 'p' || e.key === 'P') togglePortfolio();
+            if (e.key === 'c' || e.key === 'C') toggleCrypto();
+        });
 
         function updateValue(index, value) {
             const cleanValue = parseFloat(value.replace(/,/g, '')) || 0;
