@@ -4,7 +4,7 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Total**: $1,181 USD (~$1,618 CAD)
+**Total**: $797 USD (~$1,178 CAD)
 
 ### Accounts
 - **Vacation Fund** (Chequing): $91.54 USD
