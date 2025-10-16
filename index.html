@@ -291,7 +291,7 @@
                 <div class="stocks-section" style="border-top: none; padding-top: 0;">
                     <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; margin-top: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="font-weight: 600; color: #059669; font-size: 14px;">Avg +78% upside by 2027-2028</div>
+                            <div style="font-weight: 600; color: #059669; font-size: 14px;">Moderately bullish 2030 targets</div>
                             <select id="sortBy">
                                 <option value="gain">By Potential %</option>
                                 <option value="price">By Price</option>
@@ -383,12 +383,13 @@
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
             { category: 'Goal', amount: 2190, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 797, type: 'asset' },
+            { category: 'Wallet / Savings', amount: 884, type: 'asset' },
             { category: 'iPhone Sale (One-time)', amount: 584, type: 'one-time' },
             { category: 'Potential Income', amount: 1267, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Food', amount: 290, type: 'expense' },
             { category: 'iPhone (Monthly)', amount: 77, type: 'expense' },
+            { category: 'Apple Watch Ultra 3 (Monthly)', amount: 33, type: 'expense' },
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
@@ -401,7 +402,7 @@
 
         function calculateSurplus() {
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
+            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Apple Watch Ultra 3 (Monthly)') + get('Claude');
             return income - totalExpenses;
         }
 
@@ -673,13 +674,12 @@
 
         // Stock data (your actual portfolio)
         const stocks = {
-            'PLTR': { current: 179.27, target: 450, year: 2028, shares: 0.5264 },
-            'HOOD': { current: 133.40, target: 300, year: 2027, shares: 0.5409 },
-            'GOOGL': { current: 252.91, target: 500, year: 2028, shares: 0.326 },
-            'NVDA': { current: 181.61, target: 300, year: 2027, shares: 0.9551 },
-            'APP': { current: 603.95, target: 1000, year: 2027, shares: 0.1217 },
-            'AAPL': { current: 247.38, target: 350, year: 2027, shares: 0.3042 },
-            'IAU': { current: 80.70, target: 180, year: 2030, shares: 1.6506 },
+            'PLTR': { current: 179.27, target: 550, year: 2030, shares: 0.5264 },
+            'HOOD': { current: 133.40, target: 250, year: 2030, shares: 0.5409 },
+            'GOOGL': { current: 252.91, target: 450, year: 2030, shares: 0.326 },
+            'APP': { current: 603.95, target: 1200, year: 2030, shares: 0.1217 },
+            'AAPL': { current: 247.38, target: 450, year: 2030, shares: 0.3042 },
+            'IAU': { current: 80.70, target: 180, year: 2030, shares: 0.0372 },
             'SLV': { current: 49.15, target: 150, year: 2030, shares: 0.5251 }
         };
 
@@ -866,7 +866,7 @@
             const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
 
             // Analyze portfolio composition
-            const techStocks = ['PLTR', 'NVDA', 'GOOGL', 'AAPL', 'APP', 'HOOD'];
+            const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'APP', 'HOOD'];
             const techExposure = Object.entries(stocks)
                 .filter(([sym]) => techStocks.includes(sym))
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
@@ -912,7 +912,7 @@
 
                 <div>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                        Market volatility ahead due to Q4 earnings season and macro uncertainty. Focus DCA on highest-conviction positions (PLTR, APP). Maintain 10-15% metals allocation as hedge. Consider trimming underperformers if they lag benchmark by >20%. AI infrastructure (NVDA) remains strong long-term despite near-term consolidation.
+                        Market volatility ahead due to Q4 earnings season and macro uncertainty. Focus DCA on highest-conviction tech positions (PLTR, APP, AAPL). Silver (SLV) provides downside hedge with potential 2030 upside. Consider rebalancing into underweight positions when opportunities arise. Watch for quality entry points in high-growth names.
                     </p>
                 </div>
             `;
