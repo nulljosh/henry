@@ -294,6 +294,7 @@
                             <div style="font-weight: 600; color: #059669; font-size: 14px;">Moderately bullish 2030 targets</div>
                             <select id="sortBy">
                                 <option value="gain">By Potential %</option>
+                                <option value="holdings">By Holdings (Amount)</option>
                                 <option value="price">By Price</option>
                                 <option value="alpha">By Ticker</option>
                             </select>
@@ -790,6 +791,11 @@
                     const gA = ((a[1].target - a[1].current) / a[1].current) * 100;
                     const gB = ((b[1].target - b[1].current) / b[1].current) * 100;
                     return gB - gA;
+                }
+                if (sortBy === 'holdings') {
+                    const holdingA = a[1].current * a[1].shares;
+                    const holdingB = b[1].current * b[1].shares;
+                    return holdingB - holdingA;
                 }
                 if (sortBy === 'price') return b[1].current - a[1].current;
                 if (sortBy === 'alpha') return a[0].localeCompare(b[0]);
