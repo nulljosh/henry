@@ -110,6 +110,12 @@
         }
         .tooltip { position: absolute; background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; box-shadow: var(--shadow-md); z-index: 20; display: none; font-size: 12px; color: var(--text-primary); pointer-events: none; transition: all 0.15s ease; }
 
+        /* Loading skeleton */
+        .skeleton { background: linear-gradient(90deg, var(--input-bg) 25%, var(--input-hover) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; border-radius: 6px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-row { height: 58px; margin-bottom: 8px; border-radius: 10px; }
+        .skeleton-chart { height: 320px; border-radius: 12px; }
+
         .stocks-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
         .stock-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
         .stock-row { background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, box-shadow; contain: layout style paint; }
@@ -324,7 +330,14 @@
                     </div>
 
                     <div class="stock-list">
-                        <!-- Stock rows will be dynamically rendered here -->
+                        <!-- Loading skeletons -->
+                        <div class="skeleton skeleton-row"></div>
+                        <div class="skeleton skeleton-row"></div>
+                        <div class="skeleton skeleton-row"></div>
+                        <div class="skeleton skeleton-row"></div>
+                        <div class="skeleton skeleton-row"></div>
+                        <div class="skeleton skeleton-row"></div>
+                        <div class="skeleton skeleton-row"></div>
                     </div>
                 </div>
             </div>
@@ -339,7 +352,10 @@
                         <div style="font-weight: 600; color: #7c3aed; font-size: 14px;">Moderately bullish 2030 targets (not holdings)</div>
                     </div>
                     <div class="crypto-list" style="margin: 0 20px 20px 20px;">
-                        <!-- Crypto cards will be dynamically rendered here -->
+                        <!-- Loading skeletons -->
+                        <div class="skeleton skeleton-row" style="margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-row" style="margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-row" style="margin-bottom: 8px;"></div>
                     </div>
                 </div>
             </div>
@@ -911,7 +927,7 @@
         }
 
         // Sort and render stock rows
-        function renderCards() {
+        function renderCards(isInitial = false) {
             const sortBy = document.getElementById('sortBy').value;
             const sorted = Object.entries(stocks).sort((a, b) => {
                 if (sortBy === 'gain') {
@@ -929,7 +945,13 @@
             });
 
             const list = document.querySelector('.stock-list');
-            list.innerHTML = sorted.map(([sym, s]) => {
+
+            // Fade out skeletons if initial render
+            if (isInitial) {
+                const skeletons = list.querySelectorAll('.skeleton');
+                skeletons.forEach(s => s.style.opacity = '0');
+                setTimeout(() => {
+                    list.innerHTML = sorted.map(([sym, s]) => {
                 const gain = Math.round(((s.target - s.current) / s.current) * 100);
                 const currentValue = (s.current * s.shares).toFixed(2);
                 return `<div class="stock-row">
@@ -941,20 +963,55 @@
                         <div class="stock-gain">+${gain}%</div>
                     </a>
                 </div>`;
-            }).join('');
-
-            // Update portfolio values after rendering
-            updatePortfolioDisplay();
+                    }).join('');
+                    updatePortfolioDisplay();
+                }, 300);
+            } else {
+                list.innerHTML = sorted.map(([sym, s]) => {
+                    const gain = Math.round(((s.target - s.current) / s.current) * 100);
+                    const currentValue = (s.current * s.shares).toFixed(2);
+                    return `<div class="stock-row">
+                        <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">
+                            <div class="stock-left">
+                                <div class="stock-symbol">${sym}</div>
+                                <div class="stock-prices">${s.shares} shares • $${s.current.toLocaleString()} → $${s.target.toLocaleString()} (${s.year})</div>
+                            </div>
+                            <div class="stock-gain">+${gain}%</div>
+                        </a>
+                    </div>`;
+                }).join('');
+                updatePortfolioDisplay();
+            }
         }
 
         // Render crypto cards
-        function renderCryptoCards() {
+        function renderCryptoCards(isInitial = false) {
             const list = document.querySelector('.crypto-list');
             if (!list) return;
 
             const sorted = Object.entries(cryptos).sort((a, b) => b[1].current - a[1].current);
 
-            list.innerHTML = sorted.map(([id, crypto]) => {
+            if (isInitial) {
+                const skeletons = list.querySelectorAll('.skeleton');
+                skeletons.forEach(s => s.style.opacity = '0');
+                setTimeout(() => {
+                    list.innerHTML = sorted.map(([id, crypto]) => {
+                        const gain = Math.round(((crypto.target - crypto.current) / crypto.current) * 100);
+                        const price = crypto.current > 0 ? `$${crypto.current.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'Loading...';
+                        const target = `$${crypto.target.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+                        return `<div class="stock-row" style="margin-bottom: 8px;">
+                            <a href="https://www.coingecko.com/en/coins/${id}" target="_blank">
+                                <div class="stock-left">
+                                    <div class="stock-symbol">${crypto.symbol}</div>
+                                    <div class="stock-prices">${price} → ${target} (${crypto.year})</div>
+                                </div>
+                                <div class="stock-gain">+${gain}%</div>
+                            </a>
+                        </div>`;
+                    }).join('');
+                }, 300);
+            } else {
+                list.innerHTML = sorted.map(([id, crypto]) => {
                 const gain = Math.round(((crypto.target - crypto.current) / crypto.current) * 100);
                 const price = crypto.current > 0 ? `$${crypto.current.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'Loading...';
                 const target = `$${crypto.target.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
@@ -968,7 +1025,8 @@
                         <div class="stock-gain">+${gain}%</div>
                     </a>
                 </div>`;
-            }).join('');
+                }).join('');
+            }
         }
 
         // Toggle sections
@@ -1055,12 +1113,12 @@
 
         // Initialize
         updateAll();
-        renderCards();
-        renderCryptoCards();
+        renderCards(true);
+        renderCryptoCards(true);
         updatePrices();
         generateAIInsights();
         setInterval(updatePrices, 5 * 60 * 1000); // Update every 5 minutes (avoids rate limits)
-        document.getElementById('sortBy').addEventListener('change', renderCards);
+        document.getElementById('sortBy').addEventListener('change', () => renderCards(false));
 
         // Auto-open portfolio on mobile
         if (window.innerWidth <= 480) {
