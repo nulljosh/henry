@@ -443,6 +443,8 @@
             const surplus = calculateSurplus();
             const monthsAgo = 24; // Start from 24 months ago for better centering
 
+            let previousValue = 0;
+
             // Generate past data (from -24 to 0) - started from $0 in Oct 2024
             for (let i = -monthsAgo; i <= 0; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
@@ -462,6 +464,10 @@
                     val = 0;
                 }
 
+                // Ensure monotonic increase - never go down
+                val = Math.max(val, previousValue);
+                previousValue = val;
+
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
                     val: val,
@@ -473,9 +479,15 @@
             for (let i = 1; i <= 48; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
+
+                let val = projectValue(i);
+                // Ensure monotonic increase - never go down
+                val = Math.max(val, previousValue);
+                previousValue = val;
+
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
-                    val: projectValue(i),
+                    val: val,
                     monthIndex: i
                 });
             }
