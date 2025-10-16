@@ -640,15 +640,16 @@
                     line.setAttribute('opacity', pct === 1.0 ? '0.4' : '0.2');
                     svg.appendChild(line);
 
-                    // Small label
+                    // Milestone label
                     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    label.setAttribute('x', pct === 1.0 ? '965' : '65');
-                    label.setAttribute('y', milestoneY - 4);
+                    label.setAttribute('x', pct === 1.0 ? '958' : '68');
+                    label.setAttribute('y', milestoneY - 6);
                     label.setAttribute('text-anchor', pct === 1.0 ? 'end' : 'start');
-                    label.setAttribute('font-size', '10');
-                    label.setAttribute('font-weight', '600');
+                    label.setAttribute('font-size', '12');
+                    label.setAttribute('font-weight', '700');
                     label.setAttribute('fill', pct === 1.0 ? '#059669' : textColor);
-                    label.setAttribute('opacity', '0.6');
+                    label.setAttribute('opacity', pct === 1.0 ? '0.8' : '0.7');
+                    label.setAttribute('letter-spacing', '0.5');
                     label.textContent = pct === 1.0 ? 'GOAL' : `${pct * 100}%`;
                     svg.appendChild(label);
                 }
