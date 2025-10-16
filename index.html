@@ -428,11 +428,12 @@
         function projectValue(months) {
             const r = 0.01; // Individual stocks: 1.0% monthly (12.7% annual)
             const surplus = calculateSurplus();
-            
+
             const fv = get('Wallet / Savings') * Math.pow(1 + r, months);
             const annuity = surplus * ((Math.pow(1 + r, months) - 1) / r);
-            
-            return fv + annuity;
+
+            // Ensure the line never goes down - minimum is compound growth on existing balance
+            return Math.max(fv, fv + annuity);
         }
 
         function generateChartData() {
