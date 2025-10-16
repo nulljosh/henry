@@ -97,12 +97,14 @@
         .chart-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
         .chart-container { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; }
         .chart { width: 100%; height: 320px; max-width: 100%; contain: layout style; }
+        .chart .main-line { animation: drawLine 1.5s ease-out forwards; stroke-dasharray: 2400; stroke-dashoffset: 2400; }
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
 
         /* Performance optimizations */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
-        .tooltip { position: absolute; top: 8px; left: 8px; background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; box-shadow: var(--shadow-md); z-index: 20; display: none; font-size: 14px; color: var(--text-primary); }
+        .tooltip { position: absolute; background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; box-shadow: var(--shadow-md); z-index: 20; display: none; font-size: 12px; color: var(--text-primary); pointer-events: none; transition: all 0.15s ease; }
 
         .stocks-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
         .stock-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
@@ -545,7 +547,7 @@
 
             svg.innerHTML = '';
 
-            // Add grid lines
+            // Add grid lines and Y-axis labels (both sides)
             for (let i = 0; i <= 4; i++) {
                 const y = marginTop + (i * chartHeight / 4);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -557,19 +559,31 @@
                 line.setAttribute('stroke-width', '1');
                 svg.appendChild(line);
 
-                // Add Y-axis labels
                 const val = maxVal - (i * (maxVal - minVal) / 4);
-                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', '50');
-                label.setAttribute('y', y + 4);
-                label.setAttribute('text-anchor', 'end');
-                label.setAttribute('font-size', '11');
-                label.setAttribute('fill', textColor);
-                label.textContent = '$' + Math.round(val).toLocaleString();
-                svg.appendChild(label);
+
+                // Left Y-axis label
+                const labelLeft = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                labelLeft.setAttribute('x', '50');
+                labelLeft.setAttribute('y', y + 4);
+                labelLeft.setAttribute('text-anchor', 'end');
+                labelLeft.setAttribute('font-size', '11');
+                labelLeft.setAttribute('fill', textColor);
+                labelLeft.textContent = '$' + Math.round(val).toLocaleString();
+                svg.appendChild(labelLeft);
+
+                // Right Y-axis label
+                const labelRight = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                labelRight.setAttribute('x', '970');
+                labelRight.setAttribute('y', y + 4);
+                labelRight.setAttribute('text-anchor', 'start');
+                labelRight.setAttribute('font-size', '11');
+                labelRight.setAttribute('fill', textColor);
+                labelRight.textContent = '$' + Math.round(val).toLocaleString();
+                svg.appendChild(labelRight);
             }
 
             const bottomY = marginTop + chartHeight;
+            const goal = get('Goal');
 
             // Create polyline
             const points = chartData.map((d, i) => `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight}`).join(' ');
@@ -578,7 +592,50 @@
             polyline.setAttribute('fill', 'none');
             polyline.setAttribute('stroke', '#4ade80');
             polyline.setAttribute('stroke-width', '3');
+            polyline.setAttribute('class', 'main-line');
             svg.appendChild(polyline);
+
+            // Add hover highlight circle
+            const hoverCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            hoverCircle.setAttribute('r', '6');
+            hoverCircle.setAttribute('fill', '#4ade80');
+            hoverCircle.setAttribute('stroke', 'white');
+            hoverCircle.setAttribute('stroke-width', '2');
+            hoverCircle.setAttribute('opacity', '0');
+            hoverCircle.setAttribute('id', 'hoverCircle');
+            svg.appendChild(hoverCircle);
+
+            // Add milestone markers (25%, 50%, 75%, 100% of goal)
+            [0.25, 0.5, 0.75, 1.0].forEach(pct => {
+                const milestoneVal = goal * pct;
+                if (milestoneVal >= minVal && milestoneVal <= maxVal) {
+                    const milestoneY = bottomY - ((milestoneVal - minVal) / (maxVal - minVal)) * chartHeight;
+
+                    // Subtle dashed line
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', '60');
+                    line.setAttribute('y1', milestoneY);
+                    line.setAttribute('x2', '960');
+                    line.setAttribute('y2', milestoneY);
+                    line.setAttribute('stroke', pct === 1.0 ? '#059669' : '#86868b');
+                    line.setAttribute('stroke-width', '1');
+                    line.setAttribute('stroke-dasharray', '4,4');
+                    line.setAttribute('opacity', pct === 1.0 ? '0.4' : '0.2');
+                    svg.appendChild(line);
+
+                    // Small label
+                    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    label.setAttribute('x', pct === 1.0 ? '965' : '65');
+                    label.setAttribute('y', milestoneY - 4);
+                    label.setAttribute('text-anchor', pct === 1.0 ? 'end' : 'start');
+                    label.setAttribute('font-size', '10');
+                    label.setAttribute('font-weight', '600');
+                    label.setAttribute('fill', pct === 1.0 ? '#059669' : textColor);
+                    label.setAttribute('opacity', '0.6');
+                    label.textContent = pct === 1.0 ? 'GOAL' : `${pct * 100}%`;
+                    svg.appendChild(label);
+                }
+            });
 
             // Add circles and hover areas for all months
             chartData.forEach((d, i) => {
@@ -603,8 +660,20 @@
                 rect.setAttribute('height', hoverHeight);
                 rect.setAttribute('fill', 'transparent');
                 rect.style.cursor = 'pointer';
-                rect.addEventListener('mouseenter', () => showTooltip(i, d));
-                rect.addEventListener('mouseleave', hideTooltip);
+                rect.addEventListener('mouseenter', () => {
+                    showTooltip(i, d);
+                    const hoverCircle = document.getElementById('hoverCircle');
+                    if (hoverCircle) {
+                        hoverCircle.setAttribute('cx', x);
+                        hoverCircle.setAttribute('cy', y);
+                        hoverCircle.setAttribute('opacity', '1');
+                    }
+                });
+                rect.addEventListener('mouseleave', () => {
+                    hideTooltip();
+                    const hoverCircle = document.getElementById('hoverCircle');
+                    if (hoverCircle) hoverCircle.setAttribute('opacity', '0');
+                });
                 svg.appendChild(rect);
             });
 
@@ -649,12 +718,11 @@
             });
         }
 
-        function showTooltip(index, data) {
+        function showTooltip(index, data, event) {
             const tooltip = document.getElementById('tooltip');
             tooltip.innerHTML = `
-                <div style="font-weight: 500;">${data.month}</div>
-                <div style="color: #059669;">$${Math.round(data.val).toLocaleString()}</div>
-                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Mixed portfolio projection</div>
+                <div style="font-weight: 600; font-size: 11px; opacity: 0.7;">${data.month}</div>
+                <div style="color: #059669; font-weight: 600; font-size: 14px;">$${Math.round(data.val).toLocaleString()}</div>
             `;
             tooltip.style.display = 'block';
         }
