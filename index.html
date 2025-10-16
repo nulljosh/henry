@@ -648,30 +648,20 @@
                     line.setAttribute('opacity', pct === 1.0 ? '0.4' : '0.2');
                     svg.appendChild(line);
 
-                    // Background for label (better contrast)
-                    if (pct !== 1.0) {
-                        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                        bg.setAttribute('x', '62');
-                        bg.setAttribute('y', milestoneY - 22);
-                        bg.setAttribute('width', '42');
-                        bg.setAttribute('height', '20');
-                        bg.setAttribute('fill', isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)');
-                        bg.setAttribute('rx', '4');
-                        svg.appendChild(bg);
+                    // Only show label for GOAL (100%)
+                    if (pct === 1.0) {
+                        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        label.setAttribute('x', '958');
+                        label.setAttribute('y', milestoneY - 6);
+                        label.setAttribute('text-anchor', 'end');
+                        label.setAttribute('font-size', '12');
+                        label.setAttribute('font-weight', '700');
+                        label.setAttribute('fill', '#059669');
+                        label.setAttribute('opacity', '0.8');
+                        label.setAttribute('letter-spacing', '0.5');
+                        label.textContent = 'GOAL';
+                        svg.appendChild(label);
                     }
-
-                    // Milestone label
-                    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    label.setAttribute('x', pct === 1.0 ? '958' : '83');
-                    label.setAttribute('y', milestoneY - 8);
-                    label.setAttribute('text-anchor', pct === 1.0 ? 'end' : 'middle');
-                    label.setAttribute('font-size', pct === 1.0 ? '12' : '16');
-                    label.setAttribute('font-weight', '700');
-                    label.setAttribute('fill', pct === 1.0 ? '#059669' : (isDark ? '#f5f5f7' : '#1d1d1f'));
-                    label.setAttribute('opacity', '1');
-                    label.setAttribute('letter-spacing', '0.5');
-                    label.textContent = pct === 1.0 ? 'GOAL' : `${pct * 100}%`;
-                    svg.appendChild(label);
                 }
             });
 
