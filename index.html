@@ -438,9 +438,9 @@
             const r = 0.01; // 1.0% monthly growth rate (12.7% annual)
             const currentValue = get('Wallet / Savings');
             const surplus = calculateSurplus();
-            const monthsAgo = 12; // Start from 12 months ago (Oct 2024)
+            const monthsAgo = 24; // Start from 24 months ago for better centering
 
-            // Generate past data (from -12 to 0) - started from $0 in Oct 2024
+            // Generate past data (from -24 to 0) - started from $0 in Oct 2024
             for (let i = -monthsAgo; i <= 0; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
@@ -449,11 +449,14 @@
                 if (i === 0) {
                     // At NOW, show the actual current wallet balance
                     val = currentValue;
-                } else {
+                } else if (i >= -12) {
                     // Linear growth from $0 (Oct 2024) to current value (now)
-                    // monthsElapsed goes from 0 to 12 as i goes from -12 to 0
-                    const monthsElapsed = monthsAgo + i;
-                    val = (currentValue / monthsAgo) * monthsElapsed;
+                    // Only show growth for the last 12 months
+                    const monthsElapsed = 12 + (i + 12);
+                    val = (currentValue / 12) * monthsElapsed;
+                } else {
+                    // Before Oct 2024, show $0
+                    val = 0;
                 }
 
                 chartData.push({
@@ -463,8 +466,8 @@
                 });
             }
 
-            // Generate future data (from 1 to 60 months = 5 years to 2030)
-            for (let i = 1; i <= 60; i++) {
+            // Generate future data (from 1 to 48 months to balance the view)
+            for (let i = 1; i <= 48; i++) {
                 const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
                 const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
                 chartData.push({
