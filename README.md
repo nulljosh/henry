@@ -1,4 +1,4 @@
-# [Marlin](https://heyitsmejosh.com/marlin)
+# [Henry](https://heyitsmejosh.com/henry)
 
 A fund/portfolio management system for tracking investments and performance.
 
@@ -36,7 +36,7 @@ A fund/portfolio management system for tracking investments and performance.
 - Performance metrics and reporting
 - Fund management capabilities
 - Investment data visualization
-- [Bitcoin](https://heyitsmejosh.com/marlin/bitcoin)
+- [Bitcoin](https://heyitsmejosh.com/henry/bitcoin)
 
 ## Usage
 
