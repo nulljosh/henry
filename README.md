@@ -4,27 +4,27 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Holdings Value**: $110.82 USD
+**Holdings Value**: $111.39 USD
 **Cash**: $723 USD
-**Total Liquid**: $833.82 USD (Target: $2,190)
+**Total Liquid**: $834.39 USD (Target: $2,190)
 
 ### Holdings (3 stocks + watchlist)
 
 | Ticker | Shares | Price | Value | Target | Return |
 |--------|--------|-------|-------|--------|--------|
-| AAPL | 0.3042 | $262.48 | $79.74 | $450 | +71.4% |
-| HOOD | 0.0229 | $129.91 | $2.97 | $250 | +92.5% |
-| SLV | 0.5251 | $47.72 | $25.05 | $150 | +218.2% |
-| IAU | 0.0371 | $82.50 | $3.06 | $180 | +118.2% |
+| AAPL | 0.3042 | $263.52 | $80.16 | $450 | +70.8% |
+| HOOD | 0.0229 | $135.81 | $3.11 | $250 | +84.1% |
+| SLV | 0.5251 | $47.72 | $25.06 | $150 | +214.3% |
+| IAU | 0.0371 | $82.48 | $3.06 | $180 | +118.2% |
 
 ### Watchlist (Target 2030)
 
 | Ticker | Price | Target | Return |
 |--------|-------|--------|--------|
-| APP | $605 | $1,000 | +65.3% |
-| AMZN | $213.04 | $260 | +22.0% |
+| APP | $565.94 | $1,000 | +76.7% |
+| AMZN | $222.39 | $260 | +16.9% |
 
-*Last updated: Oct 20, 2025*
+*Last updated: Oct 21, 2025*
 
 ## Features
 
