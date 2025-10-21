@@ -4,16 +4,20 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Holdings Value**: $83.27 USD
-**Cash**: $751 USD (pending screenshot confirmation)
-**Total Liquid**: $834.27 USD (Target: $2,190)
+**TFSA Stock Holdings**: $406 USD
+**TFSA Cash**: $350 USD
+**Vacation Savings**: $1,060 USD
+**Total Liquid**: $1,816 USD (Target: $2,190) - **82.9% to goal!**
 
-### Holdings (2 stocks)
+### TFSA Holdings (5 stocks)
 
 | Ticker | Shares | Price | Value | Target | Return |
 |--------|--------|-------|-------|--------|--------|
-| AAPL | 0.3042 | $263.52 | $80.16 | $450 | +70.8% |
-| HOOD | 0.0229 | $135.81 | $3.11 | $250 | +84.1% |
+| SPY | 0.2441 | $672.04 | $164.03 | $1,100 | +63.7% |
+| AAPL | 0.3453 | $263.52 | $91.00 | $450 | +70.8% |
+| PLTR | 0.4461 | $181.59 | $81.00 | $350 | +92.7% |
+| HOOD | 0.2724 | $135.81 | $37.00 | $250 | +84.1% |
+| NVDA | 0.1807 | $182.64 | $33.00 | $400 | +119.0% |
 
 ### Watchlist (Target 2030)
 
