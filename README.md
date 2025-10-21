@@ -4,25 +4,27 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Total**: $884 USD (~$1,211 CAD)
+**Holdings Value**: $110.82 USD
+**Cash**: $723 USD
+**Total Liquid**: $833.82 USD (Target: $2,190)
 
-### Accounts
-- **Vacation Fund** (Chequing): $67 USD ($91.54 CAD)
-- **TFSA**: $817 USD (~$1,119 CAD)
+### Holdings (3 stocks + watchlist)
 
-### Holdings (7 stocks)
+| Ticker | Shares | Price | Value | Target | Return |
+|--------|--------|-------|-------|--------|--------|
+| AAPL | 0.3042 | $262.48 | $79.74 | $450 | +71.4% |
+| HOOD | 0.0229 | $129.91 | $2.97 | $250 | +92.5% |
+| SLV | 0.5251 | $47.72 | $25.05 | $150 | +218.2% |
+| IAU | 0.0371 | $82.50 | $3.06 | $180 | +118.2% |
 
-| Ticker | Shares | Value | Return |
-|--------|--------|-------|--------|
-| PLTR | 0.5264 | $94.35 | +6.03% |
-| GOOGL | 0.326 | $82.45 | +6.86% |
-| AAPL | 0.3042 | $75.25 | +2.82% |
-| APP | 0.1217 | $73.51 | +19.30% |
-| HOOD | 0.5409 | $72.16 | +14.20% |
-| IAU | 0.0372 | $3.00 | - |
-| SLV | 0.5251 | $25.81 | +2.01% |
+### Watchlist (Target 2030)
 
-*Last updated: Oct 16, 2025*
+| Ticker | Price | Target | Return |
+|--------|-------|--------|--------|
+| APP | $605 | $1,000 | +65.3% |
+| AMZN | $213.04 | $260 | +22.0% |
+
+*Last updated: Oct 20, 2025*
 
 ## Features
 

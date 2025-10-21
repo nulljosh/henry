@@ -407,7 +407,7 @@
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
             { category: 'Goal', amount: 2190, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 723, type: 'asset' },
+            { category: 'Wallet / Savings', amount: 700, type: 'asset' },
             { category: 'iPhone Sale (One-time)', amount: 584, type: 'one-time' },
             { category: 'Potential Income', amount: 1267, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
@@ -812,18 +812,19 @@
 
         // Stock data (your actual portfolio)
         const stocks = {
-            'AAPL': { current: 252.50, target: 450, year: 2030, shares: 0.3042 },
-            'AMZN': { current: 215.18, target: 260, year: 2026, shares: 0 },
-            'HOOD': { current: 131.20, target: 250, year: 2030, shares: 0.0229 },
-            'IAU': { current: 80.10, target: 180, year: 2030, shares: 0.0371 },
-            'SLV': { current: 47.04, target: 150, year: 2030, shares: 0.5251 }
+            'AAPL': { current: 262.48, target: 450, year: 2030, shares: 0.3042 },
+            'AMZN': { current: 213.04, target: 260, year: 2026, shares: 0 },
+            'APP': { current: 605, target: 1000, year: 2030, shares: 0.0132 },
+            'HOOD': { current: 129.91, target: 250, year: 2030, shares: 0.0229 },
+            'IAU': { current: 82.50, target: 180, year: 2030, shares: 0.0371 },
+            'SLV': { current: 47.72, target: 150, year: 2030, shares: 0.5251 }
         };
 
         // Crypto watchlist (not holdings, just tracking)
         const cryptos = {
-            'bitcoin': { symbol: 'BTC', current: 108191, change24h: 0, target: 500000, year: '2030' },
-            'ethereum': { symbol: 'ETH', current: 3867.77, change24h: 0, target: 15000, year: '2030' },
-            'solana': { symbol: 'SOL', current: 184.15, change24h: 0, target: 800, year: '2030' }
+            'bitcoin': { symbol: 'BTC', current: 107816, change24h: -2.76, target: 500000, year: '2030' },
+            'ethereum': { symbol: 'ETH', current: 3872.76, change24h: -4.63, target: 15000, year: '2030' },
+            'solana': { symbol: 'SOL', current: 183.91, change24h: -4.52, target: 800, year: '2030' }
         };
 
         // Calculate portfolio values
@@ -1087,15 +1088,22 @@
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Best Opportunities</strong>
+                    <strong style="color: #7c3aed; font-size: 14px;">Allocation Strategy ($500 Cash)</strong>
                     <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        ${topOpportunities.slice(0, 3).map(s => `<strong>${s.sym}</strong> +${s.upside}%`).join(' • ')}
+                        <strong>SPY</strong> $200 (40%) – Golden cross, broad market hedge, trend confirmed. <strong>QQQ</strong> $100 (20%) – Tech exposure, solid uptrend. <strong>AMZN</strong> $100 (20%) – Golden cross + neutral RSI, best entry setup. <strong>HOOD</strong> $50 (10%) – Oversold dip from $153.86, momentum play. <strong>BTC</strong> $50 (10%) – Healthy correction, support at $100k.
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed; font-size: 14px;">Technical Signals</strong>
+                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                        <strong>Bullish:</strong> SPY golden cross near ATH, QQQ strong year (+21.65% YTD), BTC consolidating healthily. <strong>Caution:</strong> IAU/SLV RSI 81 (overbought, expect 5-10% pullback), AAPL at ATH with RSI 71, APP showing death cross. <strong>Avoid:</strong> ETH/SOL weak relative strength vs BTC.
                     </p>
                 </div>
 
                 <div>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                        Market volatility ahead due to Q4 earnings season and macro uncertainty. Focus DCA on highest-conviction tech positions (PLTR, APP, AAPL). Silver (SLV) provides downside hedge with potential 2030 upside. Consider rebalancing into underweight positions when opportunities arise. Watch for quality entry points in high-growth names.
+                        Q4 macro uncertainty ahead. DCA strategy: deploy $500 across broad exposure (60% equities via SPY/QQQ) + tactical plays (AMZN swing, HOOD dip). Wait for IAU/SLV pullback before adding. BTC consolidation is healthy, not bearish—treat as long-term allocation, not timing play. Your metals hedge (SLV +218% upside, IAU +118%) provides downside protection despite current overbought conditions.
                     </p>
                 </div>
             `;
