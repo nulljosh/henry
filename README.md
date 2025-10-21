@@ -4,27 +4,31 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Holdings Value**: $110.82 USD
-**Cash**: $723 USD
-**Total Liquid**: $833.82 USD (Target: $2,190)
+**TFSA Stock Holdings**: $406 USD
+**TFSA Cash**: $350 USD
+**Vacation Savings**: $1,060 USD
+**Total Liquid**: $1,816 USD (Target: $2,190) - **82.9% to goal!**
 
-### Holdings (3 stocks + watchlist)
+### TFSA Holdings (5 stocks)
 
 | Ticker | Shares | Price | Value | Target | Return |
 |--------|--------|-------|-------|--------|--------|
-| AAPL | 0.3042 | $262.48 | $79.74 | $450 | +71.4% |
-| HOOD | 0.0229 | $129.91 | $2.97 | $250 | +92.5% |
-| SLV | 0.5251 | $47.72 | $25.05 | $150 | +218.2% |
-| IAU | 0.0371 | $82.50 | $3.06 | $180 | +118.2% |
+| SPY | 0.2441 | $672.04 | $164.03 | $1,100 | +63.7% |
+| AAPL | 0.3453 | $263.52 | $91.00 | $450 | +70.8% |
+| PLTR | 0.4461 | $181.59 | $81.00 | $350 | +92.7% |
+| HOOD | 0.2724 | $135.81 | $37.00 | $250 | +84.1% |
+| NVDA | 0.1807 | $182.64 | $33.00 | $400 | +119.0% |
 
 ### Watchlist (Target 2030)
 
 | Ticker | Price | Target | Return |
 |--------|-------|--------|--------|
-| APP | $605 | $1,000 | +65.3% |
-| AMZN | $213.04 | $260 | +22.0% |
+| APP | $565.94 | $1,000 | +76.7% |
+| AMZN | $222.39 | $260 | +16.9% |
+| IAU | $82.48 | $180 | +118.2% |
+| SLV | $47.72 | $150 | +214.3% |
 
-*Last updated: Oct 20, 2025*
+*Last updated: Oct 21, 2025*
 
 ## Features
 
