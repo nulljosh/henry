@@ -808,18 +808,18 @@
             updateSummary();
         }
 
-        // Stock data (your actual portfolio)
+        // Stock targets using 5yr CAGR quant model: Tech/growth 12-15%, Mega-cap 10-12%, Metals 7% (inflation hedge)
         const stocks = {
-            'AAPL': { current: 256.62, target: 450, year: 2030, shares: 0.346 },
-            'GOOGL': { current: 251.13, target: 350, year: 2030, shares: 0.1 },
-            'PLTR': { current: 173.458, target: 350, year: 2030, shares: 0.45 },
-            'SPY': { current: 665.72, target: 1100, year: 2030, shares: 0.2453 },
-            'HOOD': { current: 123.474, target: 250, year: 2030, shares: 0.2878 },
-            'NVDA': { current: 178.47, target: 400, year: 2030, shares: 0.1864 },
-            'AMZN': { current: 217.06, target: 260, year: 2026, shares: 0 },
-            'APP': { current: 563.62, target: 1000, year: 2030, shares: 0 },
-            'IAU': { current: 76.794, target: 180, year: 2030, shares: 0 },
-            'SLV': { current: 43.61, target: 150, year: 2030, shares: 0 }
+            'AAPL': { current: 256.62, target: 416, year: 2030, shares: 0.346 },
+            'GOOGL': { current: 251.13, target: 353, year: 2030, shares: 0.1 },
+            'PLTR': { current: 173.458, target: 395, year: 2030, shares: 0.45 },
+            'SPY': { current: 665.72, target: 1095, year: 2030, shares: 0.2453 },
+            'HOOD': { current: 123.474, target: 281, year: 2030, shares: 0.2878 },
+            'NVDA': { current: 178.47, target: 428, year: 2030, shares: 0.1864 },
+            'AMZN': { current: 217.06, target: 521, year: 2030, shares: 0 },
+            'APP': { current: 563.62, target: 1135, year: 2030, shares: 0 },
+            'IAU': { current: 76.794, target: 108, year: 2030, shares: 0 },
+            'SLV': { current: 43.61, target: 61, year: 2030, shares: 0 }
         };
 
         // Crypto watchlist (not holdings, just tracking)
