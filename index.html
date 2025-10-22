@@ -148,7 +148,44 @@
             body { width: 100vw; }
             .container { padding: 8px; width: 100%; max-width: 100vw; }
             .header { padding: 12px; gap: 8px; }
-            .chart-section { display: none; }
+
+            /* Make unified chart scrollable on mobile */
+            .portfolio-chart-section {
+                padding: 12px;
+                display: block !important;
+            }
+            .portfolio-chart-section .chart-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 12px 4px;
+            }
+            .portfolio-chart-section .chart {
+                min-width: 650px;
+                height: 240px;
+            }
+
+            /* Optimize payment scenarios for mobile - stack in 2x2 grid */
+            .payment-scenarios-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+            .payment-scenario {
+                padding: 10px !important;
+                min-width: auto !important;
+            }
+            .payment-scenario div:first-child {
+                font-size: 15px !important;
+            }
+            .payment-scenario div:last-child {
+                font-size: 11px !important;
+            }
+
+            /* Make debt info more compact on mobile */
+            #debtInput {
+                width: 90px !important;
+                font-size: 14px !important;
+            }
+
             .stocks-section { padding: 12px; }
             .table-wrapper { -webkit-overflow-scrolling: touch; width: 100%; }
             table { min-width: 100%; width: 100%; }
@@ -160,7 +197,6 @@
             .collapse-header { padding: 12px; font-size: 14px; }
             .summary-grid { grid-template-columns: 1fr; gap: 8px; }
             .card { margin-bottom: 12px; }
-            .card:first-child { display: none; }
             .stock-row { padding: 10px 12px; }
             .stock-symbol { font-size: 13px; min-width: 50px; }
             .stock-prices { font-size: 12px; }
@@ -243,9 +279,26 @@
     </div>
 
     <div class="container">
-        <div class="card" style="margin-bottom: 24px;">
-            <div class="chart-section" style="border-top: none; padding-top: 24px;">
-                <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Portfolio Growth</h3>
+        <div class="card portfolio-card" style="margin-bottom: 24px;">
+            <div class="chart-section portfolio-chart-section" style="border-top: none; padding-top: 24px;">
+                <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Financial Overview</h3>
+
+                <!-- Chart Legend -->
+                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 20px; height: 3px; background: #4ade80; border-radius: 2px;"></div>
+                        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Portfolio</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 20px; height: 3px; background: #ff9500; border-radius: 2px;"></div>
+                        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Debt</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 20px; height: 3px; background: #2563eb; border-radius: 2px;"></div>
+                        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Net Worth</span>
+                    </div>
+                </div>
+
                 <div class="chart-container">
                     <svg id="chart" viewBox="0 0 1000 300" class="chart" preserveAspectRatio="xMidYMid meet">
                         <!-- Dynamic chart content -->
@@ -262,60 +315,30 @@
                     <span class="toggle-label" id="currentIncomeLabel">($774)</span>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('progressValue').textContent)" title="Click to copy">
-                        <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">12.7%</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
-                    </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('monthlyTarget').textContent)" title="Click to copy">
-                        <div id="monthlyTarget" style="font-size: 18px; font-weight: 600; color: #93c5fd;">$417</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Target</div>
-                    </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(196, 181, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('monthlySurplus').textContent)" title="Click to copy">
-                        <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #c4b5fd;">-$69</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Surplus</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Debt Tracking Section -->
-        <div class="card" style="margin-bottom: 24px;">
-            <div class="chart-section" style="border-top: none; padding-top: 24px;">
-                <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Debt Payoff Timeline</h3>
-
                 <!-- Debt Info Card -->
-                <div style="background: linear-gradient(135deg, rgba(255, 59, 48, 0.08) 0%, rgba(255, 149, 0, 0.08) 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); border: 1px solid rgba(255, 59, 48, 0.2);">
+                <div style="background: linear-gradient(135deg, rgba(255, 59, 48, 0.08) 0%, rgba(255, 149, 0, 0.08) 100%); border-radius: 12px; padding: 16px; margin-top: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); border: 1px solid rgba(255, 59, 48, 0.2);">
                     <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
                         <div>
-                            <div style="font-weight: 600; color: #ff3b30; font-size: 14px; margin-bottom: 8px;">Current Debt Situation</div>
+                            <div style="font-weight: 600; color: #ff3b30; font-size: 14px; margin-bottom: 8px;">Current Debt</div>
                             <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
-                                Total Debt: <strong id="currentDebtAmount" style="color: var(--text-primary);">$9,000</strong><br>
-                                iPhone 15 Pro Max: <strong style="color: var(--text-primary);">2 months remaining</strong> @ $167/mo<br>
-                                iPhone 17 Pro Max: <strong style="color: var(--text-primary);">36 months total</strong> @ $130/mo<br>
-                                <span style="color: #ff9500;">⚠️ Currently carrying dual phone payments for 2 months ($297/mo total)</span><br>
-                                <span style="color: #34c759;">✓ New payment is $37/mo cheaper after overlap ends</span>
+                                Total: <strong id="currentDebtAmount" style="color: var(--text-primary);">$9,000</strong> •
+                                iPhone 15: <strong>2 months left</strong> @ $167/mo •
+                                iPhone 17: <strong>36 months</strong> @ $130/mo<br>
+                                <span style="color: #ff9500;">⚠️ Dual payments for 2 months ($297/mo)</span> •
+                                <span style="color: #34c759;">Then $37/mo savings</span>
                             </div>
                         </div>
                         <div style="text-align: right;">
                             <input type="text" id="debtInput" value="9,000"
                                    style="width: 120px; font-size: 16px; font-weight: 600; color: #ff3b30;"
                                    onchange="updateDebtAmount(this.value)">
-                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Edit total debt</div>
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Edit debt amount</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Debt Payoff Chart -->
-                <div class="chart-container">
-                    <svg id="debtChart" viewBox="0 0 1000 300" class="chart" preserveAspectRatio="xMidYMid meet">
-                        <!-- Dynamic debt chart content -->
-                    </svg>
-                    <div id="debtTooltip" class="tooltip"></div>
-                </div>
-
                 <!-- Payment Scenario Selector -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px;">
+                <div class="payment-scenarios-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px;">
                     <div class="payment-scenario" data-payment="200" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(200)">
                         <div style="font-size: 18px; font-weight: 600; color: #93c5fd;">$200/mo</div>
                         <div id="months200" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~45 months</div>
@@ -335,18 +358,22 @@
                 </div>
 
                 <!-- Summary Stats -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('progressValue').textContent)" title="Click to copy">
+                        <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">12.7%</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
+                    </div>
                     <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(255, 59, 48, 0.3);">
                         <div id="monthsToPayoff" style="font-size: 18px; font-weight: 600; color: #ff9500;">23 mo</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Payoff Time</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Debt Payoff</div>
                     </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3);">
-                        <div id="payoffDate" style="font-size: 18px; font-weight: 600; color: #93c5fd;">Sep 2027</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Debt Free Date</div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('netWorthValue').textContent)" title="Click to copy">
+                        <div id="netWorthValue" style="font-size: 18px; font-weight: 600; color: #93c5fd;">-$7,686</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Net Worth</div>
                     </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3);">
-                        <div id="totalInterest" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">$0</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Total Interest</div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(196, 181, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('monthlySurplus').textContent)" title="Click to copy">
+                        <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #c4b5fd;">-$69</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Surplus</div>
                     </div>
                 </div>
             </div>
@@ -472,8 +499,7 @@
                 document.body.classList.add('dark-mode');
                 localStorage.setItem('darkMode', 'dark');
             }
-            updateChart(); // Redraw chart with new colors
-            updateDebtChart(); // Redraw debt chart with new colors
+            updateChart(); // Redraw unified chart with new colors
         }
 
         initDarkMode();
@@ -543,6 +569,9 @@
             const surplus = calculateSurplus();
             const monthsAgo = 12; // Started investing Oct 2024 (12 months ago)
 
+            // Get debt projection
+            const { timeline: debtTimeline } = calculateDebtPayoff(selectedPayment);
+
             let previousValue = 0;
 
             // Generate past data (from -12 to 0) - started from $0 in Oct 2024
@@ -564,9 +593,14 @@
                 val = Math.max(val, previousValue);
                 previousValue = val;
 
+                // Debt stays constant in the past
+                const debt = debtData.currentDebt;
+
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
                     val: val,
+                    debt: debt,
+                    netWorth: val - debt,
                     monthIndex: i
                 });
             }
@@ -581,9 +615,15 @@
                 val = Math.max(val, previousValue);
                 previousValue = val;
 
+                // Get debt at this month (0 if paid off)
+                const debtEntry = debtTimeline[i - 1];
+                const debt = debtEntry ? debtEntry.debt : 0;
+
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
                     val: val,
+                    debt: debt,
+                    netWorth: val - debt,
                     monthIndex: i
                 });
             }
@@ -638,8 +678,10 @@
         function updateChart() {
             requestAnimationFrame(() => {
                 const chartData = generateChartData();
-                const maxVal = Math.max(...chartData.map(d => d.val));
-                const minVal = Math.min(...chartData.map(d => d.val));
+                // Find max/min across all three metrics
+                const allValues = chartData.flatMap(d => [d.val, d.debt, d.netWorth]);
+                const maxVal = Math.max(...allValues);
+                const minVal = Math.min(...allValues);
                 const svg = document.getElementById('chart');
 
             // Fixed dimensions
@@ -694,15 +736,43 @@
             const bottomY = marginTop + chartHeight;
             const goal = get('Goal');
 
-            // Create polyline
-            const points = chartData.map((d, i) => `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight}`).join(' ');
-            const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-            polyline.setAttribute('points', points);
-            polyline.setAttribute('fill', 'none');
-            polyline.setAttribute('stroke', '#4ade80');
-            polyline.setAttribute('stroke-width', '3');
-            polyline.setAttribute('class', 'main-line');
-            svg.appendChild(polyline);
+            // Create 3 polylines: Portfolio (green), Debt (orange), Net Worth (blue)
+
+            // 1. Portfolio line (green)
+            const portfolioPoints = chartData.map((d, i) =>
+                `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight}`
+            ).join(' ');
+            const portfolioLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            portfolioLine.setAttribute('points', portfolioPoints);
+            portfolioLine.setAttribute('fill', 'none');
+            portfolioLine.setAttribute('stroke', '#4ade80');
+            portfolioLine.setAttribute('stroke-width', '2.5');
+            portfolioLine.setAttribute('opacity', '0.9');
+            svg.appendChild(portfolioLine);
+
+            // 2. Debt line (orange)
+            const debtPoints = chartData.map((d, i) =>
+                `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.debt-minVal)/(maxVal-minVal)) * chartHeight}`
+            ).join(' ');
+            const debtLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            debtLine.setAttribute('points', debtPoints);
+            debtLine.setAttribute('fill', 'none');
+            debtLine.setAttribute('stroke', '#ff9500');
+            debtLine.setAttribute('stroke-width', '2.5');
+            debtLine.setAttribute('opacity', '0.8');
+            svg.appendChild(debtLine);
+
+            // 3. Net Worth line (blue) - thicker to emphasize
+            const netWorthPoints = chartData.map((d, i) =>
+                `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.netWorth-minVal)/(maxVal-minVal)) * chartHeight}`
+            ).join(' ');
+            const netWorthLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            netWorthLine.setAttribute('points', netWorthPoints);
+            netWorthLine.setAttribute('fill', 'none');
+            netWorthLine.setAttribute('stroke', '#2563eb');
+            netWorthLine.setAttribute('stroke-width', '3');
+            netWorthLine.setAttribute('class', 'main-line');
+            svg.appendChild(netWorthLine);
 
             // Add hover highlight circle
             const hoverCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -835,21 +905,30 @@
             const goal = get('Goal');
             const hoverProgress = ((data.val / goal) * 100).toFixed(1);
             tooltip.innerHTML = `
-                <div style="font-weight: 600; font-size: 11px; opacity: 0.7;">${data.month}</div>
-                <div style="color: #059669; font-weight: 600; font-size: 14px;">$${Math.round(data.val).toLocaleString()}</div>
-                <div style="font-size: 10px; opacity: 0.6; margin-top: 2px;">${hoverProgress}% of goal</div>
+                <div style="font-weight: 600; font-size: 11px; opacity: 0.7; margin-bottom: 6px;">${data.month}</div>
+                <div style="font-size: 12px; margin-bottom: 3px;">
+                    <span style="color: #4ade80;">●</span> Portfolio: <strong style="color: #4ade80;">$${Math.round(data.val).toLocaleString()}</strong>
+                </div>
+                <div style="font-size: 12px; margin-bottom: 3px;">
+                    <span style="color: #ff9500;">●</span> Debt: <strong style="color: #ff9500;">$${Math.round(data.debt).toLocaleString()}</strong>
+                </div>
+                <div style="font-size: 12px; border-top: 1px solid var(--border-color); padding-top: 4px; margin-top: 4px;">
+                    <span style="color: #2563eb;">●</span> Net Worth: <strong style="color: ${data.netWorth >= 0 ? '#2563eb' : '#ff3b30'};">$${Math.round(data.netWorth).toLocaleString()}</strong>
+                </div>
             `;
             tooltip.style.display = 'block';
 
-            // Update progress card during hover
-            document.getElementById('progressValue').textContent = `${hoverProgress}%`;
+            // Update net worth card during hover
+            document.getElementById('netWorthValue').textContent = `$${Math.round(data.netWorth).toLocaleString()}`;
         }
 
         function hideTooltip() {
             document.getElementById('tooltip').style.display = 'none';
-            // Reset progress to current actual value
+            // Reset to current actual values
             const progress = (get('Wallet / Savings') / get('Goal') * 100).toFixed(1);
             document.getElementById('progressValue').textContent = `${progress}%`;
+            const currentNetWorth = get('Wallet / Savings') - debtData.currentDebt;
+            document.getElementById('netWorthValue').textContent = `$${Math.round(currentNetWorth).toLocaleString()}`;
         }
 
         function copyToClipboard(text) {
@@ -880,11 +959,10 @@
         function updateSummary() {
             const progress = (get('Wallet / Savings') / get('Goal') * 100).toFixed(1);
             const surplus = calculateSurplus();
-            const needed = calculateNeeded();
-            const monthlyTarget = Math.round(needed / 21);
-            
+            const currentNetWorth = get('Wallet / Savings') - debtData.currentDebt;
+
             document.getElementById('progressValue').textContent = `${progress}%`;
-            document.getElementById('monthlyTarget').textContent = `$${monthlyTarget.toLocaleString()}`;
+            document.getElementById('netWorthValue').textContent = `$${Math.round(currentNetWorth).toLocaleString()}`;
             document.getElementById('monthlySurplus').textContent = `$${surplus.toLocaleString()}`;
         }
 
@@ -1382,7 +1460,7 @@
                 }
             });
 
-            updateDebtChart();
+            updateChart(); // Redraw unified chart with new debt payoff scenario
             updateDebtSummary();
         }
 
@@ -1415,8 +1493,9 @@
             const cleanValue = parseFloat(value.replace(/,/g, '')) || 0;
             debtData.currentDebt = cleanValue;
             document.getElementById('currentDebtAmount').textContent = `$${cleanValue.toLocaleString()}`;
-            updateDebtChart();
+            updateChart(); // Redraw unified chart with new debt amount
             updateDebtSummary();
+            updateSummary(); // Update net worth
         }
 
         // Generate AI portfolio insights (automated based on live data)
@@ -1517,8 +1596,7 @@
 
         // Initialize
         updateAll();
-        updateDebtChart();
-        updateDebtSummary();
+        updateDebtSummary(); // Calculate debt payoff stats
         renderCards(true);
         renderCryptoCards(true);
         updatePrices();
