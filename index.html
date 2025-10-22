@@ -148,7 +148,48 @@
             body { width: 100vw; }
             .container { padding: 8px; width: 100%; max-width: 100vw; }
             .header { padding: 12px; gap: 8px; }
-            .chart-section { display: none; }
+
+            /* Hide portfolio chart on mobile but keep debt chart visible */
+            .portfolio-chart-section { display: none; }
+            .portfolio-card { display: none; }
+
+            /* Make debt chart section scrollable on mobile */
+            .debt-chart-section {
+                padding: 12px;
+                display: block !important;
+            }
+            .debt-chart-section .chart-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 12px 4px;
+            }
+            .debt-chart-section .chart {
+                min-width: 600px;
+                height: 240px;
+            }
+
+            /* Optimize payment scenarios for mobile - stack in 2x2 grid */
+            .payment-scenarios-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+            .payment-scenario {
+                padding: 10px !important;
+                min-width: auto !important;
+            }
+            .payment-scenario div:first-child {
+                font-size: 15px !important;
+            }
+            .payment-scenario div:last-child {
+                font-size: 11px !important;
+            }
+
+            /* Make debt info more compact on mobile */
+            #debtInput {
+                width: 90px !important;
+                font-size: 14px !important;
+            }
+
             .stocks-section { padding: 12px; }
             .table-wrapper { -webkit-overflow-scrolling: touch; width: 100%; }
             table { min-width: 100%; width: 100%; }
@@ -160,7 +201,6 @@
             .collapse-header { padding: 12px; font-size: 14px; }
             .summary-grid { grid-template-columns: 1fr; gap: 8px; }
             .card { margin-bottom: 12px; }
-            .card:first-child { display: none; }
             .stock-row { padding: 10px 12px; }
             .stock-symbol { font-size: 13px; min-width: 50px; }
             .stock-prices { font-size: 12px; }
@@ -243,8 +283,8 @@
     </div>
 
     <div class="container">
-        <div class="card" style="margin-bottom: 24px;">
-            <div class="chart-section" style="border-top: none; padding-top: 24px;">
+        <div class="card portfolio-card" style="margin-bottom: 24px;">
+            <div class="chart-section portfolio-chart-section" style="border-top: none; padding-top: 24px;">
                 <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Portfolio Growth</h3>
                 <div class="chart-container">
                     <svg id="chart" viewBox="0 0 1000 300" class="chart" preserveAspectRatio="xMidYMid meet">
@@ -280,8 +320,8 @@
         </div>
 
         <!-- Debt Tracking Section -->
-        <div class="card" style="margin-bottom: 24px;">
-            <div class="chart-section" style="border-top: none; padding-top: 24px;">
+        <div class="card debt-card" style="margin-bottom: 24px;">
+            <div class="chart-section debt-chart-section" style="border-top: none; padding-top: 24px;">
                 <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Debt Payoff Timeline</h3>
 
                 <!-- Debt Info Card -->
@@ -315,7 +355,7 @@
                 </div>
 
                 <!-- Payment Scenario Selector -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px;">
+                <div class="payment-scenarios-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px;">
                     <div class="payment-scenario" data-payment="200" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(200)">
                         <div style="font-size: 18px; font-weight: 600; color: #93c5fd;">$200/mo</div>
                         <div id="months200" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~45 months</div>
