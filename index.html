@@ -322,10 +322,8 @@
                             <div style="font-weight: 600; color: #ff3b30; font-size: 14px; margin-bottom: 8px;">Current Debt</div>
                             <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
                                 Collections: <strong id="currentDebtAmount" style="color: var(--text-primary);">$4,000</strong> <span style="color: #34c759;">(~50% settlement of $7,800)</span><br>
-                                iPhone 15: <strong>2 months left</strong> @ $167/mo •
-                                iPhone 17: <strong>36 months</strong> @ $130/mo<br>
-                                <span style="color: #ff9500;">⚠️ Dual payments for 2 months ($297/mo)</span> •
-                                <span style="color: #34c759;">Then $37/mo savings</span>
+                                <span style="color: #34c759;">✓ Paying off in lump sum</span><br>
+                                iPhone 15: <strong>2 months left</strong> @ $167/mo • iPhone 17: <strong>36 months</strong> @ $130/mo
                             </div>
                         </div>
                         <div style="text-align: right;">
@@ -337,26 +335,6 @@
                     </div>
                 </div>
 
-                <!-- Payment Scenario Selector -->
-                <div class="payment-scenarios-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px;">
-                    <div class="payment-scenario" data-payment="200" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(200)">
-                        <div style="font-size: 18px; font-weight: 600; color: #93c5fd;">$200/mo</div>
-                        <div id="months200" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~45 months</div>
-                    </div>
-                    <div class="payment-scenario" data-payment="300" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(300)">
-                        <div style="font-size: 18px; font-weight: 600; color: #6ee7b7;">$300/mo</div>
-                        <div id="months300" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~30 months</div>
-                    </div>
-                    <div class="payment-scenario active-scenario" data-payment="400" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid #34c759; cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(400)">
-                        <div style="font-size: 18px; font-weight: 600; color: #34c759;">$400/mo</div>
-                        <div id="months400" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~23 months</div>
-                    </div>
-                    <div class="payment-scenario" data-payment="500" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(500)">
-                        <div style="font-size: 18px; font-weight: 600; color: #c4b5fd;">$500/mo</div>
-                        <div id="months500" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~18 months</div>
-                    </div>
-                </div>
-
                 <!-- Summary Stats -->
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px;">
                     <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('progressValue').textContent)" title="Click to copy">
@@ -364,7 +342,7 @@
                         <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
                     </div>
                     <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(255, 59, 48, 0.3);">
-                        <div id="monthsToPayoff" style="font-size: 18px; font-weight: 600; color: #ff9500;">23 mo</div>
+                        <div id="monthsToPayoff" style="font-size: 18px; font-weight: 600; color: #ff9500;">Lump Sum</div>
                         <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Debt Payoff</div>
                     </div>
                     <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('netWorthValue').textContent)" title="Click to copy">
@@ -388,22 +366,7 @@
             </div>
             <div style="padding: 24px; background: var(--bg-secondary);">
                 <div id="aiInsights" style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">
-                    <div style="margin-bottom: 16px;">
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
-                            <strong style="color: #6ee7b7;">Analyzing portfolio...</strong> Real-time insights loading. Your portfolio includes tech growth stocks (PLTR, NVDA, HOOD) targeting 2030 returns.
-                        </p>
-                    </div>
-                    <div style="margin-bottom: 16px;">
-                        <strong style="color: #7c3aed; font-size: 14px;">Portfolio Strategy:</strong>
-                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                            Focus on long-term 2030 targets. Tech allocation strong with PLTR, NVDA, GOOGL. SPY provides broad market exposure.
-                        </p>
-                    </div>
-                    <div>
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                            <strong>Tactical:</strong> DCA on weakness. Stay disciplined on 2030 thesis. Market timing matters less than time in market.
-                        </p>
-                    </div>
+                    <!-- Dynamic insights will be generated by generateAIInsights() -->
                 </div>
             </div>
         </div>
@@ -1515,98 +1478,121 @@
 
         // Generate AI portfolio insights (automated based on live data)
         function generateAIInsights() {
-            const { currentValue, targetValue } = calculatePortfolioValue();
-            const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
+            try {
+                const { currentValue, targetValue } = calculatePortfolioValue();
+                const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
 
-            // Calculate portfolio change since last update
-            const portfolioChange = previousPortfolioValue
-                ? (((currentValue - previousPortfolioValue) / previousPortfolioValue) * 100).toFixed(1)
-                : 0;
-            previousPortfolioValue = currentValue;
+                // Calculate portfolio change since last update
+                const portfolioChange = previousPortfolioValue
+                    ? (((currentValue - previousPortfolioValue) / previousPortfolioValue) * 100).toFixed(1)
+                    : 0;
+                previousPortfolioValue = currentValue;
 
-            // Analyze portfolio composition
-            const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'HOOD', 'NVDA'];
-            const techExposure = Object.entries(stocks)
-                .filter(([sym]) => techStocks.includes(sym))
-                .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
-            const techPercent = currentValue > 0 ? (techExposure / currentValue * 100).toFixed(0) : 0;
+                // Analyze portfolio composition
+                const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'HOOD', 'NVDA'];
+                const techExposure = Object.entries(stocks)
+                    .filter(([sym]) => techStocks.includes(sym))
+                    .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
+                const techPercent = currentValue > 0 ? (techExposure / currentValue * 100).toFixed(0) : 0;
 
-            // Top holdings by value
-            const topHoldings = Object.entries(stocks)
-                .map(([sym, stock]) => ({
-                    sym,
-                    value: stock.current * stock.shares,
-                    shares: stock.shares,
-                    price: stock.current
-                }))
-                .filter(h => h.value > 0)
-                .sort((a, b) => b.value - a.value)
-                .slice(0, 3);
+                // Top holdings by value
+                const topHoldings = Object.entries(stocks)
+                    .map(([sym, stock]) => ({
+                        sym,
+                        value: stock.current * stock.shares,
+                        shares: stock.shares,
+                        price: stock.current
+                    }))
+                    .filter(h => h.value > 0)
+                    .sort((a, b) => b.value - a.value)
+                    .slice(0, 3);
 
-            // Find stocks with highest upside
-            const topOpportunities = Object.entries(stocks)
-                .filter(([_, stock]) => stock.shares > 0)
-                .map(([sym, stock]) => ({
-                    sym,
-                    upside: ((stock.target - stock.current) / stock.current * 100).toFixed(0),
-                    year: stock.year,
-                    current: stock.current,
-                    target: stock.target,
-                    shares: stock.shares
-                }))
-                .sort((a, b) => parseFloat(b.upside) - parseFloat(a.upside))
-                .slice(0, 3);
+                // Find stocks with highest upside
+                const topOpportunities = Object.entries(stocks)
+                    .filter(([_, stock]) => stock.shares > 0)
+                    .map(([sym, stock]) => ({
+                        sym,
+                        upside: ((stock.target - stock.current) / stock.current * 100).toFixed(0),
+                        year: stock.year,
+                        current: stock.current,
+                        target: stock.target,
+                        shares: stock.shares
+                    }))
+                    .sort((a, b) => parseFloat(b.upside) - parseFloat(a.upside))
+                    .slice(0, 3);
 
-            // Find biggest movers
-            const biggestMovers = Object.entries(stocks)
-                .filter(([_, stock]) => stock.shares > 0)
-                .map(([sym, stock]) => ({
-                    sym,
-                    price: stock.current,
-                    target: stock.target,
-                    upside: ((stock.target - stock.current) / stock.current * 100).toFixed(1)
-                }))
-                .sort((a, b) => Math.abs(parseFloat(b.upside)) - Math.abs(parseFloat(a.upside)))
-                .slice(0, 2);
+                // Find biggest movers
+                const biggestMovers = Object.entries(stocks)
+                    .filter(([_, stock]) => stock.shares > 0)
+                    .map(([sym, stock]) => ({
+                        sym,
+                        price: stock.current,
+                        target: stock.target,
+                        upside: ((stock.target - stock.current) / stock.current * 100).toFixed(1)
+                    }))
+                    .sort((a, b) => Math.abs(parseFloat(b.upside)) - Math.abs(parseFloat(a.upside)))
+                    .slice(0, 2);
 
-            // Dynamic sentiment based on portfolio performance
-            const sentiment = portfolioChange >= 0 ? "Green day" : "Red day";
-            const sentimentColor = portfolioChange >= 0 ? "#34c759" : "#ff3b30";
-            const sentimentAction = portfolioChange < -1 ? "accumulate on weakness" : portfolioChange > 1 ? "consider taking profits" : "hold and observe";
+                // Dynamic sentiment based on portfolio performance
+                const sentiment = portfolioChange > 0 ? "Green day" : portfolioChange < 0 ? "Red day" : "Steady";
+                const sentimentColor = portfolioChange > 0 ? "#34c759" : portfolioChange < 0 ? "#ff3b30" : "#93c5fd";
+                const sentimentAction = portfolioChange < -1 ? "accumulate on weakness" : portfolioChange > 1 ? "consider taking profits" : "hold and observe";
 
-            // Progress to goal
-            const progressPercent = ((currentValue / 2190) * 100).toFixed(0);
-            const goalColor = progressPercent >= 75 ? "#34c759" : progressPercent >= 50 ? "#93c5fd" : "#f59e0b";
+                // Progress to goal
+                const progressPercent = ((currentValue / 2190) * 100).toFixed(0);
+                const goalColor = progressPercent >= 75 ? "#34c759" : progressPercent >= 50 ? "#93c5fd" : "#f59e0b";
 
-            const insights = `
-                <div style="margin-bottom: 16px;">
-                    <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
-                        <strong style="color: ${sentimentColor};">${sentiment}</strong> – Portfolio <strong style="color: ${sentimentColor};">${portfolioChange >= 0 ? '+' : ''}${portfolioChange}%</strong> today. Current value: <strong>$${Math.round(currentValue)}</strong> → Target <strong>$${Math.round(targetValue)}</strong> (<strong style="color: #6ee7b7;">+${potentialGain}%</strong> upside). Progress: <strong style="color: ${goalColor};">${progressPercent}%</strong> to $2,190 goal. Core: ${topHoldings.map(h => `<strong>${h.sym}</strong> $${Math.round(h.value)}`).join(' • ')}.
-                    </p>
-                </div>
+                const holdingsText = topHoldings.length > 0
+                    ? topHoldings.map(h => `<strong>${h.sym}</strong> $${Math.round(h.value)}`).join(' • ')
+                    : 'Building position';
 
-                <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Top Opportunities (by upside %):</strong>
-                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        ${topOpportunities.slice(0, 3).map(opp => `<strong>${opp.sym}</strong> ${opp.shares} shares @ $${opp.current.toFixed(2)}: <strong style="color: #6ee7b7;">+${opp.upside}%</strong> to $${opp.target} (${opp.year})`).join(' • ')}
-                    </p>
-                </div>
+                const opportunitiesText = topOpportunities.length > 0
+                    ? topOpportunities.slice(0, 3).map(opp => `<strong>${opp.sym}</strong> ${opp.shares} shares @ $${opp.current.toFixed(2)}: <strong style="color: #6ee7b7;">+${opp.upside}%</strong> to $${opp.target} (${opp.year})`).join(' • ')
+                    : 'No current holdings';
 
-                <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Tactical Alert</strong>
-                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        Signal: <strong style="color: ${sentimentColor};">${sentimentAction}</strong>. Biggest movers: ${biggestMovers.map(m => `<strong>${m.sym}</strong> $${m.price.toFixed(2)}`).join(', ')}. Check <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">SPY</a> for macro context. <a href="https://www.cnbc.com/quotes/AAPL,%20AAPL,%20GOOGL,%20TSLA,%20MSFT,%20NVDA" target="_blank" style="color: #007aff;">Market news →</a>
-                    </p>
-                </div>
+                const moversText = biggestMovers.length > 0
+                    ? biggestMovers.map(m => `<strong>${m.sym}</strong> $${m.price.toFixed(2)}`).join(', ')
+                    : 'No positions';
 
-                <div>
-                    <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                        <strong>Strategy:</strong> Stay focused on 2030 targets. Tech thesis intact (${techPercent}% allocation). DCA weakness. You've built $${Math.round(currentValue)} in ${progressPercent}% to goal – momentum is on your side.
-                    </p>
-                </div>
-            `;
+                const changeText = portfolioChange != 0
+                    ? `<strong style="color: ${sentimentColor};">${portfolioChange >= 0 ? '+' : ''}${portfolioChange}%</strong> today.`
+                    : '';
 
-            document.getElementById('aiInsights').innerHTML = insights;
+                const insights = `
+                    <div style="margin-bottom: 16px;">
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
+                            <strong style="color: ${sentimentColor};">${sentiment}</strong> ${changeText} Current value: <strong>$${Math.round(currentValue)}</strong> → Target <strong>$${Math.round(targetValue)}</strong> (<strong style="color: #6ee7b7;">+${potentialGain}%</strong> upside). Progress: <strong style="color: ${goalColor};">${progressPercent}%</strong> to $2,190 goal. Core: ${holdingsText}.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <strong style="color: #7c3aed; font-size: 14px;">Top Opportunities (by upside %):</strong>
+                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                            ${opportunitiesText}
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <strong style="color: #7c3aed; font-size: 14px;">Tactical Alert</strong>
+                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                            Signal: <strong style="color: ${sentimentColor};">${sentimentAction}</strong>. Biggest movers: ${moversText}. Check <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">SPY</a> for macro context. <a href="https://www.cnbc.com/quotes/AAPL,%20AAPL,%20GOOGL,%20TSLA,%20MSFT,%20NVDA" target="_blank" style="color: #007aff;">Market news →</a>
+                        </p>
+                    </div>
+
+                    <div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
+                            <strong>Strategy:</strong> Stay focused on 2030 targets. Tech thesis intact (${techPercent}% allocation). DCA weakness. You've built $${Math.round(currentValue)} in ${progressPercent}% to goal – momentum is on your side.
+                        </p>
+                    </div>
+                `;
+
+                document.getElementById('aiInsights').innerHTML = insights;
+            } catch (error) {
+                console.error('Error generating insights:', error);
+                document.getElementById('aiInsights').innerHTML = `
+                    <p style="color: var(--text-secondary);">Portfolio insights loading...</p>
+                `;
+            }
         }
 
         // Initialize
