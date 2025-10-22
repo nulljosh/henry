@@ -1070,7 +1070,8 @@
                     sym,
                     upside: ((stock.target - stock.current) / stock.current * 100).toFixed(0),
                     year: stock.year,
-                    current: stock.current
+                    current: stock.current,
+                    target: stock.target
                 }))
                 .sort((a, b) => parseFloat(b.upside) - parseFloat(a.upside))
                 .slice(0, 3);
@@ -1105,7 +1106,7 @@
 
                 <div>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                        💡 <strong>Morning Mantra:</strong> You're 60% of the way to your $2,190 goal. Today's -2.5% pullback is noise. Your PLTR defense thesis + NVDA AI dominance + SPY broad market + HOOD retail momentum are structural, not cyclical. DCA any weakness under $120 (HOOD), $170 (PLTR). <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">Track SPY</a> for macro signal. See you tomorrow at open bell.
+                        <strong>Morning Mantra:</strong> You're 60% of the way to your $2,190 goal. Today's -2.5% pullback is noise. Your PLTR defense thesis + NVDA AI dominance + SPY broad market + HOOD retail momentum are structural, not cyclical. DCA any weakness under $120 (HOOD), $170 (PLTR). <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">Track SPY</a> for macro signal. See you tomorrow at open bell.
                     </p>
                 </div>
             `;
