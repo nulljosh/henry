@@ -939,14 +939,14 @@
                 if (sortBy === 'alpha') return a[0].localeCompare(b[0]);
             });
 
+            // Separate holdings from watchlist
+            const holdings = sorted.filter(([_, s]) => s.shares > 0);
+            const watchlist = sorted.filter(([_, s]) => s.shares === 0);
+
             const list = document.querySelector('.stock-list');
 
-            // Fade out skeletons if initial render
-            if (isInitial) {
-                const skeletons = list.querySelectorAll('.skeleton');
-                skeletons.forEach(s => s.style.opacity = '0');
-                setTimeout(() => {
-                    list.innerHTML = sorted.map(([sym, s]) => {
+            // Build HTML with separator
+            const buildStockRow = ([sym, s]) => {
                 const gain = Math.round(((s.target - s.current) / s.current) * 100);
                 const currentValue = (s.current * s.shares).toFixed(2);
                 return `<div class="stock-row">
@@ -958,23 +958,24 @@
                         <div class="stock-gain">+${gain}%</div>
                     </a>
                 </div>`;
-                    }).join('');
+            };
+
+            const separator = `<div style="padding: 12px 0; margin: 8px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Watchlist</div>`;
+
+            const htmlContent = holdings.map(buildStockRow).join('') +
+                                (watchlist.length > 0 ? separator : '') +
+                                watchlist.map(buildStockRow).join('');
+
+            // Fade out skeletons if initial render
+            if (isInitial) {
+                const skeletons = list.querySelectorAll('.skeleton');
+                skeletons.forEach(s => s.style.opacity = '0');
+                setTimeout(() => {
+                    list.innerHTML = htmlContent;
                     updatePortfolioDisplay();
                 }, 300);
             } else {
-                list.innerHTML = sorted.map(([sym, s]) => {
-                    const gain = Math.round(((s.target - s.current) / s.current) * 100);
-                    const currentValue = (s.current * s.shares).toFixed(2);
-                    return `<div class="stock-row">
-                        <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">
-                            <div class="stock-left">
-                                <div class="stock-symbol">${sym}</div>
-                                <div class="stock-prices">${s.shares} shares • $${s.current.toLocaleString()} → $${s.target.toLocaleString()} (${s.year})</div>
-                            </div>
-                            <div class="stock-gain">+${gain}%</div>
-                        </a>
-                    </div>`;
-                }).join('');
+                list.innerHTML = htmlContent;
                 updatePortfolioDisplay();
             }
         }
