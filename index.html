@@ -1046,67 +1046,98 @@
             arrow.classList.toggle('open');
         }
 
+        // Track previous portfolio value for change calculation
+        let previousPortfolioValue = null;
+
         // Generate AI portfolio insights (automated based on live data)
         function generateAIInsights() {
             const { currentValue, targetValue } = calculatePortfolioValue();
             const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
+
+            // Calculate portfolio change since last update
+            const portfolioChange = previousPortfolioValue
+                ? (((currentValue - previousPortfolioValue) / previousPortfolioValue) * 100).toFixed(1)
+                : 0;
+            previousPortfolioValue = currentValue;
 
             // Analyze portfolio composition
             const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'HOOD', 'NVDA'];
             const techExposure = Object.entries(stocks)
                 .filter(([sym]) => techStocks.includes(sym))
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
-            const techPercent = (techExposure / currentValue * 100).toFixed(0);
+            const techPercent = currentValue > 0 ? (techExposure / currentValue * 100).toFixed(0) : 0;
 
             // Top holdings by value
             const topHoldings = Object.entries(stocks)
-                .map(([sym, stock]) => ({ sym, value: stock.current * stock.shares }))
+                .map(([sym, stock]) => ({
+                    sym,
+                    value: stock.current * stock.shares,
+                    shares: stock.shares,
+                    price: stock.current
+                }))
+                .filter(h => h.value > 0)
                 .sort((a, b) => b.value - a.value)
                 .slice(0, 3);
 
             // Find stocks with highest upside
             const topOpportunities = Object.entries(stocks)
+                .filter(([_, stock]) => stock.shares > 0)
                 .map(([sym, stock]) => ({
                     sym,
                     upside: ((stock.target - stock.current) / stock.current * 100).toFixed(0),
                     year: stock.year,
                     current: stock.current,
-                    target: stock.target
+                    target: stock.target,
+                    shares: stock.shares
                 }))
                 .sort((a, b) => parseFloat(b.upside) - parseFloat(a.upside))
                 .slice(0, 3);
 
+            // Find biggest movers
+            const biggestMovers = Object.entries(stocks)
+                .filter(([_, stock]) => stock.shares > 0)
+                .map(([sym, stock]) => ({
+                    sym,
+                    price: stock.current,
+                    target: stock.target,
+                    upside: ((stock.target - stock.current) / stock.current * 100).toFixed(1)
+                }))
+                .sort((a, b) => Math.abs(parseFloat(b.upside)) - Math.abs(parseFloat(a.upside)))
+                .slice(0, 2);
+
+            // Dynamic sentiment based on portfolio performance
+            const sentiment = portfolioChange >= 0 ? "Green day" : "Red day";
+            const sentimentColor = portfolioChange >= 0 ? "#34c759" : "#ff3b30";
+            const sentimentAction = portfolioChange < -1 ? "accumulate on weakness" : portfolioChange > 1 ? "consider taking profits" : "hold and observe";
+
+            // Progress to goal
+            const progressPercent = ((currentValue / 2190) * 100).toFixed(0);
+            const goalColor = progressPercent >= 75 ? "#34c759" : progressPercent >= 50 ? "#93c5fd" : "#f59e0b";
+
             const insights = `
                 <div style="margin-bottom: 16px;">
                     <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
-                        <strong>Market Pullback Today</strong> – Portfolio down ~2.5% with broad weakness across holdings. All 6 positions red, but fundamentals intact. Current portfolio value: <strong>$${Math.round(currentValue)}</strong> targeting <strong>$${Math.round(targetValue)}</strong> (<strong>+${potentialGain}%</strong> upside). Core holdings: ${topHoldings.map(h => `<strong>${h.sym}</strong> ($${Math.round(h.value)})`).join(', ')}.
+                        <strong style="color: ${sentimentColor};">${sentiment}</strong> – Portfolio <strong style="color: ${sentimentColor};">${portfolioChange >= 0 ? '+' : ''}${portfolioChange}%</strong> today. Current value: <strong>$${Math.round(currentValue)}</strong> → Target <strong>$${Math.round(targetValue)}</strong> (<strong style="color: #6ee7b7;">+${potentialGain}%</strong> upside). Progress: <strong style="color: ${goalColor};">${progressPercent}%</strong> to $2,190 goal. Core: ${topHoldings.map(h => `<strong>${h.sym}</strong> $${Math.round(h.value)}`).join(' • ')}.
                     </p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Your Holdings Today</strong>
+                    <strong style="color: #7c3aed; font-size: 14px;">Top Opportunities (by upside %):</strong>
                     <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        <strong>PLTR</strong> -4.3% | <a href="https://finance.yahoo.com/quote/PLTR" target="_blank" style="color: #007aff;">$173.74</a> – Underperforming broad market; White House defense deal ($142B Saudi contract) is tailwind for long-term thesis. <strong>HOOD</strong> -6.1% | <a href="https://finance.yahoo.com/quote/HOOD" target="_blank" style="color: #007aff;">$123.81</a> – Retail headwind today but retail volumes often surge on weakness (accumulation play). <strong>NVDA</strong> -1.4% | <a href="https://finance.yahoo.com/quote/NVDA" target="_blank" style="color: #007aff;">$178.56</a> – Mizuho reiterated Outperform (95%+ AI inference/training chip share, $500B TAM by 2028).
+                        ${topOpportunities.slice(0, 3).map(opp => `<strong>${opp.sym}</strong> ${opp.shares} shares @ $${opp.current.toFixed(2)}: <strong style="color: #6ee7b7;">+${opp.upside}%</strong> to $${opp.target} (${opp.year})`).join(' • ')}
                     </p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Action Plan</strong>
+                    <strong style="color: #7c3aed; font-size: 14px;">Tactical Alert</strong>
                     <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        <strong>Dips = Buying Opportunity:</strong> HOOD and PLTR down 6-4% – if you have dry powder, this is a healthy pullback to add. NVDA's pullback is cosmetic given <a href="https://www.tipranks.com/news/aapl-nvda-or-pltr-which-tech-stock-is-the-most-attractive-pick" target="_blank" style="color: #007aff;">analyst strength</a>. <strong>Avoid Panic</strong> – SPY only -0.8%, sector rotation, not crash. <strong>Next Watch:</strong> Fed rate signals, Q4 earnings (AAPL/GOOGL in late Oct/Nov), PLTR defense contracts announcement.
-                    </p>
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Highest Upside Plays (by %):</strong>
-                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        ${topOpportunities.slice(0, 2).map(opp => `<strong>${opp.sym}</strong>: ${opp.upside}% to $${opp.target} by ${opp.year}`).join(' • ')} – Focus on these for 2030 targets.
+                        Signal: <strong style="color: ${sentimentColor};">${sentimentAction}</strong>. Biggest movers: ${biggestMovers.map(m => `<strong>${m.sym}</strong> $${m.price.toFixed(2)}`).join(', ')}. Check <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">SPY</a> for macro context. <a href="https://www.cnbc.com/quotes/AAPL,%20AAPL,%20GOOGL,%20TSLA,%20MSFT,%20NVDA" target="_blank" style="color: #007aff;">Market news →</a>
                     </p>
                 </div>
 
                 <div>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                        <strong>Morning Mantra:</strong> You're 60% of the way to your $2,190 goal. Today's -2.5% pullback is noise. Your PLTR defense thesis + NVDA AI dominance + SPY broad market + HOOD retail momentum are structural, not cyclical. DCA any weakness under $120 (HOOD), $170 (PLTR). <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">Track SPY</a> for macro signal. See you tomorrow at open bell.
+                        <strong>Strategy:</strong> Stay focused on 2030 targets. Tech thesis intact (${techPercent}% allocation). DCA weakness. You've built $${Math.round(currentValue)} in ${progressPercent}% to goal – momentum is on your side.
                     </p>
                 </div>
             `;
