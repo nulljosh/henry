@@ -279,6 +279,78 @@
             </div>
         </div>
 
+        <!-- Debt Tracking Section -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="chart-section" style="border-top: none; padding-top: 24px;">
+                <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Debt Payoff Timeline</h3>
+
+                <!-- Debt Info Card -->
+                <div style="background: linear-gradient(135deg, rgba(255, 59, 48, 0.08) 0%, rgba(255, 149, 0, 0.08) 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); border: 1px solid rgba(255, 59, 48, 0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <div style="font-weight: 600; color: #ff3b30; font-size: 14px; margin-bottom: 8px;">Current Debt Situation</div>
+                            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                                Total Debt: <strong id="currentDebtAmount" style="color: var(--text-primary);">$9,000</strong><br>
+                                iPhone 15 Pro Max: <strong style="color: var(--text-primary);">2 months remaining</strong> @ $67.50/mo<br>
+                                iPhone 17 Pro Max: <strong style="color: var(--text-primary);">36 months total</strong> @ $67.50/mo<br>
+                                <span style="color: #ff9500;">⚠️ Currently carrying dual phone payments for 2 months</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <input type="text" id="debtInput" value="9,000"
+                                   style="width: 120px; font-size: 16px; font-weight: 600; color: #ff3b30;"
+                                   onchange="updateDebtAmount(this.value)">
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Edit total debt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debt Payoff Chart -->
+                <div class="chart-container">
+                    <svg id="debtChart" viewBox="0 0 1000 300" class="chart" preserveAspectRatio="xMidYMid meet">
+                        <!-- Dynamic debt chart content -->
+                    </svg>
+                    <div id="debtTooltip" class="tooltip"></div>
+                </div>
+
+                <!-- Payment Scenario Selector -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px;">
+                    <div class="payment-scenario" data-payment="200" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(200)">
+                        <div style="font-size: 18px; font-weight: 600; color: #93c5fd;">$200/mo</div>
+                        <div id="months200" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~45 months</div>
+                    </div>
+                    <div class="payment-scenario" data-payment="300" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(300)">
+                        <div style="font-size: 18px; font-weight: 600; color: #6ee7b7;">$300/mo</div>
+                        <div id="months300" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~30 months</div>
+                    </div>
+                    <div class="payment-scenario active-scenario" data-payment="400" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid #34c759; cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(400)">
+                        <div style="font-size: 18px; font-weight: 600; color: #34c759;">$400/mo</div>
+                        <div id="months400" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~23 months</div>
+                    </div>
+                    <div class="payment-scenario" data-payment="500" style="text-align: center; padding: 14px; border-radius: 10px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;" onclick="selectPaymentScenario(500)">
+                        <div style="font-size: 18px; font-weight: 600; color: #c4b5fd;">$500/mo</div>
+                        <div id="months500" style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">~18 months</div>
+                    </div>
+                </div>
+
+                <!-- Summary Stats -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(255, 59, 48, 0.3);">
+                        <div id="monthsToPayoff" style="font-size: 18px; font-weight: 600; color: #ff9500;">23 mo</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Payoff Time</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3);">
+                        <div id="payoffDate" style="font-size: 18px; font-weight: 600; color: #93c5fd;">Sep 2027</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Debt Free Date</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3);">
+                        <div id="totalInterest" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">$0</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Total Interest</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <div class="collapse-header" onclick="toggleBudget()">
                 <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Budget Details</h3>
@@ -400,6 +472,7 @@
                 localStorage.setItem('darkMode', 'dark');
             }
             updateChart(); // Redraw chart with new colors
+            updateDebtChart(); // Redraw debt chart with new colors
         }
 
         initDarkMode();
@@ -414,6 +487,17 @@
             { category: 'iPhone (Monthly)', amount: 135, type: 'expense' },
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
+
+        // Debt tracking data
+        let debtData = {
+            currentDebt: 9000, // Current total debt ($8-10K range, using midpoint)
+            iPhone15Payment: 67.5, // Estimated monthly payment for iPhone 15 Pro Max
+            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
+            iPhone17Payment: 67.5, // Estimated monthly payment for iPhone 17 Pro Max
+            iPhone17Total: 36, // Total months for iPhone 17 Pro Max contract
+            interestRate: 0, // APR (0% for device payments typically)
+            lastUpdated: Date.now()
+        };
 
         let usePotentialIncome = false;
 
@@ -1050,6 +1134,289 @@
         // Track previous portfolio value for change calculation
         let previousPortfolioValue = null;
 
+        // Debt tracking variables
+        let selectedPayment = 400; // Default payment scenario
+
+        // Calculate debt payoff timeline
+        function calculateDebtPayoff(monthlyPayment) {
+            const debtTimeline = [];
+            let remainingDebt = debtData.currentDebt;
+            const monthlyRate = debtData.interestRate / 12 / 100;
+            let month = 0;
+            let totalInterest = 0;
+
+            while (remainingDebt > 0 && month < 120) { // Cap at 10 years
+                const date = new Date();
+                date.setMonth(date.getMonth() + month);
+                const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
+
+                const interestCharge = remainingDebt * monthlyRate;
+                const principalPayment = Math.min(monthlyPayment - interestCharge, remainingDebt);
+
+                totalInterest += interestCharge;
+                remainingDebt = Math.max(0, remainingDebt - principalPayment);
+
+                debtTimeline.push({
+                    month: monthYear.replace(/(\d{2})$/, "'$1"),
+                    debt: remainingDebt,
+                    monthIndex: month,
+                    payment: monthlyPayment,
+                    interest: interestCharge,
+                    principal: principalPayment
+                });
+
+                month++;
+
+                if (remainingDebt <= 0) break;
+            }
+
+            return { timeline: debtTimeline, totalInterest, monthsToPayoff: month };
+        }
+
+        // Generate debt chart data with multiple scenarios
+        function generateDebtChartData() {
+            const scenarios = [200, 300, 400, 500];
+            const chartData = {};
+
+            scenarios.forEach(payment => {
+                const { timeline } = calculateDebtPayoff(payment);
+                chartData[payment] = timeline;
+            });
+
+            return chartData;
+        }
+
+        // Update debt chart
+        function updateDebtChart() {
+            requestAnimationFrame(() => {
+                const allScenarios = generateDebtChartData();
+                const selectedScenario = allScenarios[selectedPayment];
+                const svg = document.getElementById('debtChart');
+
+                if (!selectedScenario || selectedScenario.length === 0) return;
+
+                const maxDebt = debtData.currentDebt;
+                const maxMonths = Math.max(...Object.values(allScenarios).map(s => s.length));
+
+                // Fixed dimensions
+                const marginTop = 20;
+                const marginBottom = 35;
+                const chartHeight = 245;
+                const labelY = 285;
+
+                // Dark mode aware colors
+                const isDark = document.body.classList.contains('dark-mode');
+                const gridColor = isDark ? 'rgba(255,255,255,0.1)' : '#e5e7eb';
+                const textColor = isDark ? '#98989d' : '#6b7280';
+
+                svg.innerHTML = '';
+
+                // Add grid lines and Y-axis labels
+                for (let i = 0; i <= 4; i++) {
+                    const y = marginTop + (i * chartHeight / 4);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', '60');
+                    line.setAttribute('y1', y);
+                    line.setAttribute('x2', '960');
+                    line.setAttribute('y2', y);
+                    line.setAttribute('stroke', gridColor);
+                    line.setAttribute('stroke-width', '1');
+                    svg.appendChild(line);
+
+                    const val = maxDebt - (i * maxDebt / 4);
+
+                    // Left Y-axis label
+                    const labelLeft = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    labelLeft.setAttribute('x', '50');
+                    labelLeft.setAttribute('y', y + 4);
+                    labelLeft.setAttribute('text-anchor', 'end');
+                    labelLeft.setAttribute('font-size', '11');
+                    labelLeft.setAttribute('fill', textColor);
+                    labelLeft.textContent = '$' + Math.round(val).toLocaleString();
+                    svg.appendChild(labelLeft);
+
+                    // Right Y-axis label
+                    const labelRight = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    labelRight.setAttribute('x', '970');
+                    labelRight.setAttribute('y', y + 4);
+                    labelRight.setAttribute('text-anchor', 'start');
+                    labelRight.setAttribute('font-size', '11');
+                    labelRight.setAttribute('fill', textColor);
+                    labelRight.textContent = '$' + Math.round(val).toLocaleString();
+                    svg.appendChild(labelRight);
+                }
+
+                const bottomY = marginTop + chartHeight;
+
+                // Draw all scenario lines (faded)
+                const scenarioColors = {
+                    200: '#93c5fd',
+                    300: '#6ee7b7',
+                    400: '#34c759',
+                    500: '#c4b5fd'
+                };
+
+                Object.entries(allScenarios).forEach(([payment, timeline]) => {
+                    const points = timeline.map((d, i) =>
+                        `${80 + (i * 860/(maxMonths-1))},${bottomY - (d.debt/maxDebt) * chartHeight}`
+                    ).join(' ');
+
+                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    polyline.setAttribute('points', points);
+                    polyline.setAttribute('fill', 'none');
+                    polyline.setAttribute('stroke', scenarioColors[payment]);
+                    polyline.setAttribute('stroke-width', payment == selectedPayment ? '3' : '1.5');
+                    polyline.setAttribute('opacity', payment == selectedPayment ? '1' : '0.3');
+                    polyline.setAttribute('stroke-dasharray', payment == selectedPayment ? '0' : '4,4');
+                    svg.appendChild(polyline);
+                });
+
+                // Add hover highlight circle
+                const hoverCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                hoverCircle.setAttribute('r', '6');
+                hoverCircle.setAttribute('fill', scenarioColors[selectedPayment]);
+                hoverCircle.setAttribute('stroke', 'white');
+                hoverCircle.setAttribute('stroke-width', '2');
+                hoverCircle.setAttribute('opacity', '0');
+                hoverCircle.setAttribute('id', 'debtHoverCircle');
+                svg.appendChild(hoverCircle);
+
+                // Add "DEBT FREE" marker at the end of selected scenario
+                const lastPoint = selectedScenario[selectedScenario.length - 1];
+                const endX = 80 + ((selectedScenario.length - 1) * 860/(maxMonths-1));
+                const endY = bottomY - (lastPoint.debt/maxDebt) * chartHeight;
+
+                const endMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                endMarker.setAttribute('cx', endX);
+                endMarker.setAttribute('cy', endY);
+                endMarker.setAttribute('r', '7');
+                endMarker.setAttribute('fill', '#34c759');
+                endMarker.setAttribute('stroke', 'white');
+                endMarker.setAttribute('stroke-width', '2');
+                svg.appendChild(endMarker);
+
+                const endLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                endLabel.setAttribute('x', endX);
+                endLabel.setAttribute('y', endY - 14);
+                endLabel.setAttribute('text-anchor', 'middle');
+                endLabel.setAttribute('font-size', '12');
+                endLabel.setAttribute('font-weight', '600');
+                endLabel.setAttribute('fill', '#34c759');
+                endLabel.textContent = 'DEBT FREE';
+                svg.appendChild(endLabel);
+
+                // Add hover areas for selected scenario
+                selectedScenario.forEach((d, i) => {
+                    const x = 80 + (i * 860/(maxMonths-1));
+                    const y = bottomY - (d.debt/maxDebt) * chartHeight;
+
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x - 20);
+                    rect.setAttribute('y', marginTop);
+                    rect.setAttribute('width', '40');
+                    rect.setAttribute('height', chartHeight);
+                    rect.setAttribute('fill', 'transparent');
+                    rect.style.cursor = 'pointer';
+                    rect.addEventListener('mouseenter', () => {
+                        showDebtTooltip(d);
+                        const hoverCircle = document.getElementById('debtHoverCircle');
+                        if (hoverCircle) {
+                            hoverCircle.setAttribute('cx', x);
+                            hoverCircle.setAttribute('cy', y);
+                            hoverCircle.setAttribute('opacity', '1');
+                        }
+                    });
+                    rect.addEventListener('mouseleave', () => {
+                        hideDebtTooltip();
+                        const hoverCircle = document.getElementById('debtHoverCircle');
+                        if (hoverCircle) hoverCircle.setAttribute('opacity', '0');
+                    });
+                    svg.appendChild(rect);
+                });
+
+                // Add month labels (every 6 months for debt timeline)
+                const labelInterval = Math.max(1, Math.ceil(selectedScenario.length / 8));
+                selectedScenario.forEach((d, i) => {
+                    if (i % labelInterval === 0 || i === selectedScenario.length - 1) {
+                        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        text.setAttribute('x', 80 + (i * 860/(maxMonths-1)));
+                        text.setAttribute('y', labelY);
+                        text.setAttribute('text-anchor', 'middle');
+                        text.setAttribute('font-size', '12');
+                        text.setAttribute('fill', textColor);
+                        text.textContent = d.month;
+                        svg.appendChild(text);
+                    }
+                });
+            });
+        }
+
+        function showDebtTooltip(data) {
+            const tooltip = document.getElementById('debtTooltip');
+            tooltip.innerHTML = `
+                <div style="font-weight: 600; font-size: 11px; opacity: 0.7;">${data.month}</div>
+                <div style="color: #ff9500; font-weight: 600; font-size: 14px;">$${Math.round(data.debt).toLocaleString()}</div>
+                <div style="font-size: 10px; opacity: 0.6; margin-top: 2px;">Remaining debt</div>
+            `;
+            tooltip.style.display = 'block';
+        }
+
+        function hideDebtTooltip() {
+            document.getElementById('debtTooltip').style.display = 'none';
+        }
+
+        function selectPaymentScenario(payment) {
+            selectedPayment = payment;
+
+            // Update active state styling
+            document.querySelectorAll('.payment-scenario').forEach(el => {
+                const scenarioPayment = parseInt(el.getAttribute('data-payment'));
+                if (scenarioPayment === payment) {
+                    el.style.border = '2px solid #34c759';
+                    el.classList.add('active-scenario');
+                } else {
+                    el.style.border = '2px solid var(--border-color)';
+                    el.classList.remove('active-scenario');
+                }
+            });
+
+            updateDebtChart();
+            updateDebtSummary();
+        }
+
+        function updateDebtSummary() {
+            const { timeline, totalInterest, monthsToPayoff } = calculateDebtPayoff(selectedPayment);
+
+            // Update months to payoff
+            document.getElementById('monthsToPayoff').textContent = `${monthsToPayoff} mo`;
+
+            // Calculate and format payoff date
+            const payoffDate = new Date();
+            payoffDate.setMonth(payoffDate.getMonth() + monthsToPayoff);
+            const payoffDateStr = payoffDate.toLocaleDateString('en', { month: 'short', year: 'numeric' });
+            document.getElementById('payoffDate').textContent = payoffDateStr;
+
+            // Update total interest
+            document.getElementById('totalInterest').textContent = `$${Math.round(totalInterest).toLocaleString()}`;
+
+            // Update all scenario time estimates
+            [200, 300, 400, 500].forEach(payment => {
+                const { monthsToPayoff } = calculateDebtPayoff(payment);
+                const element = document.getElementById(`months${payment}`);
+                if (element) {
+                    element.textContent = `~${monthsToPayoff} months`;
+                }
+            });
+        }
+
+        function updateDebtAmount(value) {
+            const cleanValue = parseFloat(value.replace(/,/g, '')) || 0;
+            debtData.currentDebt = cleanValue;
+            document.getElementById('currentDebtAmount').textContent = `$${cleanValue.toLocaleString()}`;
+            updateDebtChart();
+            updateDebtSummary();
+        }
+
         // Generate AI portfolio insights (automated based on live data)
         function generateAIInsights() {
             const { currentValue, targetValue } = calculatePortfolioValue();
@@ -1148,6 +1515,8 @@
 
         // Initialize
         updateAll();
+        updateDebtChart();
+        updateDebtSummary();
         renderCards(true);
         renderCryptoCards(true);
         updatePrices();
