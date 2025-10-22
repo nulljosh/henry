@@ -291,9 +291,10 @@
                             <div style="font-weight: 600; color: #ff3b30; font-size: 14px; margin-bottom: 8px;">Current Debt Situation</div>
                             <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
                                 Total Debt: <strong id="currentDebtAmount" style="color: var(--text-primary);">$9,000</strong><br>
-                                iPhone 15 Pro Max: <strong style="color: var(--text-primary);">2 months remaining</strong> @ $67.50/mo<br>
-                                iPhone 17 Pro Max: <strong style="color: var(--text-primary);">36 months total</strong> @ $67.50/mo<br>
-                                <span style="color: #ff9500;">⚠️ Currently carrying dual phone payments for 2 months</span>
+                                iPhone 15 Pro Max: <strong style="color: var(--text-primary);">2 months remaining</strong> @ $167/mo<br>
+                                iPhone 17 Pro Max: <strong style="color: var(--text-primary);">36 months total</strong> @ $130/mo<br>
+                                <span style="color: #ff9500;">⚠️ Currently carrying dual phone payments for 2 months ($297/mo total)</span><br>
+                                <span style="color: #34c759;">✓ New payment is $37/mo cheaper after overlap ends</span>
                             </div>
                         </div>
                         <div style="text-align: right;">
@@ -484,17 +485,18 @@
             { category: 'Potential Income', amount: 1267, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Food', amount: 290, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 135, type: 'expense' },
+            { category: 'iPhone (Monthly)', amount: 297, type: 'expense' }, // Dual payments: $167 + $130 for 2 months
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
         // Debt tracking data
         let debtData = {
             currentDebt: 9000, // Current total debt ($8-10K range, using midpoint)
-            iPhone15Payment: 67.5, // Estimated monthly payment for iPhone 15 Pro Max
+            iPhone15Payment: 167, // Monthly payment for iPhone 15 Pro Max
             iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
-            iPhone17Payment: 67.5, // Estimated monthly payment for iPhone 17 Pro Max
+            iPhone17Payment: 130, // Monthly payment for iPhone 17 Pro Max (cheaper!)
             iPhone17Total: 36, // Total months for iPhone 17 Pro Max contract
+            dualPaymentMonths: 2, // Months carrying both payments ($297/mo total)
             interestRate: 0, // APR (0% for device payments typically)
             lastUpdated: Date.now()
         };
