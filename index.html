@@ -412,7 +412,6 @@
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Food', amount: 290, type: 'expense' },
             { category: 'iPhone (Monthly)', amount: 135, type: 'expense' },
-            { category: 'Apple Watch Ultra 3 (Monthly)', amount: 33, type: 'expense' },
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
@@ -425,7 +424,7 @@
 
         function calculateSurplus() {
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Apple Watch Ultra 3 (Monthly)') + get('Claude');
+            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
             return income - totalExpenses;
         }
 
