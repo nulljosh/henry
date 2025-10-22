@@ -321,7 +321,7 @@
                         <div>
                             <div style="font-weight: 600; color: #ff3b30; font-size: 14px; margin-bottom: 8px;">Current Debt</div>
                             <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
-                                Total: <strong id="currentDebtAmount" style="color: var(--text-primary);">$9,000</strong> •
+                                Collections: <strong id="currentDebtAmount" style="color: var(--text-primary);">$4,000</strong> <span style="color: #34c759;">(~50% settlement of $7,800)</span><br>
                                 iPhone 15: <strong>2 months left</strong> @ $167/mo •
                                 iPhone 17: <strong>36 months</strong> @ $130/mo<br>
                                 <span style="color: #ff9500;">⚠️ Dual payments for 2 months ($297/mo)</span> •
@@ -329,7 +329,7 @@
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <input type="text" id="debtInput" value="9,000"
+                            <input type="text" id="debtInput" value="4,000"
                                    style="width: 120px; font-size: 16px; font-weight: 600; color: #ff3b30;"
                                    onchange="updateDebtAmount(this.value)">
                             <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Edit debt amount</div>
@@ -517,7 +517,7 @@
 
         // Debt tracking data
         let debtData = {
-            currentDebt: 9000, // Current total debt ($8-10K range, using midpoint)
+            currentDebt: 4000, // Collections debt (~$7,800 original, settling for ~50%)
             iPhone15Payment: 167, // Monthly payment for iPhone 15 Pro Max
             iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
             iPhone17Payment: 130, // Monthly payment for iPhone 17 Pro Max (cheaper!)
