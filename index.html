@@ -1052,17 +1052,11 @@
             const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
 
             // Analyze portfolio composition
-            const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'APP', 'HOOD'];
+            const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'HOOD', 'NVDA'];
             const techExposure = Object.entries(stocks)
                 .filter(([sym]) => techStocks.includes(sym))
                 .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
             const techPercent = (techExposure / currentValue * 100).toFixed(0);
-
-            const safeHavenStocks = ['IAU', 'SLV'];
-            const safeHavenExposure = Object.entries(stocks)
-                .filter(([sym]) => safeHavenStocks.includes(sym))
-                .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
-            const safeHavenPercent = (safeHavenExposure / currentValue * 100).toFixed(0);
 
             // Top holdings by value
             const topHoldings = Object.entries(stocks)
@@ -1084,28 +1078,34 @@
             const insights = `
                 <div style="margin-bottom: 16px;">
                     <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
-                        Portfolio at <strong>$${Math.round(currentValue)}</strong> with <strong>+${potentialGain}%</strong> upside to targets (${techPercent}% tech, ${safeHavenPercent}% metals).
-                        Top positions: ${topHoldings.map(h => `${h.sym} ($${Math.round(h.value)})`).join(', ')}.
+                        <strong>Market Pullback Today</strong> – Portfolio down ~2.5% with broad weakness across holdings. All 6 positions red, but fundamentals intact. Current portfolio value: <strong>$${Math.round(currentValue)}</strong> targeting <strong>$${Math.round(targetValue)}</strong> (<strong>+${potentialGain}%</strong> upside). Core holdings: ${topHoldings.map(h => `<strong>${h.sym}</strong> ($${Math.round(h.value)})`).join(', ')}.
                     </p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Allocation Strategy ($500 Cash)</strong>
+                    <strong style="color: #7c3aed; font-size: 14px;">Your Holdings Today</strong>
                     <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        <strong>SPY</strong> $200 (40%) – Golden cross, broad market hedge, trend confirmed. <strong>QQQ</strong> $100 (20%) – Tech exposure, solid uptrend. <strong>AMZN</strong> $100 (20%) – Golden cross + neutral RSI, best entry setup. <strong>HOOD</strong> $50 (10%) – Oversold dip from $153.86, momentum play. <strong>BTC</strong> $50 (10%) – Healthy correction, support at $100k.
+                        <strong>PLTR</strong> -4.3% | <a href="https://finance.yahoo.com/quote/PLTR" target="_blank" style="color: #007aff;">$173.74</a> – Underperforming broad market; White House defense deal ($142B Saudi contract) is tailwind for long-term thesis. <strong>HOOD</strong> -6.1% | <a href="https://finance.yahoo.com/quote/HOOD" target="_blank" style="color: #007aff;">$123.81</a> – Retail headwind today but retail volumes often surge on weakness (accumulation play). <strong>NVDA</strong> -1.4% | <a href="https://finance.yahoo.com/quote/NVDA" target="_blank" style="color: #007aff;">$178.56</a> – Mizuho reiterated Outperform (95%+ AI inference/training chip share, $500B TAM by 2028).
                     </p>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <strong style="color: #7c3aed; font-size: 14px;">Technical Signals</strong>
+                    <strong style="color: #7c3aed; font-size: 14px;">Action Plan</strong>
                     <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                        <strong>Bullish:</strong> SPY golden cross near ATH, QQQ strong year (+21.65% YTD), BTC consolidating healthily. <strong>Caution:</strong> IAU/SLV RSI 81 (overbought, expect 5-10% pullback), AAPL at ATH with RSI 71, APP showing death cross. <strong>Avoid:</strong> ETH/SOL weak relative strength vs BTC.
+                        <strong>Dips = Buying Opportunity:</strong> HOOD and PLTR down 6-4% – if you have dry powder, this is a healthy pullback to add. NVDA's pullback is cosmetic given <a href="https://www.tipranks.com/news/aapl-nvda-or-pltr-which-tech-stock-is-the-most-attractive-pick" target="_blank" style="color: #007aff;">analyst strength</a>. <strong>Avoid Panic</strong> – SPY only -0.8%, sector rotation, not crash. <strong>Next Watch:</strong> Fed rate signals, Q4 earnings (AAPL/GOOGL in late Oct/Nov), PLTR defense contracts announcement.
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: #7c3aed; font-size: 14px;">Highest Upside Plays (by %):</strong>
+                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                        ${topOpportunities.slice(0, 2).map(opp => `<strong>${opp.sym}</strong>: ${opp.upside}% to $${opp.target} by ${opp.year}`).join(' • ')} – Focus on these for 2030 targets.
                     </p>
                 </div>
 
                 <div>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                        Q4 macro uncertainty ahead. DCA strategy: deploy $500 across broad exposure (60% equities via SPY/QQQ) + tactical plays (AMZN swing, HOOD dip). Wait for IAU/SLV pullback before adding. BTC consolidation is healthy, not bearish—treat as long-term allocation, not timing play. Your metals hedge (SLV +218% upside, IAU +118%) provides downside protection despite current overbought conditions.
+                        💡 <strong>Morning Mantra:</strong> You're 60% of the way to your $2,190 goal. Today's -2.5% pullback is noise. Your PLTR defense thesis + NVDA AI dominance + SPY broad market + HOOD retail momentum are structural, not cyclical. DCA any weakness under $120 (HOOD), $170 (PLTR). <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">Track SPY</a> for macro signal. See you tomorrow at open bell.
                     </p>
                 </div>
             `;
