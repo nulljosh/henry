@@ -408,12 +408,10 @@
         let data = [
             { category: 'Goal', amount: 2190, type: 'goal' },
             { category: 'Wallet / Savings', amount: 1816, type: 'asset' },
-            { category: 'iPhone Sale (One-time)', amount: 584, type: 'one-time' },
             { category: 'Potential Income', amount: 1267, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Food', amount: 290, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 77, type: 'expense' },
-            { category: 'Apple Watch Ultra 3 (Monthly)', amount: 33, type: 'expense' },
+            { category: 'iPhone (Monthly)', amount: 135, type: 'expense' },
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
@@ -426,7 +424,7 @@
 
         function calculateSurplus() {
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Apple Watch Ultra 3 (Monthly)') + get('Claude');
+            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
             return income - totalExpenses;
         }
 
