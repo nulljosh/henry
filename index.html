@@ -470,21 +470,21 @@
             { category: 'Goal', amount: 5000, type: 'goal' },
             { category: 'Wallet / Savings', amount: 1095, type: 'asset' }, // 1500 CAD * 0.73
             { category: 'Potential Income', amount: 1212, type: 'asset' },
-            { category: 'Income', amount: 774, type: 'income' },
+            { category: 'Income', amount: 1060, type: 'income' },
             { category: 'Debt', amount: 4000, type: 'debt' },
-            { category: 'Food', amount: 290, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 302, type: 'expense' }, // Dual payments: iPhone 15 $167 (2 months left) + iPhone 17 $135
+            { category: 'Food', amount: 300, type: 'expense' },
+            { category: 'iPhone (Monthly)', amount: 300, type: 'expense' }, // Currently $300 (dual payments), drops to $135 in 2 months when iPhone 15 paid off
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
         // Debt tracking data
         let debtData = {
             currentDebt: 4000, // Collections debt (~$7,800 original, settling for ~50%)
-            iPhone15Payment: 167, // Monthly payment for iPhone 15 Pro Max
-            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max (Nov, Dec)
-            iPhone17Payment: 135, // Monthly payment for iPhone 17 Pro Max
+            iPhone15Payment: 165, // Monthly payment for iPhone 15 Pro Max (2 months remaining)
+            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
+            iPhone17Payment: 135, // Monthly payment for iPhone 17 Pro Max (ongoing)
             iPhone17Total: 36, // Total months for iPhone 17 Pro Max contract
-            dualPaymentMonths: 2, // Months carrying both payments ($302/mo total)
+            dualPaymentMonths: 2, // Months carrying both payments ($300/mo total, then drops to $135)
             interestRate: 0, // APR (0% for device payments typically)
             lastUpdated: Date.now()
         };
