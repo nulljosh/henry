@@ -303,8 +303,8 @@
                     <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Debt Payoff Timeline</div>
                     <div style="font-size: 48px; font-weight: 700; color: #3b82f6; margin-bottom: 8px;" id="monthsToPayoffHero">~7 months</div>
                     <div style="font-size: 15px; color: var(--text-secondary); line-height: 1.6;">
-                        <strong id="monthlySavingsHero">$560/mo</strong> savings (<span id="currentIncomeHero">$1,060</span> income − <span id="currentExpensesHero">$500</span> expenses) → Target <strong>$4,500</strong> → Pay off <strong>$4,000</strong> debt<br>
-                        <span style="font-size: 13px; color: #34c759; margin-top: 8px; display: inline-block;">You're currently at <strong id="currentSavingsHero">$850</strong> saved</span>
+                        <strong id="monthlySavingsHero">$162/mo</strong> savings (<span id="currentIncomeHero">$774</span> income − <span id="currentExpensesHero">$612</span> expenses) → Target <strong>$4,500</strong> → Pay off <strong>$4,000</strong> debt<br>
+                        <span style="font-size: 13px; color: #34c759; margin-top: 8px; display: inline-block;">You're currently at <strong id="currentSavingsHero">$1,136</strong> saved</span>
                     </div>
                 </div>
 
@@ -423,13 +423,13 @@
 
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
-            { category: 'Goal', amount: 2190, type: 'goal' },
+            { category: 'Goal', amount: 4500, type: 'goal' },
             { category: 'Wallet / Savings', amount: 1136, type: 'asset' },
-            { category: 'Potential Income', amount: 1374, type: 'asset' },
+            { category: 'Potential Income', amount: 1212, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Debt', amount: 4000, type: 'debt' },
             { category: 'Food', amount: 290, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 297, type: 'expense' }, // Dual payments: $167 + $130 for 2 months
+            { category: 'iPhone (Monthly)', amount: 302, type: 'expense' }, // Dual payments: iPhone 15 $167 (2 months left) + iPhone 17 $135
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
@@ -437,10 +437,10 @@
         let debtData = {
             currentDebt: 4000, // Collections debt (~$7,800 original, settling for ~50%)
             iPhone15Payment: 167, // Monthly payment for iPhone 15 Pro Max
-            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
-            iPhone17Payment: 130, // Monthly payment for iPhone 17 Pro Max (cheaper!)
+            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max (Nov, Dec)
+            iPhone17Payment: 135, // Monthly payment for iPhone 17 Pro Max
             iPhone17Total: 36, // Total months for iPhone 17 Pro Max contract
-            dualPaymentMonths: 2, // Months carrying both payments ($297/mo total)
+            dualPaymentMonths: 2, // Months carrying both payments ($302/mo total)
             interestRate: 0, // APR (0% for device payments typically)
             lastUpdated: Date.now()
         };
