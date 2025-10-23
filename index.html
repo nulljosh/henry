@@ -164,6 +164,11 @@
                 max-width: 100%;
                 height: 240px;
             }
+            .portfolio-chart-section > div:first-child {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
 
             /* Optimize payment scenarios for mobile - stack in 2x2 grid */
             .payment-scenarios-grid {
@@ -282,7 +287,16 @@
     <div class="container">
         <div class="card portfolio-card" style="margin-bottom: 24px;">
             <div class="chart-section portfolio-chart-section" style="border-top: none; padding-top: 24px;">
-                <h3 style="font-weight: 600; margin-bottom: 16px; color: var(--text-primary); letter-spacing: -0.3px;">Financial Overview</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="font-weight: 600; color: var(--text-primary); letter-spacing: -0.3px; margin: 0;">Financial Overview</h3>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Extra Income</span>
+                        <label class="toggle-switch" style="margin: 0;">
+                            <input type="checkbox" id="potentialIncomeToggle" onchange="togglePotentialIncome()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
 
                 <!-- Chart Legend -->
                 <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap;">
@@ -305,15 +319,6 @@
                         <!-- Dynamic chart content -->
                     </svg>
                     <div id="tooltip" class="tooltip"></div>
-                </div>
-
-                <div class="toggle-container">
-                    <span class="toggle-label">Use Extra Income</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="potentialIncomeToggle" onchange="togglePotentialIncome()">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <span class="toggle-label" id="currentIncomeLabel">($774)</span>
                 </div>
 
                 <!-- Debt Info Card -->
