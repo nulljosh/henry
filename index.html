@@ -489,15 +489,15 @@
             lastUpdated: Date.now()
         };
 
-        // Stock portfolio tracking (all USD values)
+        // Stock portfolio tracking (all USD values, prices as of Oct 2025)
         // Shares calculated from USD amounts: $100 AAPL, $195 SPY, $90 PLTR, $25 GOOGL, $37 NVDA, $38 HOOD
         let stocks = {
-            'AAPL': { current: 225, shares: 0.44, target: 300, year: 2030 },
-            'SPY': { current: 575, shares: 0.34, target: 750, year: 2030 },
-            'PLTR': { current: 45, shares: 2.0, target: 75, year: 2030 },
-            'GOOGL': { current: 165, shares: 0.15, target: 220, year: 2030 },
-            'NVDA': { current: 140, shares: 0.26, target: 200, year: 2030 },
-            'HOOD': { current: 35, shares: 1.09, target: 50, year: 2030 }
+            'PLTR': { current: 175.49, shares: 0.513, target: 450, year: 2030 },  // +157% / 2.6x
+            'HOOD': { current: 124.51, shares: 0.305, target: 300, year: 2030 },  // +141% / 2.4x
+            'NVDA': { current: 180.28, shares: 0.205, target: 400, year: 2030 },  // +122% / 2.2x
+            'AAPL': { current: 259.57, shares: 0.385, target: 550, year: 2030 },  // +112% / 2.1x
+            'GOOGL': { current: 251.69, shares: 0.099, target: 500, year: 2030 }, // +99% / 2.0x
+            'SPY': { current: 671.60, shares: 0.290, target: 1000, year: 2030 }   // +49% / 1.5x
         };
 
         let usePotentialIncome = false;
