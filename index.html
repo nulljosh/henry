@@ -337,7 +337,7 @@
                         <div>
                             <div style="font-size: 14px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600;">Savings Goal Progress</div>
                             <div style="font-size: 36px; font-weight: 700; color: white; margin-bottom: 4px;">
-                                <span id="currentSavingsHero">$1,136</span> <span style="font-size: 20px; opacity: 0.8;">/ $4,500</span>
+                                <span id="currentSavingsHero">$1,095</span> <span style="font-size: 20px; opacity: 0.8;">/ $5,000</span>
                             </div>
                             <div style="font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px;">
                                 <span id="monthlySavingsHero">$162</span>/mo savings • <span id="monthsToPayoffHero">~21 months</span> to goal
@@ -467,8 +467,8 @@
 
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
-            { category: 'Goal', amount: 4500, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 1136, type: 'asset' },
+            { category: 'Goal', amount: 5000, type: 'goal' },
+            { category: 'Wallet / Savings', amount: 1095, type: 'asset' }, // 1500 CAD * 0.73
             { category: 'Potential Income', amount: 1212, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Debt', amount: 4000, type: 'debt' },
@@ -487,6 +487,17 @@
             dualPaymentMonths: 2, // Months carrying both payments ($302/mo total)
             interestRate: 0, // APR (0% for device payments typically)
             lastUpdated: Date.now()
+        };
+
+        // Stock portfolio tracking (all USD values)
+        // Shares calculated from USD amounts: $100 AAPL, $195 SPY, $90 PLTR, $25 GOOGL, $37 NVDA, $38 HOOD
+        let stocks = {
+            'AAPL': { current: 225, shares: 0.44, target: 300, year: 2030 },
+            'SPY': { current: 575, shares: 0.34, target: 750, year: 2030 },
+            'PLTR': { current: 45, shares: 2.0, target: 75, year: 2030 },
+            'GOOGL': { current: 165, shares: 0.15, target: 220, year: 2030 },
+            'NVDA': { current: 140, shares: 0.26, target: 200, year: 2030 },
+            'HOOD': { current: 35, shares: 1.09, target: 50, year: 2030 }
         };
 
         let usePotentialIncome = false;
@@ -575,8 +586,8 @@
                 val = Math.max(val, previousValue);
                 previousValue = val;
 
-                // Debt pays off via lump sum when savings hit $4,500-$5,000
-                const debt = val >= 4500 ? 0 : debtData.currentDebt;
+                // Debt pays off via lump sum when savings hit $5,000
+                const debt = val >= 5000 ? 0 : debtData.currentDebt;
 
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
@@ -753,7 +764,7 @@
             for (let milestone = 0; milestone <= maxVal; milestone += stepSize) {
                 if (milestone >= minVal && milestone <= maxVal) {
                     const milestoneY = bottomY - ((milestone - minVal) / (maxVal - minVal)) * chartHeight;
-                    const isDebtPayoff = milestone === 4500;
+                    const isDebtPayoff = milestone === 5000;
 
                     // Subtle dashed line
                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -1233,6 +1244,19 @@
             updateSummary(); // Update net worth
         }
 
+        // Calculate portfolio value from stock holdings
+        function calculatePortfolioValue() {
+            let currentValue = 0;
+            let targetValue = 0;
+
+            Object.entries(stocks).forEach(([symbol, stock]) => {
+                currentValue += stock.current * stock.shares;
+                targetValue += stock.target * stock.shares;
+            });
+
+            return { currentValue, targetValue };
+        }
+
         // Generate AI portfolio insights (automated based on live data)
         function generateAIInsights() {
             try {
@@ -1356,7 +1380,7 @@
         function updateDebtPayoffHero() {
             const currentSavings = get('Wallet / Savings');
             const monthlyRate = calculateSurplus(); // Dynamic based on income/expenses
-            const targetSavings = 4500;
+            const targetSavings = 5000;
             const remainingNeeded = Math.max(0, targetSavings - currentSavings);
             const monthsToPayoff = remainingNeeded > 0 && monthlyRate > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
             const progressPercent = ((currentSavings / targetSavings) * 100).toFixed(0);
