@@ -77,7 +77,7 @@
         body { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-primary); overflow-x: hidden; transition: background 0.3s ease; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         html { overflow-x: hidden; scroll-behavior: smooth; }
         .header { background: var(--header-bg); border-bottom: none; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px; }
+        .header h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
         .container { max-width: 1280px; margin: 0 auto; padding: 24px; contain: layout; }
         .card { background: var(--bg-card); border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, box-shadow; contain: layout style paint; }
         .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px) translateZ(0); }
@@ -305,8 +305,6 @@
                     <span style="font-size: 11px; font-weight: 500; background: rgba(0, 122, 255, 0.1); color: #007aff; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">USD</span>
                 </h1>
                 <div style="display: flex; gap: 12px; margin-top: 2px;">
-                    <div id="lastUpdated" style="font-size: 11px; color: var(--text-secondary);">Loading...</div>
-                    <div style="font-size: 11px; color: var(--text-secondary);">•</div>
                     <div id="nextPayday" style="font-size: 11px; color: var(--text-secondary);">Next pay: 11/19, 12/17</div>
                 </div>
             </div>
@@ -339,7 +337,7 @@
                         <div>
                             <div style="font-size: 14px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600;">Savings Goal Progress</div>
                             <div style="font-size: 36px; font-weight: 700; color: white; margin-bottom: 4px;">
-                                <span id="currentSavingsHero">$1,136</span> <span style="font-size: 20px; opacity: 0.8;">/ $4,500</span>
+                                <span id="currentSavingsHero">$1,095</span> <span style="font-size: 20px; opacity: 0.8;">/ $5,000</span>
                             </div>
                             <div style="font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px;">
                                 <span id="monthlySavingsHero">$162</span>/mo savings • <span id="monthsToPayoffHero">~21 months</span> to goal
@@ -469,26 +467,37 @@
 
         // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
         let data = [
-            { category: 'Goal', amount: 4500, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 1136, type: 'asset' },
+            { category: 'Goal', amount: 5000, type: 'goal' },
+            { category: 'Wallet / Savings', amount: 1095, type: 'asset' }, // 1500 CAD * 0.73
             { category: 'Potential Income', amount: 1212, type: 'asset' },
-            { category: 'Income', amount: 774, type: 'income' },
+            { category: 'Income', amount: 1060, type: 'income' },
             { category: 'Debt', amount: 4000, type: 'debt' },
-            { category: 'Food', amount: 290, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 302, type: 'expense' }, // Dual payments: iPhone 15 $167 (2 months left) + iPhone 17 $135
+            { category: 'Food', amount: 300, type: 'expense' },
+            { category: 'iPhone (Monthly)', amount: 300, type: 'expense' }, // Currently $300 (dual payments), drops to $135 in 2 months when iPhone 15 paid off
             { category: 'Claude', amount: 20, type: 'expense' }
         ];
 
         // Debt tracking data
         let debtData = {
             currentDebt: 4000, // Collections debt (~$7,800 original, settling for ~50%)
-            iPhone15Payment: 167, // Monthly payment for iPhone 15 Pro Max
-            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max (Nov, Dec)
-            iPhone17Payment: 135, // Monthly payment for iPhone 17 Pro Max
+            iPhone15Payment: 165, // Monthly payment for iPhone 15 Pro Max (2 months remaining)
+            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
+            iPhone17Payment: 135, // Monthly payment for iPhone 17 Pro Max (ongoing)
             iPhone17Total: 36, // Total months for iPhone 17 Pro Max contract
-            dualPaymentMonths: 2, // Months carrying both payments ($302/mo total)
+            dualPaymentMonths: 2, // Months carrying both payments ($300/mo total, then drops to $135)
             interestRate: 0, // APR (0% for device payments typically)
             lastUpdated: Date.now()
+        };
+
+        // Stock portfolio tracking (all USD values, prices as of Oct 2025)
+        // Shares calculated from USD amounts: $100 AAPL, $195 SPY, $90 PLTR, $25 GOOGL, $37 NVDA, $38 HOOD
+        let stocks = {
+            'PLTR': { current: 175.49, shares: 0.513, target: 450, year: 2030 },  // +157% / 2.6x
+            'HOOD': { current: 124.51, shares: 0.305, target: 300, year: 2030 },  // +141% / 2.4x
+            'NVDA': { current: 180.28, shares: 0.205, target: 400, year: 2030 },  // +122% / 2.2x
+            'AAPL': { current: 259.57, shares: 0.385, target: 550, year: 2030 },  // +112% / 2.1x
+            'GOOGL': { current: 251.69, shares: 0.099, target: 500, year: 2030 }, // +99% / 2.0x
+            'SPY': { current: 671.60, shares: 0.290, target: 1000, year: 2030 }   // +49% / 1.5x
         };
 
         let usePotentialIncome = false;
@@ -577,8 +586,8 @@
                 val = Math.max(val, previousValue);
                 previousValue = val;
 
-                // Debt pays off via lump sum when savings hit $4,500-$5,000
-                const debt = val >= 4500 ? 0 : debtData.currentDebt;
+                // Debt pays off via lump sum when savings hit $5,000
+                const debt = val >= 5000 ? 0 : debtData.currentDebt;
 
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
@@ -755,7 +764,7 @@
             for (let milestone = 0; milestone <= maxVal; milestone += stepSize) {
                 if (milestone >= minVal && milestone <= maxVal) {
                     const milestoneY = bottomY - ((milestone - minVal) / (maxVal - minVal)) * chartHeight;
-                    const isDebtPayoff = milestone === 4500;
+                    const isDebtPayoff = milestone === 5000;
 
                     // Subtle dashed line
                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -1235,6 +1244,19 @@
             updateSummary(); // Update net worth
         }
 
+        // Calculate portfolio value from stock holdings
+        function calculatePortfolioValue() {
+            let currentValue = 0;
+            let targetValue = 0;
+
+            Object.entries(stocks).forEach(([symbol, stock]) => {
+                currentValue += stock.current * stock.shares;
+                targetValue += stock.target * stock.shares;
+            });
+
+            return { currentValue, targetValue };
+        }
+
         // Generate AI portfolio insights (automated based on live data)
         function generateAIInsights() {
             try {
@@ -1358,15 +1380,13 @@
         function updateDebtPayoffHero() {
             const currentSavings = get('Wallet / Savings');
             const monthlyRate = calculateSurplus(); // Dynamic based on income/expenses
-            const targetSavings = 4500;
+            const targetSavings = 5000;
             const remainingNeeded = Math.max(0, targetSavings - currentSavings);
             const monthsToPayoff = remainingNeeded > 0 && monthlyRate > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
             const progressPercent = ((currentSavings / targetSavings) * 100).toFixed(0);
 
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
             const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
-
-            console.log('DEBUG:', { usePotentialIncome, income, monthlyRate, remainingNeeded, monthsToPayoff, progressPercent });
 
             document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ Goal Reached!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
             document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
