@@ -463,6 +463,7 @@
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
             document.getElementById('currentIncomeLabel').textContent = `($${income.toLocaleString()})`;
             updateAll();
+            updateDebtPayoffHero();
         }
 
         function calculateNeeded() {
@@ -1312,10 +1313,10 @@
         // Calculate debt payoff timeline
         function updateDebtPayoffHero() {
             const currentSavings = get('Wallet / Savings');
-            const monthlyRate = 560; // $1060 income - $500 expenses
+            const monthlyRate = calculateSurplus(); // Dynamic based on income/expenses
             const targetSavings = 4500;
             const remainingNeeded = Math.max(0, targetSavings - currentSavings);
-            const monthsToPayoff = remainingNeeded > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
+            const monthsToPayoff = remainingNeeded > 0 && monthlyRate > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
 
             document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ PAID OFF!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
             document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
