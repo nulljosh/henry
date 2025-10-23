@@ -333,10 +333,8 @@
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <input type="text" id="debtInput" value="4,000"
-                                   style="width: 120px; font-size: 16px; font-weight: 600; color: #ff3b30;"
-                                   onchange="updateDebtAmount(this.value)">
-                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Edit debt amount</div>
+                            <div id="debtInput" style="font-size: 16px; font-weight: 600; color: #ff3b30;">$4,000</div>
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Collections Debt</div>
                         </div>
                     </div>
                 </div>
@@ -363,63 +361,64 @@
             </div>
         </div>
 
-        <!-- AI Portfolio Insights -->
+        <!-- Financial Dashboard -->
         <div class="card" style="margin-top: 24px; margin-bottom: 24px;">
-            <div class="collapse-header" onclick="toggleInsights()">
-                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Market Insights</h3>
-                <span class="collapse-arrow" id="insightsArrow">▼</span>
+            <div class="collapse-header" onclick="toggleDashboard()">
+                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Financial Dashboard</h3>
+                <span class="collapse-arrow" id="dashboardArrow">▼</span>
             </div>
-            <div class="collapsible-content" id="insightsContent">
+            <div class="collapsible-content" id="dashboardContent">
                 <div style="padding: 24px; background: var(--bg-secondary);">
-                    <div id="aiInsights" style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">
-                        <div style="margin-bottom: 16px;">
-                            <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
-                                <strong style="color: #93c5fd;">Steady</strong> Current value: <strong>$278</strong> → Target <strong>$597</strong> (<strong style="color: #6ee7b7;">+115.1%</strong> upside). Progress: <strong style="color: #f59e0b;">13%</strong> to $2,190 goal. Core: <strong>PLTR</strong> $78 • <strong>NVDA</strong> $33 • <strong>SPY</strong> $163.
-                            </p>
-                        </div>
+                    <!-- Insights Section -->
+                    <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border-color);">
+                        <h4 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px;">Market Insights</h4>
+                        <div id="aiInsights" style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">
+                            <div style="margin-bottom: 16px;">
+                                <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
+                                    <strong style="color: #93c5fd;">Steady Growth</strong> Portfolio: <strong>$278</strong> (13% to $2,190 goal). With $500/mo invested, you'll hit debt payoff target ($4,500) in 8 months. After lump-sum settlement, redirect $400/mo debt payment → investments to accelerate 2030 targets.
+                                </p>
+                            </div>
 
-                        <div style="margin-bottom: 16px;">
-                            <strong style="color: #7c3aed; font-size: 14px;">Top Opportunities (by upside %):</strong>
-                            <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                                <strong>PLTR</strong> 0.45 shares @ $173.46: <strong style="color: #6ee7b7;">+128%</strong> to $395 (2030) • <strong>NVDA</strong> 0.1864 shares @ $178.47: <strong style="color: #6ee7b7;">+140%</strong> to $428 (2030) • <strong>SPY</strong> 0.2453 shares @ $665.72: <strong style="color: #6ee7b7;">+64%</strong> to $1095 (2030)
-                            </p>
-                        </div>
+                            <div style="margin-bottom: 16px;">
+                                <strong style="color: #7c3aed; font-size: 14px;">Strategic Priorities:</strong>
+                                <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                                    <strong>Q4 2024:</strong> Reach $4,500 savings milestone → eliminate debt. <strong>2025:</strong> Resume $900/mo DCA split (50% index, 50% concentrated bets). Prioritize <strong>PLTR</strong> (best risk/reward) and <strong>NVDA</strong> (AI thesis). Maintain SPY core (60%) as portfolio anchor.
+                                </p>
+                            </div>
 
-                        <div style="margin-bottom: 16px;">
-                            <strong style="color: #7c3aed; font-size: 14px;">Tactical Alert</strong>
-                            <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                                Signal: <strong style="color: #93c5fd;">hold and observe</strong>. Biggest movers: <strong>NVDA</strong> $178.47, <strong>PLTR</strong> $173.46. Check <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">SPY</a> for macro context. <a href="https://www.cnbc.com/quotes/AAPL,%20AAPL,%20GOOGL,%20TSLA,%20MSFT,%20NVDA" target="_blank" style="color: #007aff;">Market news →</a>
-                            </p>
-                        </div>
+                            <div style="margin-bottom: 16px;">
+                                <strong style="color: #7c3aed; font-size: 14px;">Allocation Shift Opportunity:</strong>
+                                <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                                    Post-debt, scale allocation: 40% SPY (stability), 35% PLTR (growth), 15% NVDA (AI exposure), 10% cash reserve. This positioning captures both macro tailwinds and growth upside to 2030.
+                                </p>
+                            </div>
 
-                        <div>
-                            <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                                <strong>Strategy:</strong> Stay focused on 2030 targets. Tech thesis intact (95% allocation). DCA weakness. You've built $278 in 13% to goal – momentum is on your side.
-                            </p>
+                            <div>
+                                <strong style="color: #7c3aed; font-size: 14px;">Next Steps:</strong>
+                                <p style="margin: 8px 0 0 0; color: var(--text-secondary); font-size: 13px;">
+                                    Stay disciplined on $500 monthly. Once debt clears Q1 2025, target $1,200+/mo to compound aggressively. Your timeline is tight but achievable—momentum compounds fastest in years 5-6. Focus on consistency over perfection.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="card">
-            <div class="collapse-header" onclick="toggleBudget()">
-                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Budget Details</h3>
-                <span class="collapse-arrow" id="budgetArrow">▼</span>
-            </div>
-            <div class="collapsible-content" id="budgetContent">
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataTable">
-                            <!-- Dynamic content -->
-                        </tbody>
-                    </table>
+                    <!-- Budget Section -->
+                    <div>
+                        <h4 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px;">Budget Breakdown</h4>
+                        <div class="table-wrapper">
+                            <table style="font-size: 14px;">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -700,17 +699,20 @@
             portfolioLine.setAttribute('opacity', '0.9');
             svg.appendChild(portfolioLine);
 
-            // 2. Debt line (orange)
-            const debtPoints = chartData.map((d, i) =>
-                `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.debt-minVal)/(maxVal-minVal)) * chartHeight}`
-            ).join(' ');
-            const debtLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-            debtLine.setAttribute('points', debtPoints);
-            debtLine.setAttribute('fill', 'none');
-            debtLine.setAttribute('stroke', '#ff9500');
-            debtLine.setAttribute('stroke-width', '2.5');
-            debtLine.setAttribute('opacity', '0.8');
-            svg.appendChild(debtLine);
+            // 2. Debt line (orange) - only show if there's debt
+            const hasDebt = chartData.some(d => d.debt > 0);
+            if (hasDebt) {
+                const debtPoints = chartData.map((d, i) =>
+                    `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.debt-minVal)/(maxVal-minVal)) * chartHeight}`
+                ).join(' ');
+                const debtLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                debtLine.setAttribute('points', debtPoints);
+                debtLine.setAttribute('fill', 'none');
+                debtLine.setAttribute('stroke', '#ff9500');
+                debtLine.setAttribute('stroke-width', '2.5');
+                debtLine.setAttribute('opacity', '0.8');
+                svg.appendChild(debtLine);
+            }
 
             // 3. Net Worth line (blue) - thicker to emphasize
             const netWorthPoints = chartData.map((d, i) =>
@@ -934,6 +936,13 @@
         function toggleInsights() {
             const content = document.getElementById('insightsContent');
             const arrow = document.getElementById('insightsArrow');
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
+
+        function toggleDashboard() {
+            const content = document.getElementById('dashboardContent');
+            const arrow = document.getElementById('dashboardArrow');
             content.classList.toggle('open');
             arrow.classList.toggle('open');
         }
