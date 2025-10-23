@@ -301,10 +301,10 @@
                 <!-- Debt Payoff Hero -->
                 <div style="background: linear-gradient(135deg, rgba(147, 197, 253, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%); border-radius: 16px; padding: 40px 32px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.2);">
                     <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Debt Payoff Timeline</div>
-                    <div style="font-size: 48px; font-weight: 700; color: #3b82f6; margin-bottom: 8px;" id="monthsToPayoffHero">~7 months</div>
+                    <div style="font-size: 48px; font-weight: 700; color: #3b82f6; margin-bottom: 8px;" id="monthsToPayoffHero">~21 months</div>
                     <div style="font-size: 15px; color: var(--text-secondary); line-height: 1.6;">
-                        <strong id="monthlySavingsHero">$162/mo</strong> savings (<span id="currentIncomeHero">$774</span> income − <span id="currentExpensesHero">$612</span> expenses) → Target <strong>$4,500</strong> → Pay off <strong>$4,000</strong> debt<br>
-                        <span style="font-size: 13px; color: #34c759; margin-top: 8px; display: inline-block;">You're currently at <strong id="currentSavingsHero">$1,136</strong> saved</span>
+                        <strong id="monthlySavingsHero">$162/mo</strong> (<span id="currentIncomeHero">$774</span> − <span id="currentExpensesHero">$612</span>) × <span id="monthsMultiplier">21</span> = <strong>$3,364 needed</strong><br>
+                        <span style="font-size: 13px; color: #34c759; margin-top: 8px; display: inline-block;">Currently saved: <strong id="currentSavingsHero">$1,136</strong> / Target: <strong>$4,500</strong></span>
                     </div>
                 </div>
 
@@ -1319,11 +1319,14 @@
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
             const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
 
+            console.log('DEBUG:', { usePotentialIncome, income, monthlyRate, remainingNeeded, monthsToPayoff });
+
             document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ PAID OFF!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
             document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
             document.getElementById('monthlySavingsHero').textContent = `$${monthlyRate.toLocaleString()}/mo`;
             document.getElementById('currentIncomeHero').textContent = `$${income.toLocaleString()}`;
             document.getElementById('currentExpensesHero').textContent = `$${totalExpenses.toLocaleString()}`;
+            document.getElementById('monthsMultiplier').textContent = monthsToPayoff;
         }
 
         // Initialize
