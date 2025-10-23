@@ -983,16 +983,16 @@
 
         // Stock targets using 5yr CAGR quant model: Tech/growth 12-15%, Mega-cap 10-12%, Metals 7% (inflation hedge)
         const stocks = {
-            'AAPL': { current: 256.62, target: 416, year: 2030, shares: 0.346 },
-            'GOOGL': { current: 251.13, target: 353, year: 2030, shares: 0.1 },
-            'PLTR': { current: 173.458, target: 395, year: 2030, shares: 0.45 },
-            'SPY': { current: 665.72, target: 1095, year: 2030, shares: 0.2453 },
-            'HOOD': { current: 123.474, target: 281, year: 2030, shares: 0.2878 },
-            'NVDA': { current: 178.47, target: 428, year: 2030, shares: 0.1864 },
-            'AMZN': { current: 217.06, target: 521, year: 2030, shares: 0 },
-            'APP': { current: 563.62, target: 1135, year: 2030, shares: 0 },
-            'IAU': { current: 76.794, target: 108, year: 2030, shares: 0 },
-            'SLV': { current: 43.61, target: 61, year: 2030, shares: 0 }
+            'AAPL': { current: 262.77, target: 416, year: 2030, shares: 0.346, lastYear: 228.65 },
+            'GOOGL': { current: 251.13, target: 353, year: 2030, shares: 0.1, lastYear: 205.42 },
+            'PLTR': { current: 181.51, target: 395, year: 2030, shares: 0.45, lastYear: 68.92 },
+            'SPY': { current: 671.29, target: 1095, year: 2030, shares: 0.2453, lastYear: 578.40 },
+            'HOOD': { current: 123.474, target: 281, year: 2030, shares: 0.2878, lastYear: 58.20 },
+            'NVDA': { current: 181.16, target: 428, year: 2030, shares: 0.1864, lastYear: 123.45 },
+            'AMZN': { current: 217.06, target: 521, year: 2030, shares: 0, lastYear: 180.30 },
+            'APP': { current: 563.62, target: 1135, year: 2030, shares: 0, lastYear: 487.50 },
+            'IAU': { current: 76.794, target: 108, year: 2030, shares: 0, lastYear: 73.20 },
+            'SLV': { current: 43.61, target: 61, year: 2030, shares: 0, lastYear: 31.80 }
         };
 
         // Crypto watchlist (not holdings, just tracking)
@@ -1121,12 +1121,14 @@
             // Build HTML with separator
             const buildStockRow = ([sym, s]) => {
                 const gain = Math.round(((s.target - s.current) / s.current) * 100);
+                const yoyGain = Math.round(((s.current - s.lastYear) / s.lastYear) * 100);
+                const yoyColor = yoyGain >= 0 ? '#34c759' : '#ff3b30';
                 const currentValue = (s.current * s.shares).toFixed(2);
                 return `<div class="stock-row">
                     <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">
                         <div class="stock-left">
                             <div class="stock-symbol">${sym}</div>
-                            <div class="stock-prices">${s.shares} shares • $${s.current.toLocaleString()} → $${s.target.toLocaleString()} (${s.year})</div>
+                            <div class="stock-prices">${s.shares} shares • $${s.current.toLocaleString()} → $${s.target.toLocaleString()} (${s.year}) • <span style="color: ${yoyColor}; font-weight: 500;">YoY: ${yoyGain >= 0 ? '+' : ''}${yoyGain}%</span></div>
                         </div>
                         <div class="stock-gain">+${gain}%</div>
                     </a>
