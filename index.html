@@ -629,7 +629,7 @@
                 // Find max/min across all three metrics
                 const allValues = chartData.flatMap(d => [d.val, d.debt, d.netWorth]);
                 const maxVal = Math.max(...allValues);
-                const minVal = Math.min(...allValues);
+                const minVal = 0; // Always start at $0
                 const svg = document.getElementById('chart');
 
             // Fixed dimensions
@@ -737,9 +737,9 @@
             hoverCircle.setAttribute('id', 'hoverCircle');
             svg.appendChild(hoverCircle);
 
-            // Add milestone markers at fixed intervals (0, 2000, 4000, 6000, etc.)
+            // Add milestone markers at fixed intervals (0, 2000, 4000, 6000, etc.) - lines only, no right labels
             const stepSize = 2000;
-            for (let milestone = Math.floor(minVal / stepSize) * stepSize; milestone <= maxVal; milestone += stepSize) {
+            for (let milestone = 0; milestone <= maxVal; milestone += stepSize) {
                 if (milestone >= minVal && milestone <= maxVal) {
                     const milestoneY = bottomY - ((milestone - minVal) / (maxVal - minVal)) * chartHeight;
                     const isDebtPayoff = milestone === 4500;
@@ -755,19 +755,6 @@
                     line.setAttribute('stroke-dasharray', '4,4');
                     line.setAttribute('opacity', isDebtPayoff ? '0.4' : '0.15');
                     svg.appendChild(line);
-
-                    // Show label for all milestones
-                    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    label.setAttribute('x', '958');
-                    label.setAttribute('y', milestoneY - 6);
-                    label.setAttribute('text-anchor', 'end');
-                    label.setAttribute('font-size', '11');
-                    label.setAttribute('font-weight', '600');
-                    label.setAttribute('fill', isDebtPayoff ? '#ff9500' : '#86868b');
-                    label.setAttribute('opacity', isDebtPayoff ? '0.9' : '0.5');
-                    label.setAttribute('letter-spacing', '0.3');
-                    label.textContent = isDebtPayoff ? 'DEBT OFF' : `$${milestone.toLocaleString()}`;
-                    svg.appendChild(label);
                 }
             }
 
