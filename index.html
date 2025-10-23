@@ -298,27 +298,14 @@
                     </div>
                 </div>
 
-                <!-- Chart Legend -->
-                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 20px; height: 3px; background: #4ade80; border-radius: 2px;"></div>
-                        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Portfolio</span>
+                <!-- Debt Payoff Hero -->
+                <div style="background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(255, 59, 48, 0.15) 100%); border-radius: 16px; padding: 40px 32px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(255, 59, 48, 0.2);">
+                    <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Debt Payoff Timeline</div>
+                    <div style="font-size: 48px; font-weight: 700; color: #ff9500; margin-bottom: 8px;" id="monthsToPayoffHero">~7 months</div>
+                    <div style="font-size: 15px; color: var(--text-secondary); line-height: 1.6;">
+                        <strong>$560/mo savings</strong> ($1,060 income − $500 expenses) → Target <strong>$4,500</strong> → Pay off <strong>$4,000</strong> debt<br>
+                        <span style="font-size: 13px; color: #34c759; margin-top: 8px; display: inline-block;">You're currently at <strong id="currentSavingsHero">$850</strong> saved</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 20px; height: 3px; background: #ff9500; border-radius: 2px;"></div>
-                        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Debt</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 20px; height: 3px; background: #2563eb; border-radius: 2px;"></div>
-                        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Net Worth</span>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <svg id="chart" viewBox="0 0 1000 500" class="chart" preserveAspectRatio="xMidYMid meet">
-                        <!-- Dynamic chart content -->
-                    </svg>
-                    <div id="tooltip" class="tooltip"></div>
                 </div>
 
                 <!-- Debt Info Card -->
@@ -329,7 +316,7 @@
                             <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
                                 Collections: <strong id="currentDebtAmount" style="color: var(--text-primary);">$4,000</strong> <span style="color: #34c759;">(~50% settlement of $7,800)</span><br>
                                 <span style="color: #34c759;">✓ Paying off in lump sum</span><br>
-                                iPhone 15: <strong>2 months left</strong> @ $167/mo • iPhone 17: <strong>36 months</strong> @ $130/mo
+                                iPhone 15: <strong>2 months left</strong> @ $167/mo • iPhone 17: <strong>24 months</strong> @ $135/mo
                             </div>
                         </div>
                         <div style="text-align: right;">
@@ -1340,10 +1327,23 @@
             }
         }
 
+        // Calculate debt payoff timeline
+        function updateDebtPayoffHero() {
+            const currentSavings = get('Wallet / Savings');
+            const monthlyRate = 560; // $1060 income - $500 expenses
+            const targetSavings = 4500;
+            const remainingNeeded = Math.max(0, targetSavings - currentSavings);
+            const monthsToPayoff = remainingNeeded > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
+
+            document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ PAID OFF!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
+            document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
+        }
+
         // Initialize
         updateAll();
         updateDebtSummary(); // Calculate debt payoff stats
         generateAIInsights();
+        updateDebtPayoffHero();
     </script>
 </body>
 </html>
