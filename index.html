@@ -564,9 +564,8 @@
                 val = Math.max(val, previousValue);
                 previousValue = val;
 
-                // Get debt at this month (0 if paid off)
-                const debtEntry = debtTimeline[i - 1];
-                const debt = debtEntry ? debtEntry.debt : 0;
+                // Debt pays off via lump sum when savings hit $4,500-$5,000
+                const debt = val >= 4500 ? 0 : debtData.currentDebt;
 
                 chartData.push({
                     month: monthYear.replace(/(\d{2})$/, "'$1"),
