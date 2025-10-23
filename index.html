@@ -303,7 +303,7 @@
                     <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Debt Payoff Timeline</div>
                     <div style="font-size: 48px; font-weight: 700; color: #3b82f6; margin-bottom: 8px;" id="monthsToPayoffHero">~7 months</div>
                     <div style="font-size: 15px; color: var(--text-secondary); line-height: 1.6;">
-                        <strong>$560/mo savings</strong> ($1,060 income − $500 expenses) → Target <strong>$4,500</strong> → Pay off <strong>$4,000</strong> debt<br>
+                        <strong id="monthlySavingsHero">$560/mo</strong> savings (<span id="currentIncomeHero">$1,060</span> income − <span id="currentExpensesHero">$500</span> expenses) → Target <strong>$4,500</strong> → Pay off <strong>$4,000</strong> debt<br>
                         <span style="font-size: 13px; color: #34c759; margin-top: 8px; display: inline-block;">You're currently at <strong id="currentSavingsHero">$850</strong> saved</span>
                     </div>
                 </div>
@@ -425,7 +425,7 @@
         let data = [
             { category: 'Goal', amount: 2190, type: 'goal' },
             { category: 'Wallet / Savings', amount: 1136, type: 'asset' },
-            { category: 'Potential Income', amount: 1267, type: 'asset' },
+            { category: 'Potential Income', amount: 1374, type: 'asset' },
             { category: 'Income', amount: 774, type: 'income' },
             { category: 'Debt', amount: 4000, type: 'debt' },
             { category: 'Food', amount: 290, type: 'expense' },
@@ -460,10 +460,7 @@
 
         function togglePotentialIncome() {
             usePotentialIncome = document.getElementById('potentialIncomeToggle').checked;
-            const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            document.getElementById('currentIncomeLabel').textContent = `($${income.toLocaleString()})`;
             updateAll();
-            updateDebtPayoffHero();
         }
 
         function calculateNeeded() {
@@ -879,6 +876,7 @@
             updateTable();
             updateChart();
             updateSummary();
+            updateDebtPayoffHero();
         }
 
         // Stock targets using 5yr CAGR quant model: Tech/growth 12-15%, Mega-cap 10-12%, Metals 7% (inflation hedge)
@@ -1318,8 +1316,14 @@
             const remainingNeeded = Math.max(0, targetSavings - currentSavings);
             const monthsToPayoff = remainingNeeded > 0 && monthlyRate > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
 
+            const income = usePotentialIncome ? get('Potential Income') : get('Income');
+            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
+
             document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ PAID OFF!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
             document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
+            document.getElementById('monthlySavingsHero').textContent = `$${monthlyRate.toLocaleString()}/mo`;
+            document.getElementById('currentIncomeHero').textContent = `$${income.toLocaleString()}`;
+            document.getElementById('currentExpensesHero').textContent = `$${totalExpenses.toLocaleString()}`;
         }
 
         // Initialize
