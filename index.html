@@ -12,17 +12,22 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg-primary: #f5f5f7;
-            --bg-secondary: #fafafa;
+            --bg-primary: #f6f8fa;
+            --bg-secondary: #ffffff;
             --bg-card: #ffffff;
             --text-primary: #1d1d1f;
-            --text-secondary: #86868b;
-            --border-color: rgba(0,0,0,0.06);
-            --shadow-sm: 0 2px 16px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
-            --header-bg: rgba(255, 255, 255, 0.8);
-            --input-bg: #f5f5f7;
-            --input-hover: #ebebed;
+            --text-secondary: #6c757d;
+            --border-color: #e0e6ed;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+            --header-bg: #00a68f;
+            --input-bg: #f6f8fa;
+            --input-hover: #e9ecef;
+            --mint-primary: #00a68f;
+            --mint-secondary: #2ac98d;
+            --mint-income: #05bf85;
+            --mint-expense: #e75757;
+            --mint-warning: #ffb74d;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -69,10 +74,10 @@
             --input-hover: #3a3a3c;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-primary); overflow-x: hidden; transition: background 0.3s ease; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-primary); overflow-x: hidden; transition: background 0.3s ease; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         html { overflow-x: hidden; scroll-behavior: smooth; }
-        .header { background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-color); padding: 12px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; contain: layout style; }
-        .header h1 { font-size: 20px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; }
+        .header { background: var(--header-bg); border-bottom: none; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px; }
         .container { max-width: 1280px; margin: 0 auto; padding: 24px; contain: layout; }
         .card { background: var(--bg-card); border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, box-shadow; contain: layout style paint; }
         .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px) translateZ(0); }
@@ -91,13 +96,43 @@
         input:hover { background: var(--input-hover); }
         input:focus { background: var(--bg-card); border-color: #007aff; box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1); }
         
-        .goal { color: #059669; font-weight: 600; }
-        .asset { color: #2563eb; font-weight: 600; }
-        .income { color: #059669; font-weight: 600; }
-        .expense { color: #dc2626; }
-        .calculated { color: #7c3aed; font-weight: 600; }
-        .debt { color: #ff3b30; font-weight: 600; }
-        .one-time { color: #f59e0b; font-weight: 600; }
+        .goal { color: var(--mint-primary); font-weight: 600; }
+        .asset { color: var(--mint-primary); font-weight: 600; }
+        .income { color: var(--mint-income); font-weight: 600; }
+        .expense { color: var(--mint-expense); }
+        .calculated { color: var(--mint-primary); font-weight: 600; }
+        .debt { color: var(--mint-expense); font-weight: 600; }
+        .one-time { color: var(--mint-warning); font-weight: 600; }
+
+        /* Mint-style progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e6ed;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--mint-primary) 0%, var(--mint-secondary) 100%);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Mint-style badges */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-income { background: rgba(5, 191, 133, 0.1); color: var(--mint-income); }
+        .badge-expense { background: rgba(231, 87, 87, 0.1); color: var(--mint-expense); }
+        .badge-savings { background: rgba(0, 166, 143, 0.1); color: var(--mint-primary); }
         
         .chart-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
         .chart-container { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; min-height: 500px; }
@@ -298,25 +333,36 @@
                     </div>
                 </div>
 
-                <!-- Debt Payoff Hero -->
-                <div style="background: linear-gradient(135deg, rgba(147, 197, 253, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%); border-radius: 16px; padding: 40px 32px; text-align: center; margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.2);">
-                    <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Debt Payoff Timeline</div>
-                    <div style="font-size: 48px; font-weight: 700; color: #3b82f6; margin-bottom: 8px;" id="monthsToPayoffHero">~21 months</div>
-                    <div style="font-size: 15px; color: var(--text-secondary); line-height: 1.6;">
-                        <span style="font-size: 13px; color: #34c759; margin-bottom: 8px; display: inline-block;">Currently saved: <strong id="currentSavingsHero">$1,136</strong> / Target: <strong>$4,500</strong></span><br>
-                        <strong id="monthlySavingsHero">$162/mo</strong> (<span id="currentIncomeHero">$774</span> − <span id="currentExpensesHero">$612</span>) × <span id="monthsMultiplier">21</span> = <strong>$3,364 needed</strong>
+                <!-- Debt Payoff Hero - Mint Style -->
+                <div style="background: linear-gradient(135deg, var(--mint-primary) 0%, var(--mint-secondary) 100%); border-radius: 12px; padding: 32px; margin-bottom: 20px; box-shadow: var(--shadow-md);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 14px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600;">Savings Goal Progress</div>
+                            <div style="font-size: 36px; font-weight: 700; color: white; margin-bottom: 4px;">
+                                <span id="currentSavingsHero">$1,136</span> <span style="font-size: 20px; opacity: 0.8;">/ $4,500</span>
+                            </div>
+                            <div style="font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px;">
+                                <span id="monthlySavingsHero">$162</span>/mo savings • <span id="monthsToPayoffHero">~21 months</span> to goal
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 48px; font-weight: 700; color: white; line-height: 1;" id="savingsProgressPercent">25%</div>
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.5px;">Complete</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar" style="background: rgba(255,255,255,0.2); height: 12px;">
+                        <div class="progress-fill" id="savingsProgressBar" style="background: white; width: 25%;"></div>
+                    </div>
+                    <div style="font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 12px;">
+                        <span id="currentIncomeHero">$774</span> income − <span id="currentExpensesHero">$612</span> expenses = <span id="monthlySavingsHero2">$162</span>/mo
                     </div>
                 </div>
 
                 <!-- Summary Stats -->
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
                     <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('progressValue').textContent)" title="Click to copy">
                         <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">12.7%</div>
                         <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
-                    </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(255, 59, 48, 0.3);">
-                        <div id="monthsToPayoff" style="font-size: 18px; font-weight: 600; color: #ff9500;">Lump Sum</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Debt Payoff</div>
                     </div>
                     <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('netWorthValue').textContent)" title="Click to copy">
                         <div id="netWorthValue" style="font-size: 18px; font-weight: 600; color: #93c5fd;">-$7,686</div>
@@ -1315,18 +1361,29 @@
             const targetSavings = 4500;
             const remainingNeeded = Math.max(0, targetSavings - currentSavings);
             const monthsToPayoff = remainingNeeded > 0 && monthlyRate > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
+            const progressPercent = ((currentSavings / targetSavings) * 100).toFixed(0);
 
             const income = usePotentialIncome ? get('Potential Income') : get('Income');
             const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
 
-            console.log('DEBUG:', { usePotentialIncome, income, monthlyRate, remainingNeeded, monthsToPayoff });
+            console.log('DEBUG:', { usePotentialIncome, income, monthlyRate, remainingNeeded, monthsToPayoff, progressPercent });
 
-            document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ PAID OFF!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
+            document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ Goal Reached!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
             document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
-            document.getElementById('monthlySavingsHero').textContent = `$${monthlyRate.toLocaleString()}/mo`;
+            document.getElementById('monthlySavingsHero').textContent = `$${monthlyRate.toLocaleString()}`;
+            if (document.getElementById('monthlySavingsHero2')) {
+                document.getElementById('monthlySavingsHero2').textContent = `$${monthlyRate.toLocaleString()}`;
+            }
             document.getElementById('currentIncomeHero').textContent = `$${income.toLocaleString()}`;
             document.getElementById('currentExpensesHero').textContent = `$${totalExpenses.toLocaleString()}`;
-            document.getElementById('monthsMultiplier').textContent = monthsToPayoff;
+
+            // Update progress bar and percentage
+            if (document.getElementById('savingsProgressPercent')) {
+                document.getElementById('savingsProgressPercent').textContent = `${progressPercent}%`;
+            }
+            if (document.getElementById('savingsProgressBar')) {
+                document.getElementById('savingsProgressBar').style.width = `${progressPercent}%`;
+            }
         }
 
         // Initialize
