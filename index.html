@@ -1302,33 +1302,50 @@
 
         // Render stock list UI
         function renderStockList() {
-            const stockList = document.getElementById('stockList');
-            if (!stockList) return;
+            try {
+                const stockList = document.getElementById('stockList');
+                if (!stockList) {
+                    console.error('renderStockList: stockList element not found');
+                    return;
+                }
 
-            const { currentValue, targetValue } = calculatePortfolioValue();
-            const totalGain = ((targetValue - currentValue) / currentValue * 100).toFixed(0);
+                // Verify stocks object exists and has data
+                if (!stocks || Object.keys(stocks).length === 0) {
+                    console.error('renderStockList: stocks object is empty or undefined');
+                    stockList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No stocks in portfolio</div>';
+                    return;
+                }
 
-            // Update summary cards
-            document.getElementById('portfolioValue').textContent = `$${Math.round(currentValue).toLocaleString()}`;
-            document.getElementById('portfolioTarget').textContent = `$${Math.round(targetValue).toLocaleString()}`;
-            document.getElementById('portfolioGain').textContent = `+${totalGain}%`;
+                const { currentValue, targetValue } = calculatePortfolioValue();
+                const totalGain = ((targetValue - currentValue) / currentValue * 100).toFixed(0);
 
-            // Sort stocks by current value (descending)
-            const sortedStocks = Object.entries(stocks)
-                .map(([symbol, stock]) => ({
-                    symbol,
-                    ...stock,
-                    currentValue: stock.current * stock.shares,
-                    targetValue: stock.target * stock.shares
-                }))
-                .sort((a, b) => b.currentValue - a.currentValue);
+                // Update summary cards with error handling
+                const portfolioValueEl = document.getElementById('portfolioValue');
+                const portfolioTargetEl = document.getElementById('portfolioTarget');
+                const portfolioGainEl = document.getElementById('portfolioGain');
 
-            // Generate stock rows
-            stockList.innerHTML = sortedStocks.map(stock => {
-                const gain = ((stock.target - stock.current) / stock.current * 100).toFixed(0);
-                const gainValue = stock.targetValue - stock.currentValue;
+                if (portfolioValueEl) portfolioValueEl.textContent = `$${Math.round(currentValue).toLocaleString()}`;
+                if (portfolioTargetEl) portfolioTargetEl.textContent = `$${Math.round(targetValue).toLocaleString()}`;
+                if (portfolioGainEl) portfolioGainEl.textContent = `+${totalGain}%`;
 
-                return `
+                // Sort stocks by current value (descending)
+                const sortedStocks = Object.entries(stocks)
+                    .map(([symbol, stock]) => ({
+                        symbol,
+                        ...stock,
+                        currentValue: stock.current * stock.shares,
+                        targetValue: stock.target * stock.shares
+                    }))
+                    .sort((a, b) => b.currentValue - a.currentValue);
+
+                console.log(`renderStockList: Rendering ${sortedStocks.length} stocks`);
+
+                // Generate stock rows
+                stockList.innerHTML = sortedStocks.map(stock => {
+                    const gain = ((stock.target - stock.current) / stock.current * 100).toFixed(0);
+                    const gainValue = stock.targetValue - stock.currentValue;
+
+                    return `
                     <div class="stock-row">
                         <div class="stock-left">
                             <div class="stock-symbol">${stock.symbol}</div>
@@ -1346,7 +1363,12 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+                }).join('');
+
+                console.log('renderStockList: Stock list rendered successfully');
+            } catch (error) {
+                console.error('renderStockList: Error rendering stock list', error);
+            }
         }
 
         // Generate AI portfolio insights (automated based on live data)
@@ -1498,12 +1520,22 @@
             }
         }
 
-        // Initialize
-        updateAll();
-        updateDebtSummary(); // Calculate debt payoff stats
-        generateAIInsights();
-        updateDebtPayoffHero();
-        renderStockList(); // Render stock portfolio UI
+        // Initialize - wrap in DOMContentLoaded to ensure DOM is ready
+        function initialize() {
+            updateAll();
+            updateDebtSummary(); // Calculate debt payoff stats
+            renderStockList(); // Render stock portfolio UI BEFORE AI insights (which depends on portfolio value)
+            generateAIInsights();
+            updateDebtPayoffHero();
+        }
+
+        // Run initialization when DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            // DOM already loaded, run immediately
+            initialize();
+        }
     </script>
 </body>
 </html>
