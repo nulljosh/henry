@@ -1,34 +1,27 @@
-# [Henry](https://heyitsmejosh.com/henry)
+# Henry
 
 A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**TFSA Stock Holdings**: $406 USD
-**TFSA Cash**: $350 USD
-**Vacation Savings**: $1,060 USD
-**Total Liquid**: $1,816 USD (Target: $2,190) - **82.9% to goal!**
+**Stock Holdings**: $485 USD
+**Cash/Savings**: $1,095 USD
+**Total Liquid**: $1,580 USD (Target: $2,190) - **72.1% to goal!**
 
-### TFSA Holdings (5 stocks)
+### Stock Portfolio (6 holdings, sorted by growth potential)
 
-| Ticker | Shares | Price | Value | Target | Return |
-|--------|--------|-------|-------|--------|--------|
-| SPY | 0.2441 | $672.04 | $164.03 | $1,100 | +63.7% |
-| AAPL | 0.3453 | $263.52 | $91.00 | $450 | +70.8% |
-| PLTR | 0.4461 | $181.59 | $81.00 | $350 | +92.7% |
-| HOOD | 0.2724 | $135.81 | $37.00 | $250 | +84.1% |
-| NVDA | 0.1807 | $182.64 | $33.00 | $400 | +119.0% |
+| Ticker | Shares | Price | Value | 2030 Target | Return |
+|--------|--------|-------|-------|-------------|--------|
+| PLTR | 2.045 | $44.00 | $90 | $180 | +309% |
+| NVDA | 0.264 | $140.00 | $37 | $500 | +257% |
+| HOOD | 1.246 | $30.50 | $38 | $90 | +195% |
+| AAPL | 0.435 | $230.00 | $100 | $600 | +161% |
+| GOOGL | 0.149 | $168.00 | $25 | $400 | +138% |
+| SPY | 0.336 | $580.00 | $195 | $1,100 | +90% |
 
-### Watchlist (Target 2030)
+**Portfolio Total**: $485 → $1,112 by 2030 (+129% potential gain)
 
-| Ticker | Price | Target | Return |
-|--------|-------|--------|--------|
-| APP | $565.94 | $1,000 | +76.7% |
-| AMZN | $222.39 | $260 | +16.9% |
-| IAU | $82.48 | $180 | +118.2% |
-| SLV | $47.72 | $150 | +214.3% |
-
-*Last updated: Oct 21, 2025*
+*Last updated: Oct 23, 2024*
 
 ## Features
 
