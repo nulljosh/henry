@@ -21,6 +21,13 @@ A fund/portfolio management system for tracking investments and performance.
 
 **Portfolio Total**: $982 → $2,029 by 2030 (+107% potential gain)
 
+### Pending Orders (Executes Monday morning)
+
+| Ticker | Shares | Type | Est. Value |
+|--------|--------|------|------------|
+| TSLA | 0.0069 | Market buy | ~$3.00 |
+| ATZ | 0.0503 | Fractional buy | ~$3.49 |
+
 *Last updated: Oct 24, 2025 (prices auto-refresh every 15min)*
 
 ## Features
