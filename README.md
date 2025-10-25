@@ -25,11 +25,13 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Features
 
-- Portfolio tracking and analysis
-- Performance metrics and reporting
-- Fund management capabilities
-- Investment data visualization
-- [Bitcoin](https://heyitsmejosh.com/henry/bitcoin)
+- Real-time stock price updates (auto-refresh with 15min cache)
+- Interactive financial dashboard with savings goal tracking
+- Budget management with income/expense breakdown
+- Stock portfolio visualization with 2030 price targets
+- Net worth and monthly surplus calculations
+- Light/dark mode with responsive design
+- iOS app mockup (see `ios-index.html`)
 
 ## Usage
 
