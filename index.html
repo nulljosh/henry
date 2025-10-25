@@ -549,38 +549,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Pending Orders Section -->
-        <div class="card" style="margin-top: 24px; margin-bottom: 24px;">
-            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color);">
-                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Pending Orders</h3>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Executes Monday morning</div>
-            </div>
-            <div style="padding: 24px;">
-                <div class="stock-list">
-                    <div class="stock-row" style="background: linear-gradient(135deg, rgba(255, 183, 77, 0.1) 0%, rgba(255, 167, 38, 0.05) 100%); border: 1px solid rgba(255, 183, 77, 0.3);">
-                        <div class="stock-left">
-                            <div class="stock-symbol">TSLA</div>
-                            <div class="stock-prices">0.0069 shares • Market buy</div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">~$3.00</div>
-                            <div style="font-size: 13px; color: var(--mint-warning);">Pending</div>
-                        </div>
-                    </div>
-                    <div class="stock-row" style="background: linear-gradient(135deg, rgba(255, 183, 77, 0.1) 0%, rgba(255, 167, 38, 0.05) 100%); border: 1px solid rgba(255, 183, 77, 0.3);">
-                        <div class="stock-left">
-                            <div class="stock-symbol">ATZ</div>
-                            <div class="stock-prices">0.0503 shares • Fractional buy</div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">~$3.49</div>
-                            <div style="font-size: 13px; color: var(--mint-warning);">Pending</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="footer" style="padding-bottom: 40px;">Made with <svg class="heart" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.0 0 0 0 0-7.78z" fill="#FF4136"/></svg> in Vancouver, BC</div>
@@ -644,13 +612,9 @@
             'GOOGL': { current: 259.92, shares: 0.149, target: 480, year: 2030 }, // +85% / 1.9x (solid tech)
             'AAPL': { current: 262.82, shares: 0.435, target: 480, year: 2030 },  // +83% / 1.8x (mature tech)
             'HOOD': { current: 139.79, shares: 1.246, target: 250, year: 2030 },    // +79% / 1.8x (fintech growth)
-            'SPY': { current: 677.25, shares: 0.336, target: 1250, year: 2030 }   // +85% / 1.8x (market baseline)
-        };
-
-        // Pending orders (execute Monday morning)
-        let pendingOrders = {
-            'TSLA': { shares: 0.0069, orderType: 'Market buy', current: 433.72 },
-            'ATZ': { shares: 0.0503, orderType: 'Fractional buy', current: 69.39 }  // $95.05 CAD * 0.73
+            'SPY': { current: 677.25, shares: 0.336, target: 1250, year: 2030 },   // +85% / 1.8x (market baseline)
+            'TSLA': { current: 433.72, shares: 0.0069, target: 600, year: 2030 },   // +38% / 1.4x (EV leader)
+            'ATZ': { current: 69.39, shares: 0.0503, target: 120, year: 2030 }      // +73% / 1.7x (Canadian retail)
         };
 
         // Portfolio value cache

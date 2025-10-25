@@ -4,11 +4,11 @@ A fund/portfolio management system for tracking investments and performance.
 
 ## Current Portfolio
 
-**Stock Holdings**: $982 USD
+**Stock Holdings**: $989 USD
 **Cash/Savings**: $1,095 USD
-**Total Liquid**: $2,077 USD (Target: $5,000) - **41.5% to goal!**
+**Total Liquid**: $2,084 USD (Target: $5,000) - **41.7% to goal!**
 
-### Stock Portfolio (6 holdings, sorted by growth potential)
+### Stock Portfolio (8 holdings, sorted by growth potential)
 
 | Ticker | Shares | Price | Value | 2030 Target | Return |
 |--------|--------|-------|-------|-------------|--------|
@@ -18,15 +18,10 @@ A fund/portfolio management system for tracking investments and performance.
 | SPY | 0.336 | $677.25 | $228 | $1,250 | +85% |
 | AAPL | 0.435 | $262.82 | $114 | $480 | +83% |
 | HOOD | 1.246 | $139.79 | $174 | $250 | +79% |
+| ATZ | 0.0503 | $69.39 | $3 | $120 | +73% |
+| TSLA | 0.0069 | $433.72 | $3 | $600 | +38% |
 
-**Portfolio Total**: $982 → $2,029 by 2030 (+107% potential gain)
-
-### Pending Orders (Executes Monday morning)
-
-| Ticker | Shares | Type | Est. Value |
-|--------|--------|------|------------|
-| TSLA | 0.0069 | Market buy | ~$3.00 |
-| ATZ | 0.0503 | Fractional buy | ~$3.49 |
+**Portfolio Total**: $989 → $2,042 by 2030 (+107% potential gain)
 
 *Last updated: Oct 24, 2025 (prices auto-refresh every 15min)*
 
