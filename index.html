@@ -603,16 +603,112 @@
             lastUpdated: Date.now()
         };
 
-        // Stock portfolio tracking (all USD values, prices as of Oct 24 2025)
+        // Stock portfolio tracking (all USD values, prices auto-updated)
         // Shares calculated from USD amounts: $100 AAPL, $195 SPY, $90 PLTR, $25 GOOGL, $37 NVDA, $38 HOOD
         let stocks = {
-            'PLTR': { current: 184.63, shares: 2.045, target: 180, year: 2030 },   // -3% / 1.0x (already exceeded 2030 target!)
+            'PLTR': { current: 184.63, shares: 2.045, target: 320, year: 2030 },   // +73% / 1.7x
             'NVDA': { current: 186.26, shares: 0.264, target: 500, year: 2030 },  // +168% / 2.7x
-            'HOOD': { current: 139.79, shares: 1.246, target: 90, year: 2030 },    // -36% / 0.6x (already exceeded 2030 target!)
+            'HOOD': { current: 139.79, shares: 1.246, target: 220, year: 2030 },    // +57% / 1.6x
             'AAPL': { current: 262.82, shares: 0.435, target: 600, year: 2030 },  // +128% / 2.3x
             'GOOGL': { current: 259.92, shares: 0.149, target: 400, year: 2030 }, // +54% / 1.5x
             'SPY': { current: 677.25, shares: 0.336, target: 1100, year: 2030 }   // +62% / 1.6x
         };
+
+        // Portfolio value cache
+        let portfolioValueCache = null;
+        let portfolioValueCacheTime = 0;
+
+        // Stock price auto-refresh with caching and error handling
+        async function fetchStockPrice(symbol, timeout = 5000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(
+                    `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
+                    {
+                        signal: controller.signal,
+                        headers: { 'User-Agent': 'Mozilla/5.0' }
+                    }
+                );
+                clearTimeout(timeoutId);
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+
+                if (!price || isNaN(price)) throw new Error('Invalid price data');
+
+                return parseFloat(price.toFixed(2));
+            } catch (error) {
+                clearTimeout(timeoutId);
+                console.warn(`Failed to fetch ${symbol}:`, error.message);
+                return null;
+            }
+        }
+
+        async function updateStockPrices() {
+            try {
+                // Check cache - only refresh if older than 15 minutes
+                const cacheKey = 'stockPricesCache';
+                const cacheTimeKey = 'stockPricesCacheTime';
+                const cacheAge = Date.now() - (parseInt(localStorage.getItem(cacheTimeKey)) || 0);
+                const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
+
+                if (cacheAge < CACHE_TTL) {
+                    const cached = localStorage.getItem(cacheKey);
+                    if (cached) {
+                        const cachedPrices = JSON.parse(cached);
+                        Object.keys(cachedPrices).forEach(symbol => {
+                            if (stocks[symbol]) {
+                                stocks[symbol].current = cachedPrices[symbol];
+                            }
+                        });
+                        console.log('Loaded stock prices from cache');
+                        return true;
+                    }
+                }
+
+                console.log('Fetching fresh stock prices...');
+                const symbols = Object.keys(stocks);
+                const prices = {};
+                let successCount = 0;
+
+                // Fetch all stocks in parallel with timeout
+                const results = await Promise.allSettled(
+                    symbols.map(symbol => fetchStockPrice(symbol))
+                );
+
+                results.forEach((result, index) => {
+                    const symbol = symbols[index];
+                    if (result.status === 'fulfilled' && result.value !== null) {
+                        stocks[symbol].current = result.value;
+                        prices[symbol] = result.value;
+                        successCount++;
+                    }
+                });
+
+                // Cache successful results (even partial)
+                if (successCount > 0) {
+                    localStorage.setItem(cacheKey, JSON.stringify(prices));
+                    localStorage.setItem(cacheTimeKey, Date.now().toString());
+                    console.log(`Updated ${successCount}/${symbols.length} stock prices`);
+
+                    // Invalidate portfolio cache when prices update
+                    portfolioValueCache = null;
+
+                    // Re-render if stocks were updated
+                    renderStockList();
+                    generateAIInsights();
+                }
+
+                return successCount > 0;
+            } catch (error) {
+                console.error('Error updating stock prices:', error);
+                return false;
+            }
+        }
 
         let usePotentialIncome = false;
 
@@ -1367,6 +1463,12 @@
 
         // Calculate portfolio value from stock holdings
         function calculatePortfolioValue() {
+            // Use cached value if available and recent (5 seconds)
+            const now = Date.now();
+            if (portfolioValueCache && (now - portfolioValueCacheTime) < 5000) {
+                return portfolioValueCache;
+            }
+
             let currentValue = 0;
             let targetValue = 0;
 
@@ -1375,7 +1477,13 @@
                 targetValue += stock.target * stock.shares;
             });
 
-            return { currentValue, targetValue };
+            const result = { currentValue, targetValue };
+
+            // Cache the result
+            portfolioValueCache = result;
+            portfolioValueCacheTime = now;
+
+            return result;
         }
 
         // Render stock list UI
@@ -1600,7 +1708,14 @@
         }
 
         // Initialize - wrap in DOMContentLoaded to ensure DOM is ready
-        function initialize() {
+        async function initialize() {
+            // Try to update stock prices (uses cache if recent, fetches if stale)
+            // This runs in background and doesn't block page load
+            updateStockPrices().catch(err => {
+                console.warn('Stock price update failed, using defaults:', err);
+            });
+
+            // Continue with normal initialization (uses current stock values)
             updateAll();
             updateDebtSummary(); // Calculate debt payoff stats
             renderStockList();
