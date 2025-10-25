@@ -603,15 +603,15 @@
             lastUpdated: Date.now()
         };
 
-        // Stock portfolio tracking (all USD values, prices as of Oct 2024)
+        // Stock portfolio tracking (all USD values, prices as of Oct 24 2025)
         // Shares calculated from USD amounts: $100 AAPL, $195 SPY, $90 PLTR, $25 GOOGL, $37 NVDA, $38 HOOD
         let stocks = {
-            'PLTR': { current: 44.00, shares: 2.045, target: 180, year: 2030 },   // +309% / 4.1x
-            'NVDA': { current: 140.00, shares: 0.264, target: 500, year: 2030 },  // +257% / 3.6x
-            'HOOD': { current: 30.50, shares: 1.246, target: 90, year: 2030 },    // +195% / 3.0x
-            'AAPL': { current: 230.00, shares: 0.435, target: 600, year: 2030 },  // +161% / 2.6x
-            'GOOGL': { current: 168.00, shares: 0.149, target: 400, year: 2030 }, // +138% / 2.4x
-            'SPY': { current: 580.00, shares: 0.336, target: 1100, year: 2030 }   // +90% / 1.9x
+            'PLTR': { current: 184.63, shares: 2.045, target: 180, year: 2030 },   // -3% / 1.0x (already exceeded 2030 target!)
+            'NVDA': { current: 186.26, shares: 0.264, target: 500, year: 2030 },  // +168% / 2.7x
+            'HOOD': { current: 139.79, shares: 1.246, target: 90, year: 2030 },    // -36% / 0.6x (already exceeded 2030 target!)
+            'AAPL': { current: 262.82, shares: 0.435, target: 600, year: 2030 },  // +128% / 2.3x
+            'GOOGL': { current: 259.92, shares: 0.149, target: 400, year: 2030 }, // +54% / 1.5x
+            'SPY': { current: 677.25, shares: 0.336, target: 1100, year: 2030 }   // +62% / 1.6x
         };
 
         let usePotentialIncome = false;
@@ -1603,7 +1603,7 @@
         function initialize() {
             updateAll();
             updateDebtSummary(); // Calculate debt payoff stats
-            // renderStockList(); // Stocks are hardcoded in HTML now
+            renderStockList();
             generateAIInsights();
             updateDebtPayoffHero();
         }
