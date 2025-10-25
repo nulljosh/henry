@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Henry - iOS App Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-outer: #000;
+            --bg-frame: #1c1c1e;
+            --bg-app: #000;
+            --bg-card: #1c1c1e;
+            --border-color: rgba(255,255,255,0.1);
+            --text-primary: #f5f5f7;
+            --text-secondary: #98989d;
+            --shadow: 0 20px 60px rgba(0,0,0,0.8);
+            --notch-bg: #000;
+            --indicator-bg: rgba(255,255,255,0.3);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-outer: #f5f5f7;
+                --bg-frame: #ffffff;
+                --bg-app: #f5f5f7;
+                --bg-card: #ffffff;
+                --border-color: rgba(0,0,0,0.1);
+                --text-primary: #1d1d1f;
+                --text-secondary: #86868b;
+                --shadow: 0 20px 60px rgba(0,0,0,0.15);
+                --notch-bg: #ffffff;
+                --indicator-bg: rgba(0,0,0,0.3);
+            }
+        }
+
+        body.light-mode {
+            --bg-outer: #f5f5f7;
+            --bg-frame: #ffffff;
+            --bg-app: #f5f5f7;
+            --bg-card: #ffffff;
+            --border-color: rgba(0,0,0,0.1);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --shadow: 0 20px 60px rgba(0,0,0,0.15);
+            --notch-bg: #ffffff;
+            --indicator-bg: rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode {
+            --bg-outer: #000;
+            --bg-frame: #1c1c1e;
+            --bg-app: #000;
+            --bg-card: #1c1c1e;
+            --border-color: rgba(255,255,255,0.1);
+            --text-primary: #f5f5f7;
+            --text-secondary: #98989d;
+            --shadow: 0 20px 60px rgba(0,0,0,0.8);
+            --notch-bg: #000;
+            --indicator-bg: rgba(255,255,255,0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+            background: var(--bg-outer);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .iphone-frame {
+            width: 390px;
+            height: 844px;
+            background: var(--bg-frame);
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+            background: var(--notch-bg);
+            border-radius: 0 0 20px 20px;
+            z-index: 100;
+            transition: background 0.3s ease;
+        }
+
+        .status-bar {
+            height: 50px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+            background: var(--bg-app);
+            transition: background 0.3s ease;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #00a68f 0%, #2ac98d 100%);
+            margin: 16px;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,166,143,0.3);
+        }
+
+        .hero-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .hero-amount {
+            font-size: 42px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .hero-subtext {
+            font-size: 15px;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #fff;
+            width: 22%;
+            border-radius: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6ee7b7;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-header {
+            padding: 20px 16px 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stock-list {
+            padding: 0 16px 100px;
+        }
+
+        .stock-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .stock-symbol {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stock-gain {
+            font-size: 16px;
+            font-weight: 700;
+            color: #30d158;
+        }
+
+        .stock-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .stock-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 5px;
+            background: var(--indicator-bg);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        .mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .mode-toggle svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-primary);
+        }
+
+        .daily-change {
+            margin: 0 16px 16px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .daily-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .daily-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #30d158;
+        }
+    </style>
+</head>
+<body>
+    <div class="mode-toggle" onclick="toggleMode()">
+        <svg id="modeIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+    </div>
+
+    <div class="iphone-frame">
+        <div class="notch"></div>
+
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>100%</span>
+        </div>
+
+        <div class="app-content">
+            <div class="hero-card">
+                <div class="hero-label">Portfolio Value</div>
+                <div class="hero-amount">$847,293</div>
+                <div class="hero-subtext">$8,450/mo invested • on track for $2.4M by 2030</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 78%;"></div>
+                </div>
+            </div>
+
+            <div class="daily-change">
+                <div class="daily-label">Today's Change</div>
+                <div class="daily-value">+$18,947 (+2.29%)</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">+187%</div>
+                    <div class="stat-label">All-Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$952K</div>
+                    <div class="stat-label">Net Worth</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">+34%</div>
+                    <div class="stat-label">This Year</div>
+                </div>
+            </div>
+
+            <div class="section-header">Stock Portfolio</div>
+
+            <div class="stock-list">
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">NVDA</div>
+                        <div class="stock-gain">+412%</div>
+                    </div>
+                    <div class="stock-details">1,847 shares • $186.26</div>
+                    <div class="stock-value">$344,038 • +$276,891 gain</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">PLTR</div>
+                        <div class="stock-gain">+287%</div>
+                    </div>
+                    <div class="stock-details">982 shares • $184.63</div>
+                    <div class="stock-value">$181,306 • +$134,529 gain</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">SPY</div>
+                        <div class="stock-gain">+156%</div>
+                    </div>
+                    <div class="stock-details">245 shares • $677.25</div>
+                    <div class="stock-value">$165,926 • +$101,345 gain</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">AAPL</div>
+                        <div class="stock-gain">+198%</div>
+                    </div>
+                    <div class="stock-details">412 shares • $262.82</div>
+                    <div class="stock-value">$108,282 • $71,948 gain</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">GOOGL</div>
+                        <div class="stock-gain">+164%</div>
+                    </div>
+                    <div class="stock-details">187 shares • $259.92</div>
+                    <div class="stock-value">$48,605 • $29,712 gain</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">HOOD</div>
+                        <div class="stock-gain">+223%</div>
+                    </div>
+                    <div class="stock-details">68 shares • $139.79</div>
+                    <div class="stock-value">$9,506 • $6,563 gain</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-indicator"></div>
+    </div>
+
+    <script>
+        function toggleMode() {
+            const body = document.body;
+            const icon = document.getElementById('modeIcon');
+
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                // Sun icon for light mode
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                // Moon icon for dark mode
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
+            }
+        }
+
+        // Initialize dark mode
+        document.body.classList.add('dark-mode');
+    </script>
+</body>
+</html>
