@@ -545,7 +545,7 @@
                         <div class="stock-row">
                             <div class="stock-left">
                                 <div class="stock-symbol">ATZ</div>
-                                <div class="stock-prices">0.0503 shares • $69.39 → $120.00 (2030)</div>
+                                <div class="stock-prices">0.0503 shares • $67.91 → $111.00 (2030)</div>
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$3 → $6</div>
@@ -555,7 +555,7 @@
                         <div class="stock-row">
                             <div class="stock-left">
                                 <div class="stock-symbol">ETH</div>
-                                <div class="stock-prices">0.00407 shares • $3,935.00 → $5,000.00 (2026)</div>
+                                <div class="stock-prices">0.00407 shares • $3,940.00 → $7,585.00 (2030)</div>
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$16 → $20</div>
@@ -565,7 +565,7 @@
                         <div class="stock-row">
                             <div class="stock-left">
                                 <div class="stock-symbol">SOL</div>
-                                <div class="stock-prices">0.0414 shares • $193.24 → $300.00 (2026)</div>
+                                <div class="stock-prices">0.0414 shares • $193.10 → $388.00 (2030)</div>
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$8 → $12</div>
@@ -632,19 +632,19 @@
 
         // Stock portfolio tracking (all USD values, prices auto-updated)
         // Shares calculated from USD amounts: $49 NVDA, $378 PLTR, $228 SPY, $39 GOOGL, $114 AAPL, $174 HOOD, $3 ATZ, $3 TSLA
-        // 2030 targets: moderately bullish (6-15% annual growth based on sector)
-        // ETH: 14% annual | PLTR: 13% annual | SOL: 15% annual | HOOD: 12% annual | NVDA: 15% annual | Others: 8-10% annual
+        // 2030 targets: moderately bullish upgrade to 150% (bumped key positions)
+        // ETH: 17% annual | PLTR: 15% annual | SOL: 18% annual | HOOD: 14% annual | NVDA: 17% annual | Others: 8-10% annual
         let stocks = {
-            'NVDA': { current: 186.26, shares: 0.264, target: 375, year: 2030 },  // +101% / 2.0x (AI leader, 15% annual)
-            'PLTR': { current: 184.63, shares: 2.045, target: 340, year: 2030 },   // +84% / 1.8x (growth stock, 13% annual)
+            'NVDA': { current: 186.26, shares: 0.264, target: 425, year: 2030 },  // +128% / 2.3x (AI leader, 17% annual)
+            'PLTR': { current: 184.63, shares: 2.045, target: 365, year: 2030 },   // +98% / 2.0x (growth stock, 15% annual)
             'GOOGL': { current: 259.92, shares: 0.149, target: 419, year: 2030 }, // +61% / 1.6x (solid tech, 10% annual)
             'AAPL': { current: 262.82, shares: 0.435, target: 404, year: 2030 },  // +54% / 1.5x (mature tech, 9% annual)
-            'HOOD': { current: 139.79, shares: 1.246, target: 246, year: 2030 },    // +76% / 1.8x (fintech growth, 12% annual)
+            'HOOD': { current: 139.79, shares: 1.246, target: 280, year: 2030 },    // +100% / 2.0x (fintech growth, 14% annual)
             'SPY': { current: 677.25, shares: 0.336, target: 1042, year: 2030 },   // +54% / 1.5x (market baseline, 9% annual)
             'TSLA': { current: 433.72, shares: 0.0069, target: 637, year: 2030 },   // +47% / 1.5x (EV leader, 8% annual)
-            'ATZ': { current: 69.39, shares: 0.0503, target: 112, year: 2030 },      // +61% / 1.6x (Canadian retail, 10% annual)
-            'ETH': { current: 3939.00, shares: 0.00407, target: 7584, year: 2030 },  // +93% / 1.9x (crypto leader, 14% annual)
-            'SOL': { current: 193.27, shares: 0.0414, target: 389, year: 2030 }      // +101% / 2.0x (alt crypto, 15% annual)
+            'ATZ': { current: 67.91, shares: 0.0503, target: 111, year: 2030 },      // +63% / 1.6x (Canadian retail, 10% annual)
+            'ETH': { current: 3939.00, shares: 0.00407, target: 9000, year: 2030 },  // +129% / 2.3x (crypto leader, 17% annual)
+            'SOL': { current: 193.27, shares: 0.0414, target: 500, year: 2030 }      // +159% / 2.6x (alt crypto, 18% annual)
         };
 
         // Portfolio value cache
@@ -1599,11 +1599,27 @@
                 stockList.innerHTML = sortedStocks.map(stock => {
                     const gain = ((stock.target - stock.current) / stock.current * 100).toFixed(0);
                     const gainValue = stock.targetValue - stock.currentValue;
+                    const portfolioPercent = ((stock.currentValue / currentValue) * 100).toFixed(1);
 
                     return `
                     <div class="stock-row">
                         <div class="stock-left">
-                            <div class="stock-symbol">${stock.symbol}</div>
+                            <div class="stock-symbol">
+                                ${stock.symbol}
+                                <span style="
+                                    display: inline-block;
+                                    margin-left: 8px;
+                                    padding: 2px 6px;
+                                    font-size: 10px;
+                                    font-weight: 600;
+                                    color: rgba(255, 255, 255, 0.6);
+                                    background: rgba(255, 255, 255, 0.08);
+                                    backdrop-filter: blur(10px);
+                                    -webkit-backdrop-filter: blur(10px);
+                                    border-radius: 4px;
+                                    border: 0.5px solid rgba(255, 255, 255, 0.1);
+                                ">${portfolioPercent}%</span>
+                            </div>
                             <div class="stock-prices">
                                 ${stock.shares.toFixed(3)} shares • $${stock.current.toFixed(2)} → $${stock.target.toFixed(2)} (${stock.year})
                             </div>
@@ -1726,6 +1742,20 @@
                         <strong style="color: #7c3aed; font-size: 14px;">Tactical Alert</strong>
                         <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
                             Signal: <strong style="color: ${sentimentColor};">${sentimentAction}</strong>. Biggest movers: ${moversText}. Check <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">SPY</a> for macro context. <a href="https://www.cnbc.com/quotes/AAPL,%20AAPL,%20GOOGL,%20TSLA,%20MSFT,%20NVDA" target="_blank" style="color: #007aff;">Market news →</a>
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <strong style="color: #f59e0b; font-size: 14px;">Risk Increase TLDR</strong>
+                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                            Bump crypto from 2.5% to 5% of portfolio • Keep only 1 month emergency cash, rest in stocks • Add small-cap growth ETF or more individual high-growth stocks • You're 26, can handle volatility
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <strong style="color: #10b981; font-size: 14px;">Target Upgrade: 150% by 2030</strong>
+                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                            Bump crypto to 16-18% annual (ETH $9k, SOL $500+) • PLTR 15% annual ($65+) • NVDA 17% annual ($425+) • HOOD 14% annual ($280+) • Rest stay 8-10% annual • Sweet spot: moderately bullish tech/crypto thesis, more realistic than moon, way better than current 129%
                         </p>
                     </div>
 
