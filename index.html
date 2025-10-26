@@ -248,6 +248,22 @@
             .stock-gain { font-size: 13px; min-width: 60px; }
             .back-button { width: 30px; height: 30px; font-size: 16px; padding: 4px 8px; }
             .dark-mode-toggle { width: 32px; height: 32px; }
+
+            /* Fix portfolio header metrics on mobile */
+            .portfolio-header-metrics {
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+            .portfolio-header-metrics > div {
+                width: 100% !important;
+                text-align: center !important;
+            }
+            .portfolio-header-metrics > div > div:first-child {
+                font-size: 11px !important;
+            }
+            .portfolio-header-metrics > div > div:last-child {
+                font-size: 22px !important;
+            }
         }
         
         .summary-section { border-top: 1px solid var(--border-color); padding: 24px; }
@@ -455,7 +471,7 @@
             <div style="display: block;">
                 <div class="stocks-section" style="border-top: none; padding-top: 24px;">
                     <div style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div class="portfolio-header-metrics" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                             <div>
                                 <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600;">Total Portfolio Value</div>
                                 <div style="font-size: 28px; font-weight: 700; color: var(--mint-primary);" id="portfolioValue">$485</div>
@@ -632,19 +648,19 @@
 
         // Stock portfolio tracking (all USD values, prices auto-updated)
         // Shares calculated from USD amounts: $49 NVDA, $378 PLTR, $228 SPY, $39 GOOGL, $114 AAPL, $174 HOOD, $3 ATZ, $3 TSLA
-        // 2030 targets: moderately bullish (6-15% annual growth based on sector)
-        // ETH: 14% annual | PLTR: 13% annual | SOL: 15% annual | HOOD: 12% annual | NVDA: 15% annual | Others: 8-10% annual
+        // 2030 targets: bullish projections matching HTML display
+        // Updated to match visible targets (SPY $1250, PLTR $420, NVDA $600, etc.)
         let stocks = {
-            'NVDA': { current: 186.26, shares: 0.264, target: 375, year: 2030 },  // +101% / 2.0x (AI leader, 15% annual)
-            'PLTR': { current: 184.63, shares: 2.045, target: 340, year: 2030 },   // +84% / 1.8x (growth stock, 13% annual)
-            'GOOGL': { current: 259.92, shares: 0.149, target: 419, year: 2030 }, // +61% / 1.6x (solid tech, 10% annual)
-            'AAPL': { current: 262.82, shares: 0.435, target: 404, year: 2030 },  // +54% / 1.5x (mature tech, 9% annual)
-            'HOOD': { current: 139.79, shares: 1.246, target: 246, year: 2030 },    // +76% / 1.8x (fintech growth, 12% annual)
-            'SPY': { current: 677.25, shares: 0.336, target: 1042, year: 2030 },   // +54% / 1.5x (market baseline, 9% annual)
-            'TSLA': { current: 433.72, shares: 0.0069, target: 637, year: 2030 },   // +47% / 1.5x (EV leader, 8% annual)
-            'ATZ': { current: 69.39, shares: 0.0503, target: 112, year: 2030 },      // +61% / 1.6x (Canadian retail, 10% annual)
-            'ETH': { current: 3939.00, shares: 0.00407, target: 7584, year: 2030 },  // +93% / 1.9x (crypto leader, 14% annual)
-            'SOL': { current: 193.27, shares: 0.0414, target: 389, year: 2030 }      // +101% / 2.0x (alt crypto, 15% annual)
+            'NVDA': { current: 186.26, shares: 0.264, target: 600, year: 2030 },  // +222% / 3.2x (AI leader dominance)
+            'PLTR': { current: 184.63, shares: 2.045, target: 420, year: 2030 },   // +127% / 2.3x (defense + AI growth)
+            'GOOGL': { current: 259.92, shares: 0.149, target: 480, year: 2030 }, // +85% / 1.8x (search + cloud)
+            'AAPL': { current: 262.82, shares: 0.435, target: 480, year: 2030 },  // +83% / 1.8x (services expansion)
+            'HOOD': { current: 139.79, shares: 1.246, target: 250, year: 2030 },    // +79% / 1.8x (fintech growth)
+            'SPY': { current: 677.25, shares: 0.336, target: 1250, year: 2030 },   // +85% / 1.8x (market growth)
+            'TSLA': { current: 433.72, shares: 0.0069, target: 600, year: 2030 },   // +38% / 1.4x (EV maturation)
+            'ATZ': { current: 69.39, shares: 0.0503, target: 120, year: 2030 },      // +73% / 1.7x (Canadian retail)
+            'ETH': { current: 3935.00, shares: 0.00407, target: 5000, year: 2026 },  // +27% / 1.3x (2026 target)
+            'SOL': { current: 193.24, shares: 0.0414, target: 300, year: 2026 }      // +55% / 1.6x (2026 target)
         };
 
         // Portfolio value cache
