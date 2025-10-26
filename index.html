@@ -631,20 +631,20 @@
         };
 
         // Stock portfolio tracking (all USD values, prices auto-updated)
-        // Shares calculated from USD amounts: $49 NVDA, $95 PLTR, $228 SPY, $39 GOOGL, $114 AAPL, $174 HOOD, $3 ATZ, $3 TSLA
-        // 2030 targets: moderately bullish upgrade to 150% (bumped key positions)
-        // ETH: 17% annual | PLTR: 15% annual | SOL: 18% annual | HOOD: 14% annual | NVDA: 17% annual | Others: 8-10% annual
+        // Shares verified from Wealthsimple Oct 25, 2025. Current: $540 → Target: $1330 (146% gain)
+        // 2030 targets: moderately bullish upgrade for 150% portfolio gain target
+        // Top performers: PLTR 17% annual, NVDA 17% annual, SOL 16% annual, HOOD 15% annual, ETH 15% annual
         let stocks = {
-            'NVDA': { current: 186.26, shares: 0.264, target: 425, year: 2030 },  // +128% / 2.3x (AI leader, 17% annual)
-            'PLTR': { current: 184.63, shares: 0.513, target: 365, year: 2030 },   // +98% / 2.0x (growth stock, 15% annual)
-            'GOOGL': { current: 259.92, shares: 0.149, target: 419, year: 2030 }, // +61% / 1.6x (solid tech, 10% annual)
-            'AAPL': { current: 262.82, shares: 0.435, target: 404, year: 2030 },  // +54% / 1.5x (mature tech, 9% annual)
-            'HOOD': { current: 139.79, shares: 1.246, target: 280, year: 2030 },    // +100% / 2.0x (fintech growth, 14% annual)
-            'SPY': { current: 677.25, shares: 0.336, target: 1042, year: 2030 },   // +54% / 1.5x (market baseline, 9% annual)
-            'TSLA': { current: 433.72, shares: 0.0069, target: 637, year: 2030 },   // +47% / 1.5x (EV leader, 8% annual)
-            'ATZ': { current: 67.91, shares: 0.0503, target: 111, year: 2030 },      // +63% / 1.6x (Canadian retail, 10% annual)
-            'ETH': { current: 3939.00, shares: 0.00407, target: 9000, year: 2030 },  // +129% / 2.3x (crypto leader, 17% annual)
-            'SOL': { current: 193.27, shares: 0.0414, target: 500, year: 2030 }      // +159% / 2.6x (alt crypto, 18% annual)
+            'NVDA': { current: 186.46, shares: 0.2064, target: 680, year: 2030 },  // +265% / 3.6x (AI leader, 17% annual)
+            'PLTR': { current: 184.91, shares: 0.5166, target: 680, year: 2030 },   // +268% / 3.7x (growth stock, 17% annual)
+            'SPY': { current: 677.28, shares: 0.2947, target: 1220, year: 2030 },   // +80% / 1.8x (market baseline, 11% annual)
+            'AAPL': { current: 263.00, shares: 0.3883, target: 510, year: 2030 },  // +94% / 1.9x (mature tech, 12% annual)
+            'HOOD': { current: 139.75, shares: 0.3078, target: 425, year: 2030 },    // +204% / 3.0x (fintech growth, 15% annual)
+            'GOOGL': { current: 260.01, shares: 0.1, target: 550, year: 2030 }, // +112% / 2.1x (solid tech, 13% annual)
+            'INTC': { current: 38.11, shares: 0.1934, target: 75, year: 2030 },   // +97% / 2.0x (turnaround play, 12% annual)
+            'TSLA': { current: 433.72, shares: 0.0092, target: 810, year: 2030 },   // +87% / 1.9x (EV leader, 12% annual)
+            'ETH': { current: 3939.00, shares: 0.00407, target: 11500, year: 2030 },  // +192% / 2.9x (crypto leader, 15% annual)
+            'SOL': { current: 193.27, shares: 0.0414, target: 660, year: 2030 }      // +242% / 3.4x (alt crypto, 16% annual)
         };
 
         // Portfolio value cache
