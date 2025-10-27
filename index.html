@@ -635,16 +635,17 @@
         // 2030 targets: moderately bullish upgrade for 150% portfolio gain target
         // Top performers: PLTR 17% annual, NVDA 17% annual, SOL 16% annual, HOOD 15% annual, ETH 15% annual
         let stocks = {
-            'NVDA': { current: 186.46, shares: 0.2064, target: 680, year: 2030 },  // +265% / 3.6x (AI leader, 17% annual)
-            'PLTR': { current: 184.91, shares: 0.5166, target: 680, year: 2030 },   // +268% / 3.7x (growth stock, 17% annual)
-            'SPY': { current: 677.28, shares: 0.2947, target: 1220, year: 2030 },   // +80% / 1.8x (market baseline, 11% annual)
-            'AAPL': { current: 263.00, shares: 0.3883, target: 510, year: 2030 },  // +94% / 1.9x (mature tech, 12% annual)
-            'HOOD': { current: 139.75, shares: 0.3078, target: 425, year: 2030 },    // +204% / 3.0x (fintech growth, 15% annual)
-            'GOOGL': { current: 260.01, shares: 0.1, target: 550, year: 2030 }, // +112% / 2.1x (solid tech, 13% annual)
-            'INTC': { current: 38.11, shares: 0.1934, target: 75, year: 2030 },   // +97% / 2.0x (turnaround play, 12% annual)
-            'TSLA': { current: 433.72, shares: 0.0092, target: 810, year: 2030 },   // +87% / 1.9x (EV leader, 12% annual)
-            'ETH': { current: 3939.00, shares: 0.00407, target: 11500, year: 2030 },  // +192% / 2.9x (crypto leader, 15% annual)
-            'SOL': { current: 193.27, shares: 0.0414, target: 660, year: 2030 }      // +242% / 3.4x (alt crypto, 16% annual)
+            'SPY': { current: 677.25, shares: 0.336, target: 1250, year: 2030 },   // +85% / 1.85x (market baseline, 13% annual)
+            'PLTR': { current: 184.63, shares: 0.513, target: 600, year: 2030 },   // +225% / 3.25x (growth stock, 17% annual)
+            'NVDA': { current: 186.26, shares: 0.264, target: 600, year: 2030 },  // +222% / 3.2x (AI leader, 17% annual)
+            'AAPL': { current: 262.82, shares: 0.435, target: 500, year: 2030 },  // +90% / 1.9x (mature tech, 13% annual)
+            'HOOD': { current: 139.79, shares: 1.246, target: 420, year: 2030 },    // +201% / 3.0x (fintech growth, 15% annual)
+            'GOOGL': { current: 260.01, shares: 0.149, target: 570, year: 2030 }, // +119% / 2.2x (solid tech, 17% annual)
+            'TSLA': { current: 433.72, shares: 0.0069, target: 820, year: 2030 },   // +89% / 1.9x (EV leader, 13% annual)
+            'ATZ': { current: 67.91, shares: 0.0503, target: 115, year: 2030 },   // +69% / 1.7x (cyclical, 11% annual)
+            'ETH': { current: 4228.87, shares: 0.00261, target: 11500, year: 2030 },  // +172% / 2.7x (crypto leader, 16% annual)
+            'BTC': { current: 115607, shares: 0.0000432, target: 320000, year: 2030 }, // +177% / 2.8x (store of value, 16% annual)
+            'SOL': { current: 204.63, shares: 0.0414, target: 550, year: 2030 }      // +169% / 2.7x (alt crypto, 22% annual)
         };
 
         // Portfolio value cache
@@ -741,6 +742,67 @@
                 console.error('Error updating stock prices:', error);
                 return false;
             }
+        }
+
+        // Monte Carlo simulation for price predictions
+        function monteCarloPredictions() {
+            const simulations = 1000;
+            const predictions = {};
+
+            Object.entries(stocks).forEach(([symbol, stock]) => {
+                // Historical volatility estimates (annualized)
+                const volatilityMap = {
+                    'SPY': 0.12, 'PLTR': 0.35, 'NVDA': 0.28, 'AAPL': 0.20,
+                    'HOOD': 0.38, 'GOOGL': 0.18, 'TSLA': 0.42, 'ATZ': 0.25,
+                    'ETH': 0.65, 'BTC': 0.60, 'SOL': 0.70
+                };
+
+                const volatility = volatilityMap[symbol] || 0.25;
+                const driftDaily = 0.0003; // Daily drift (~7% annual)
+                const driftWeekly = driftDaily * 5; // 5 trading days
+
+                // Tomorrow simulation
+                const tomorrowPrices = [];
+                for (let i = 0; i < simulations; i++) {
+                    const randomNormal = Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
+                    const dailyReturn = driftDaily + volatility / Math.sqrt(252) * randomNormal;
+                    const tomorrowPrice = stock.current * (1 + dailyReturn);
+                    tomorrowPrices.push(tomorrowPrice);
+                }
+
+                // Weekly simulation
+                const weeklyPrices = [];
+                for (let i = 0; i < simulations; i++) {
+                    let price = stock.current;
+                    for (let day = 0; day < 5; day++) {
+                        const randomNormal = Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
+                        const dailyReturn = driftDaily + volatility / Math.sqrt(252) * randomNormal;
+                        price *= (1 + dailyReturn);
+                    }
+                    weeklyPrices.push(price);
+                }
+
+                tomorrowPrices.sort((a, b) => a - b);
+                weeklyPrices.sort((a, b) => a - b);
+
+                predictions[symbol] = {
+                    current: stock.current,
+                    tomorrow: {
+                        p10: tomorrowPrices[Math.floor(simulations * 0.1)],
+                        median: tomorrowPrices[Math.floor(simulations * 0.5)],
+                        p90: tomorrowPrices[Math.floor(simulations * 0.9)],
+                        avgChange: (tomorrowPrices.reduce((a, b) => a + b) / simulations - stock.current) / stock.current * 100
+                    },
+                    week: {
+                        p10: weeklyPrices[Math.floor(simulations * 0.1)],
+                        median: weeklyPrices[Math.floor(simulations * 0.5)],
+                        p90: weeklyPrices[Math.floor(simulations * 0.9)],
+                        avgChange: (weeklyPrices.reduce((a, b) => a + b) / simulations - stock.current) / stock.current * 100
+                    }
+                };
+            });
+
+            return predictions;
         }
 
         let usePotentialIncome = false;
@@ -1756,6 +1818,26 @@
                         <strong style="color: #10b981; font-size: 14px;">Target Upgrade: 150% by 2030</strong>
                         <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
                             Bump crypto to 16-18% annual (ETH $9k, SOL $500+) • PLTR 15% annual ($65+) • NVDA 17% annual ($425+) • HOOD 14% annual ($280+) • Rest stay 8-10% annual • Sweet spot: moderately bullish tech/crypto thesis, more realistic than moon, way better than current 129%
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <strong style="color: #f97316; font-size: 14px;">Monte Carlo Predictions (1000 simulations)</strong>
+                        <p style="margin: 8px 0 0 0; color: var(--text-secondary); font-size: 13px;">
+                            ${(() => {
+                                const preds = monteCarloPredictions();
+                                const tomorrow = Object.entries(preds)
+                                    .map(([sym, p]) => ({ sym, change: p.tomorrow.avgChange }))
+                                    .sort((a, b) => b.change - a.change);
+                                const week = Object.entries(preds)
+                                    .map(([sym, p]) => ({ sym, change: p.week.avgChange }))
+                                    .sort((a, b) => b.change - a.change);
+                                const bestTomorrow = tomorrow.slice(0, 2).map(t => \`<strong>\${t.sym}</strong> \${t.change > 0 ? '+' : ''}\${t.change.toFixed(1)}%\`).join(', ');
+                                const worstTomorrow = tomorrow.slice(-2).map(t => \`<strong>\${t.sym}</strong> \${t.change.toFixed(1)}%\`).join(', ');
+                                const bestWeek = week.slice(0, 2).map(w => \`<strong>\${w.sym}</strong> \${w.change > 0 ? '+' : ''}\${w.change.toFixed(1)}%\`).join(', ');
+                                const worstWeek = week.slice(-2).map(w => \`<strong>\${w.sym}</strong> \${w.change.toFixed(1)}%\`).join(', ');
+                                return \`Tomorrow: Best \${bestTomorrow} | Worst \${worstTomorrow}. Week: Best \${bestWeek} | Worst \${worstWeek}.\`;
+                            })()}
                         </p>
                     </div>
 
