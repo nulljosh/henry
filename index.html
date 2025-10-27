@@ -652,8 +652,8 @@
         // Top performers: PLTR 17% annual, NVDA 17% annual, SOL 16% annual, HOOD 15% annual, ETH 15% annual
         let stocks = {
             'SPY': { current: 677.25, shares: 0.336, target: 1250, year: 2030 },   // +85% / 1.85x (market baseline, 13% annual)
-            'PLTR': { current: 184.63, shares: 0.513, target: 600, year: 2030 },   // +225% / 3.25x (growth stock, 17% annual)
-            'NVDA': { current: 186.26, shares: 0.264, target: 600, year: 2030 },  // +222% / 3.2x (AI leader, 17% annual)
+            'PLTR': { current: 184.63, shares: 0.513, target: 520, year: 2030 },   // +182% / 2.8x (growth stock, 25% annual)
+            'NVDA': { current: 186.26, shares: 0.264, target: 560, year: 2030 },  // +201% / 3.0x (AI leader, 25% annual)
             'AAPL': { current: 262.82, shares: 0.435, target: 500, year: 2030 },  // +90% / 1.9x (mature tech, 13% annual)
             'HOOD': { current: 139.79, shares: 1.246, target: 420, year: 2030 },    // +201% / 3.0x (fintech growth, 15% annual)
             'GOOGL': { current: 260.01, shares: 0.149, target: 570, year: 2030 }, // +119% / 2.2x (solid tech, 17% annual)
@@ -1905,6 +1905,12 @@
 
         // Initialize - wrap in DOMContentLoaded to ensure DOM is ready
         async function initialize() {
+            // Attach collapse handlers for dashboard and portfolio
+            const dashboardHeader = document.querySelector('.collapse-header');
+            if (dashboardHeader) {
+                dashboardHeader.addEventListener('click', toggleDashboard);
+            }
+
             // Try to update stock prices (uses cache if recent, fetches if stale)
             // This runs in background and doesn't block page load
             updateStockPrices().catch(err => {
