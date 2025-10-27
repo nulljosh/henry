@@ -1905,11 +1905,17 @@
 
         // Initialize - wrap in DOMContentLoaded to ensure DOM is ready
         async function initialize() {
-            // Attach collapse handlers for dashboard and portfolio
-            const dashboardHeader = document.querySelector('.collapse-header');
-            if (dashboardHeader) {
-                dashboardHeader.addEventListener('click', toggleDashboard);
-            }
+            // Attach collapse handlers for ALL collapse headers
+            document.querySelectorAll('.collapse-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const arrow = this.querySelector('.collapse-arrow');
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('open');
+                        if (arrow) arrow.classList.toggle('open');
+                    }
+                });
+            });
 
             // Try to update stock prices (uses cache if recent, fetches if stale)
             // This runs in background and doesn't block page load
