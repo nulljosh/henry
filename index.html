@@ -91,6 +91,10 @@
             color: #98989d;
         }
 
+        body.dark p {
+            color: #98989d;
+        }
+
         body.dark table {
             background: #2c2c2e;
         }
@@ -135,7 +139,7 @@
             font-size: 48px;
             font-weight: 700;
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
         }
 
         h2 {
@@ -275,9 +279,33 @@
     </script>
 
     <div class="container">
+        <div class="glass-card" style="text-align: center; padding: 48px 32px;">
+            <h1 style="font-size: 64px; margin-bottom: 16px;">Henry</h1>
+            <p class="subtitle" style="font-size: 20px; margin-bottom: 32px;">Your intelligent portfolio companion</p>
+            <div style="display: inline-flex; gap: 12px; align-items: center; background: rgba(0, 122, 255, 0.1); padding: 12px 24px; border-radius: 12px;">
+                <span style="font-size: 28px;">📈</span>
+                <div style="text-align: left;">
+                    <div style="font-size: 14px; font-weight: 600; color: #007aff;">Portfolio Value</div>
+                    <div style="font-size: 24px; font-weight: 700;">$749</div>
+                </div>
+                <div style="width: 1px; height: 40px; background: rgba(0, 0, 0, 0.1); margin: 0 12px;"></div>
+                <div style="text-align: left;">
+                    <div style="font-size: 14px; font-weight: 600; color: #34c759;">2030 Target</div>
+                    <div style="font-size: 24px; font-weight: 700;">$1,740</div>
+                </div>
+            </div>
+        </div>
+
         <div class="glass-card">
-            <h1>Henry</h1>
-            <p class="subtitle">Portfolio Tracker • Last updated: October 27, 2025</p>
+            <h2>Market Insights</h2>
+            <p style="font-size: 15px; line-height: 1.8; color: var(--text-secondary);">
+                Your portfolio is well-positioned with strong tech exposure (NVDA, PLTR) leading potential gains at +192% and +175%.
+                HOOD and crypto holdings (ETH, BTC, SOL) provide high-growth opportunities averaging +180% upside.
+                Consider rebalancing ATZ.TO (+20%) into higher-conviction positions.
+                The 2030 target of $1,740 (+132%) aligns with moderate bull case scenarios - tech maintains AI momentum, crypto adoption accelerates, and macro conditions stabilize.
+                Risk factors: Interest rate volatility, tech valuation compression, crypto regulation.
+                Monitor NVDA earnings and Ethereum network upgrades for trend validation.
+            </p>
         </div>
 
         <div class="glass-card">
