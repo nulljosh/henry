@@ -262,17 +262,118 @@
             document.body.classList.add('dark');
             document.getElementById('themeIcon').textContent = '🌙';
         }
+
+        // Auto-refresh stock prices (BETA)
+        const stocks = {
+            'NVDA': { shares: 0.264, target: 560, row: 0 },
+            'HOOD': { shares: 1.246, target: 420, row: 1 },
+            'ETH-USD': { shares: 0.00261, target: 11500, row: 2 },
+            'BTC-USD': { shares: 0.0000432, target: 320000, row: 3 },
+            'PLTR': { shares: 0.513, target: 520, row: 4 },
+            'SOL-USD': { shares: 0.0414, target: 550, row: 5 },
+            'GOOGL': { shares: 0.149, target: 570, row: 6 },
+            'AAPL': { shares: 0.435, target: 500, row: 7 },
+            'SPY': { shares: 0.336, target: 1250, row: 8 },
+            'TSLA': { shares: 0.0069, target: 820, row: 9 },
+            'ATZ.TO': { shares: 0.0503, target: 115, row: 10 }
+        };
+
+        async function updatePrices() {
+            const cacheKey = 'priceCache';
+            const cacheTimeKey = 'priceCacheTime';
+            const now = Date.now();
+            const cached = localStorage.getItem(cacheKey);
+            const cacheTime = localStorage.getItem(cacheTimeKey);
+
+            // Use cache if less than 15 minutes old
+            if (cached && cacheTime && (now - parseInt(cacheTime)) < 15 * 60 * 1000) {
+                applyPrices(JSON.parse(cached));
+                document.getElementById('statusIcon').textContent = '💾';
+                document.getElementById('statusIcon').title = 'Using cached prices';
+                return;
+            }
+
+            try {
+                const symbols = Object.keys(stocks).join(',');
+                const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.quoteResponse && data.quoteResponse.result) {
+                    const prices = {};
+                    data.quoteResponse.result.forEach(quote => {
+                        prices[quote.symbol] = quote.regularMarketPrice;
+                    });
+
+                    localStorage.setItem(cacheKey, JSON.stringify(prices));
+                    localStorage.setItem(cacheTimeKey, now.toString());
+                    applyPrices(prices);
+                    document.getElementById('statusIcon').textContent = '✅';
+                    document.getElementById('statusIcon').title = 'Live prices loaded';
+                }
+            } catch (error) {
+                console.warn('Price update failed, using static prices:', error);
+                document.getElementById('statusIcon').textContent = '❌';
+                document.getElementById('statusIcon').title = 'Failed - using static prices';
+            }
+        }
+
+        function applyPrices(prices) {
+            const tbody = document.querySelector('#stockTable tbody');
+            let totalCurrent = 0;
+            let totalTarget = 0;
+
+            Object.keys(stocks).forEach(symbol => {
+                const stock = stocks[symbol];
+                const price = prices[symbol];
+                if (!price) return;
+
+                const currentValue = Math.round(price * stock.shares);
+                const targetValue = Math.round(stock.target * stock.shares);
+                const gain = Math.round(((stock.target - price) / price) * 100);
+
+                totalCurrent += currentValue;
+                totalTarget += targetValue;
+
+                const row = tbody.rows[stock.row];
+                if (row) {
+                    row.cells[2].textContent = `$${price.toFixed(2)}`;
+                    row.cells[3].textContent = `$${currentValue}`;
+                    row.cells[5].textContent = `$${targetValue}`;
+                    row.cells[6].textContent = `+${gain}%`;
+                }
+            });
+
+            // Update total row
+            const totalRow = tbody.rows[tbody.rows.length - 1];
+            if (totalRow) {
+                totalRow.cells[3].textContent = `$${totalCurrent}`;
+                totalRow.cells[5].textContent = `$${totalTarget}`;
+                const totalGain = Math.round(((totalTarget - totalCurrent) / totalCurrent) * 100);
+                totalRow.cells[6].textContent = `+${totalGain}%`;
+            }
+
+            // Update summary
+            document.querySelector('.glass-card:nth-child(4) tbody tr:nth-child(1) td:nth-child(2)').textContent = `$${totalCurrent}`;
+            document.querySelector('.glass-card:nth-child(4) tbody tr:nth-child(2) td:nth-child(2)').textContent = `$${totalTarget}`;
+            const gainAmount = totalTarget - totalCurrent;
+            const gainPercent = Math.round(((totalTarget - totalCurrent) / totalCurrent) * 100);
+            document.querySelector('.glass-card:nth-child(4) tbody tr:nth-child(3) td:nth-child(2)').textContent = `+$${gainAmount} (+${gainPercent}%)`;
+        }
+
+        // Run on page load
+        updatePrices();
     </script>
 
     <div class="container">
         <div class="glass-card">
-            <h1>Henry</h1>
+            <h1>Henry <span id="statusIcon" style="font-size: 16px;" title="Loading...">⏳</span></h1>
             <p class="subtitle">Portfolio Tracker • Last updated: October 27, 2025</p>
         </div>
 
         <div class="glass-card">
             <h2>Stock Portfolio</h2>
-            <table>
+            <table id="stockTable">
                 <thead>
                     <tr>
                         <th>Symbol</th>
