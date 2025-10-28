@@ -209,6 +209,25 @@
             font-style: italic;
         }
 
+        .earnings-badge {
+            background: #007aff;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-left: 4px;
+            white-space: nowrap;
+        }
+
+        .earnings-badge.completed {
+            background: #8e8e93;
+        }
+
+        .earnings-badge.upcoming-soon {
+            background: #34c759;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 12px;
@@ -228,11 +247,11 @@
             }
 
             table {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             th, td {
-                padding: 12px 8px;
+                padding: 10px 6px;
             }
 
             .back-button {
@@ -243,6 +262,33 @@
             .theme-toggle {
                 top: 12px;
                 right: 12px;
+            }
+
+            /* Mobile-specific earnings badge styling */
+            .earnings-badge {
+                font-size: 8px;
+                padding: 3px 5px;
+                border-radius: 3px;
+                margin-left: 5px;
+                margin-top: 2px;
+                display: inline-block;
+                white-space: nowrap;
+            }
+
+            /* Hide less important columns on mobile for stock table */
+            #stockTable th:nth-child(2),
+            #stockTable td:nth-child(2),
+            #stockTable th:nth-child(3),
+            #stockTable td:nth-child(3),
+            #stockTable th:nth-child(5),
+            #stockTable td:nth-child(5) {
+                display: none;
+            }
+
+            /* Adjust remaining visible columns */
+            #stockTable th:first-child,
+            #stockTable td:first-child {
+                width: auto;
             }
         }
 
@@ -356,7 +402,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank" style="text-decoration: none;"><span style="background: #007aff; color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: 4px;">📊 Nov 20</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank" style="text-decoration: none;"><span class="earnings-badge">📊 Nov 20</span></a></td>
                         <td>0.5282</td>
                         <td>$195.00</td>
                         <td>$103</td>
@@ -365,7 +411,7 @@
                         <td>+207%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank" style="text-decoration: none;"><span style="background: #007aff; color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: 4px;">📊 Nov 6</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank" style="text-decoration: none;"><span class="earnings-badge">📊 Nov 6</span></a></td>
                         <td>0.4137</td>
                         <td>$146.00</td>
                         <td>$61</td>
@@ -374,7 +420,7 @@
                         <td>+205%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank" style="text-decoration: none;"><span style="background: #007aff; color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: 4px;">📊 Nov 4</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank" style="text-decoration: none;"><span class="earnings-badge">📊 Nov 4</span></a></td>
                         <td>0.7305</td>
                         <td>$188.00</td>
                         <td>$137</td>
@@ -383,7 +429,7 @@
                         <td>+220%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank" style="text-decoration: none;"><span style="background: #34c759; color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: 4px;">📊 Oct 29</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank" style="text-decoration: none;"><span class="earnings-badge upcoming-soon">📊 Oct 29</span></a></td>
                         <td>0.1224</td>
                         <td>$268.00</td>
                         <td>$33</td>
@@ -392,7 +438,7 @@
                         <td>+143%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank" style="text-decoration: none;"><span style="background: #34c759; color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: 4px;">📊 Oct 31</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank" style="text-decoration: none;"><span class="earnings-badge upcoming-soon">📊 Oct 31</span></a></td>
                         <td>0.4083</td>
                         <td>$270.00</td>
                         <td>$110</td>
@@ -410,7 +456,7 @@
                         <td>+82%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank" style="text-decoration: none;"><span style="background: #8e8e93; color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: 4px;">✓ Oct 23</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 23</span></a></td>
                         <td>0.0851</td>
                         <td>$465.00</td>
                         <td>$39</td>
