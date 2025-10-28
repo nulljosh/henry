@@ -245,6 +245,22 @@
                 right: 12px;
             }
         }
+
+        .heart {
+            color: #ff0000;
+            animation: heartbeat 2s ease-in-out infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            10% { transform: scale(1.2); }
+            20% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -461,12 +477,54 @@
                         <td>-$300</td>
                     </tr>
                     <tr>
-                        <td>iPhone (Monthly)</td>
+                        <td>iPhone (2 phones until Dec)</td>
                         <td>-$300</td>
                     </tr>
+                    <tr>
+                        <td style="padding-left: 32px; font-size: 13px; color: #86868b;">iPhone 15 Pro Max (selling: $700, owe: $500)</td>
+                        <td style="font-size: 13px; color: #86868b;">Net: +$200</td>
+                    </tr>
                     <tr class="future-expense">
-                        <td>Apple Watch (starts Nov, $300 down)</td>
+                        <td>Apple Watch (starts Nov)</td>
                         <td>-$33</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="glass-card">
+            <h2>Debt Payoff Progress</h2>
+            <div style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="font-weight: 600;">$0</span>
+                    <span style="font-weight: 600; color: #007aff;">8.7 months to debt-free</span>
+                    <span style="font-weight: 600;">$4,000</span>
+                </div>
+                <div style="background: rgba(0, 0, 0, 0.1); border-radius: 8px; height: 24px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #007aff, #34c759); height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease;"></div>
+                </div>
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Current Debt</td>
+                        <td>$4,000</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly Payment Capacity</td>
+                        <td>$460</td>
+                    </tr>
+                    <tr>
+                        <td>iPhone Sale (when sold)</td>
+                        <td>+$200</td>
+                    </tr>
+                    <tr>
+                        <td>Months Until Debt-Free</td>
+                        <td>8.7 months</td>
+                    </tr>
+                    <tr>
+                        <td>Debt-Free Date</td>
+                        <td>July 2026</td>
                     </tr>
                 </tbody>
             </table>
@@ -493,16 +551,25 @@
                         <td>$912 - $4,000 = -$3,088</td>
                     </tr>
                     <tr>
-                        <td><strong>Monthly Surplus (Current)</strong></td>
+                        <td><strong>Monthly Surplus (Oct)</strong></td>
                         <td>$1,060 - $600 = $460</td>
                     </tr>
                     <tr class="future-expense">
-                        <td><strong>Monthly Surplus (Nov+)</strong></td>
+                        <td><strong>Monthly Surplus (Nov-Dec)</strong></td>
                         <td>$1,060 - $633 = $427</td>
+                    </tr>
+                    <tr class="future-expense">
+                        <td><strong>Monthly Surplus (Jan+ after phone drops)</strong></td>
+                        <td>$1,060 - $463 = $597</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #8e8e93; font-size: 14px;">
+        Made with <span class="heart">&hearts;</span> in Vancouver, BC<br>
+        &copy; 2025-2026
+    </footer>
 </body>
 </html>
