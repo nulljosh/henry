@@ -45,6 +45,77 @@
             transform: scale(1.05);
         }
 
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.05);
+        }
+
+        body.dark {
+            background: #1d1d1f;
+            color: #f5f5f7;
+        }
+
+        body.dark .glass-card {
+            background: #2c2c2e;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark h1,
+        body.dark h2 {
+            color: #f5f5f7;
+        }
+
+        body.dark .subtitle {
+            color: #98989d;
+        }
+
+        body.dark table {
+            background: #2c2c2e;
+        }
+
+        body.dark thead {
+            background: #1d1d1f;
+        }
+
+        body.dark th {
+            color: #98989d;
+        }
+
+        body.dark td {
+            color: #f5f5f7;
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark tbody tr:hover {
+            background: #3a3a3c;
+        }
+
+        body.dark tbody tr:last-child td {
+            background: #1d1d1f;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -164,11 +235,34 @@
                 top: 12px;
                 left: 12px;
             }
+
+            .theme-toggle {
+                top: 12px;
+                right: 12px;
+            }
         }
     </style>
 </head>
 <body>
     <a href="https://heyitsmejosh.com" class="back-button">←</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span id="themeIcon">☀️</span>
+    </button>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+            document.getElementById('themeIcon').textContent = '🌙';
+        }
+    </script>
 
     <div class="container">
         <div class="glass-card">
