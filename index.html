@@ -455,11 +455,52 @@
             });
         });
 
+        // Interactive graph hover
+        const graph = document.getElementById('heroGraph');
+        const dot = document.getElementById('graphDot');
+        const tooltip = document.getElementById('graphTooltip');
+
+        // Portfolio values: start $300, current $695, target $1657
+        const graphPoints = [
+            {x:0,y:220,val:300}, {x:100,y:210,val:400}, {x:200,y:195,val:500},
+            {x:300,y:185,val:600}, {x:400,y:165,val:695}, {x:500,y:150,val:900},
+            {x:600,y:120,val:1200}, {x:700,y:95,val:1450}, {x:800,y:60,val:1657}
+        ];
+
+        graph.addEventListener('mousemove', (e) => {
+            const rect = graph.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 800;
+
+            // Find closest points and interpolate
+            let i = 0;
+            while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
+
+            const p1 = graphPoints[i];
+            const p2 = graphPoints[i + 1] || p1;
+            const ratio = (x - p1.x) / (p2.x - p1.x || 1);
+            const y = p1.y + (p2.y - p1.y) * ratio;
+            const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
+
+            dot.setAttribute('cx', x);
+            dot.setAttribute('cy', y);
+            dot.setAttribute('opacity', '1');
+
+            tooltip.textContent = `$${val}`;
+            tooltip.style.left = e.clientX - rect.left + 'px';
+            tooltip.style.top = e.clientY - rect.top - 40 + 'px';
+            tooltip.style.opacity = '1';
+        });
+
+        graph.addEventListener('mouseleave', () => {
+            dot.setAttribute('opacity', '0');
+            tooltip.style.opacity = '0';
+        });
+
     </script>
 
     <div class="container">
         <div class="glass-card" style="text-align: center; padding: 48px 32px; position: relative;">
-            <svg id="heroGraph" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15; z-index: 0;" viewBox="0 0 800 300" preserveAspectRatio="none">
+            <svg id="heroGraph" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15; z-index: 0; cursor: pointer;" viewBox="0 0 800 300" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="graphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" style="stop-color:#007aff;stop-opacity:0.3" />
@@ -469,7 +510,9 @@
                 <!-- Start ~$300, Current $695 (middle), Target $1,657 (end) -->
                 <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60" stroke="#007aff" stroke-width="3" fill="none"/>
                 <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60 L800,300 L0,300 Z" fill="url(#graphGradient)"/>
+                <circle id="graphDot" r="6" fill="#007aff" opacity="0" style="transition: opacity 0.2s;"/>
             </svg>
+            <div id="graphTooltip" style="position: absolute; background: rgba(0, 0, 0, 0.9); color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10;"></div>
             <h1 style="font-size: 64px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; position: relative; z-index: 1;">
                 Henry
                 <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
