@@ -3,1909 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Henry - Portfolio Tracker v2.0</title>
-    <meta name="description" content="Personal portfolio and budget management system tracking $884 → $2,190 goal by 2030">
-    <meta property="og:title" content="Henry - Portfolio Tracker">
-    <meta property="og:description" content="Portfolio tracking with 2030 price targets">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    <title>Henry - Portfolio Tracker</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg-primary: #f6f8fa;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #1d1d1f;
-            --text-secondary: #6c757d;
-            --border-color: #e0e6ed;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
-            --header-bg: #00a68f;
-            --input-bg: #f6f8fa;
-            --input-hover: #e9ecef;
-            --mint-primary: #00a68f;
-            --mint-secondary: #2ac98d;
-            --mint-income: #05bf85;
-            --mint-expense: #e75757;
-            --mint-warning: #ffb74d;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #000000;
-                --bg-secondary: #1c1c1e;
-                --bg-card: #1c1c1e;
-                --text-primary: #f5f5f7;
-                --text-secondary: #98989d;
-                --border-color: rgba(255,255,255,0.1);
-                --shadow-sm: 0 2px 16px rgba(0,0,0,0.3);
-                --shadow-md: 0 4px 24px rgba(0,0,0,0.5);
-                --header-bg: rgba(28, 28, 30, 0.8);
-                --input-bg: #2c2c2e;
-                --input-hover: #3a3a3c;
-            }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #1d1d1f;
         }
 
-        body.light-mode {
-            --bg-primary: #f5f5f7;
-            --bg-secondary: #fafafa;
-            --bg-card: #ffffff;
-            --text-primary: #1d1d1f;
-            --text-secondary: #86868b;
-            --border-color: rgba(0,0,0,0.06);
-            --shadow-sm: 0 2px 16px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
-            --header-bg: rgba(255, 255, 255, 0.8);
-            --input-bg: #f5f5f7;
-            --input-hover: #ebebed;
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        body.light-mode .header h1 {
-            color: #1d1d1f !important;
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
 
-        body.dark-mode {
-            --bg-primary: #000000;
-            --bg-secondary: #1c1c1e;
-            --bg-card: #1c1c1e;
-            --text-primary: #f5f5f7;
-            --text-secondary: #98989d;
-            --border-color: rgba(255,255,255,0.1);
-            --shadow-sm: 0 2px 16px rgba(0,0,0,0.3);
-            --shadow-md: 0 4px 24px rgba(0,0,0,0.5);
-            --header-bg: rgba(28, 28, 30, 0.8);
-            --input-bg: #2c2c2e;
-            --input-hover: #3a3a3c;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        body { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-primary); overflow-x: hidden; transition: background 0.3s ease; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        html { overflow-x: hidden; scroll-behavior: smooth; }
-        .header { background: var(--header-bg); border-bottom: none; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 24px; contain: layout; }
-        .card { background: var(--bg-card); border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, box-shadow; contain: layout style paint; }
-        .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px) translateZ(0); }
-
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 300px; }
-        thead { background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); }
-        th { padding: 12px 24px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-        th:last-child { text-align: right; }
-        tbody tr { border-bottom: 1px solid var(--border-color); transition: background 0.2s ease; }
-        tbody tr:hover { background: var(--bg-secondary); }
-        td { padding: 16px 24px; color: var(--text-primary); }
-        td:last-child { text-align: right; }
-
-        input { width: 96px; text-align: right; background: var(--input-bg); border: 1px solid transparent; outline: none; padding: 6px 10px; border-radius: 8px; transition: all 0.2s ease; font-weight: 500; color: var(--text-primary); }
-        input:hover { background: var(--input-hover); }
-        input:focus { background: var(--bg-card); border-color: #007aff; box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1); }
-        
-        .goal { color: var(--mint-primary); font-weight: 600; }
-        .asset { color: var(--mint-primary); font-weight: 600; }
-        .income { color: var(--mint-income); font-weight: 600; }
-        .expense { color: var(--mint-expense); }
-        .calculated { color: var(--mint-primary); font-weight: 600; }
-        .debt { color: var(--mint-expense); font-weight: 600; }
-        .one-time { color: var(--mint-warning); font-weight: 600; }
-
-        /* Mint-style progress bar */
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e6ed;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 8px 0;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--mint-primary) 0%, var(--mint-secondary) 100%);
-            border-radius: 10px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        /* Mint-style badges */
-        .category-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 11px;
+        h1 {
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            color: white;
+            font-size: 28px;
             font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            color: #667eea;
         }
-        .badge-income { background: rgba(5, 191, 133, 0.1); color: var(--mint-income); }
-        .badge-expense { background: rgba(231, 87, 87, 0.1); color: var(--mint-expense); }
-        .badge-savings { background: rgba(0, 166, 143, 0.1); color: var(--mint-primary); }
-        
-        .chart-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
-        .chart-container { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; min-height: 500px; }
-        .chart { width: 100%; height: 100%; min-height: 500px; max-width: 100%; contain: layout style; }
-        .chart .main-line { animation: drawLine 1.5s ease-out forwards; stroke-dasharray: 2400; stroke-dashoffset: 2400; }
-        @keyframes drawLine { to { stroke-dashoffset: 0; } }
 
-        /* Performance optimizations */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        td {
+            padding: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 15px;
         }
-        .tooltip { position: absolute; background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; box-shadow: var(--shadow-md); z-index: 20; display: none; font-size: 12px; color: var(--text-primary); pointer-events: none; transition: all 0.15s ease; }
 
-        /* Loading skeleton */
-        .skeleton { background: linear-gradient(90deg, var(--input-bg) 25%, var(--input-hover) 50%, var(--input-bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; border-radius: 6px; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .skeleton-row { height: 58px; margin-bottom: 8px; border-radius: 10px; }
-        .skeleton-chart { height: 320px; border-radius: 12px; }
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
 
-        .stocks-section { border-top: 1px solid var(--border-color); background: var(--bg-secondary); padding: 24px; }
-        .stock-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-        .stock-row { background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, box-shadow; contain: layout style paint; }
-        .stock-row:hover { box-shadow: var(--shadow-md); transform: translateY(-1px) translateZ(0); }
-        .stock-row:active { transform: scale(0.98) translateZ(0); }
-        .stock-row a { text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .stock-left { display: flex; align-items: center; gap: 12px; }
-        .stock-symbol { font-weight: 600; color: var(--text-primary); font-size: 14px; min-width: 60px; }
-        .stock-prices { font-size: 13px; color: var(--text-secondary); }
-        .stock-gain { font-size: 14px; font-weight: 600; color: #30d158; min-width: 80px; text-align: right; }
+        tbody tr:last-child td {
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.1);
+        }
 
-        /* Mobile responsive breakpoints */
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: #764ba2;
+        }
+
+        .future-expense {
+            opacity: 0.6;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
-            .container { padding: 16px; }
-            .header { padding: 12px 16px; }
-            .chart-section { padding: 16px; }
-            .chart-container { padding: 16px 8px; overflow: hidden; }
-            .chart { width: 100%; max-width: 100%; height: 280px; }
-            .stocks-section { padding: 16px; }
-            th, td { padding: 12px 16px; font-size: 15px; }
-            th { font-size: 11px; }
-            input { width: 100px; font-size: 15px; }
-            .header h1 { font-size: 18px; }
-            .summary-grid { grid-template-columns: 1fr; gap: 12px; }
-            .collapse-header { padding: 14px 16px; }
-            .back-button { width: 32px; height: 32px; font-size: 16px; }
-        }
-
-        @media (max-width: 480px) {
-            body { width: 100vw; }
-            .container { padding: 8px; width: 100%; max-width: 100vw; }
-            .header { padding: 12px; gap: 8px; }
-
-            /* Make unified chart scrollable on mobile */
-            .portfolio-chart-section {
+            body {
                 padding: 12px;
-                display: block !important;
-            }
-            .portfolio-chart-section .chart-container {
-                overflow: hidden;
-                padding: 12px 4px;
-            }
-            .portfolio-chart-section .chart {
-                width: 100%;
-                max-width: 100%;
-                height: 240px;
-            }
-            .portfolio-chart-section > div:first-child {
-                flex-direction: column;
-                align-items: flex-start !important;
-                gap: 10px !important;
             }
 
-            /* Optimize payment scenarios for mobile - stack in 2x2 grid */
-            .payment-scenarios-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px !important;
-            }
-            .payment-scenario {
-                padding: 10px !important;
-                min-width: auto !important;
-            }
-            .payment-scenario div:first-child {
-                font-size: 15px !important;
-            }
-            .payment-scenario div:last-child {
-                font-size: 11px !important;
+            .glass-card {
+                padding: 20px;
+                border-radius: 16px;
             }
 
-            /* Make debt info more compact on mobile */
-            #debtInput {
-                width: 90px !important;
-                font-size: 14px !important;
+            h1 {
+                font-size: 32px;
             }
 
-            .stocks-section { padding: 12px; }
-            .table-wrapper { -webkit-overflow-scrolling: touch; width: 100%; }
-            table { min-width: 100%; width: 100%; }
-            th, td { padding: 10px 8px; font-size: 14px; }
-            th { font-size: 11px; padding: 8px; }
-            input { width: 80px; font-size: 14px; padding: 4px 6px; }
-            .header h1 { font-size: 16px; }
-            .summary-section { padding: 12px; }
-            .collapse-header { padding: 12px; font-size: 14px; }
-            .summary-grid { grid-template-columns: 1fr; gap: 8px; }
-            .card { margin-bottom: 12px; }
-            .stock-row { padding: 10px 12px; }
-            .stock-symbol { font-size: 13px; min-width: 50px; }
-            .stock-prices { font-size: 12px; }
-            .stock-gain { font-size: 13px; min-width: 60px; }
-            .back-button { width: 30px; height: 30px; font-size: 16px; padding: 4px 8px; }
-            .dark-mode-toggle { width: 32px; height: 32px; }
+            h2 {
+                font-size: 22px;
+            }
 
-            /* Fix portfolio header metrics on mobile */
-            .portfolio-header-metrics {
-                flex-direction: column !important;
-                gap: 12px !important;
+            table {
+                font-size: 13px;
             }
-            .portfolio-header-metrics > div {
-                width: 100% !important;
-                text-align: center !important;
+
+            th, td {
+                padding: 12px 8px;
             }
-            .portfolio-header-metrics > div > div:first-child {
-                font-size: 11px !important;
-            }
-            .portfolio-header-metrics > div > div:last-child {
-                font-size: 22px !important;
+
+            .back-button {
+                top: 12px;
+                right: 12px;
             }
         }
-        
-        .summary-section { border-top: 1px solid var(--border-color); padding: 24px; }
-        .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .summary-card { text-align: center; padding: 16px; border-radius: 12px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; border: 1px solid var(--border-color); }
-        .summary-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .green-bg { background: linear-gradient(135deg, rgba(236, 253, 245, 0.5) 0%, rgba(209, 250, 229, 0.5) 100%); }
-        .blue-bg { background: linear-gradient(135deg, rgba(239, 246, 255, 0.5) 0%, rgba(219, 234, 254, 0.5) 100%); }
-        .purple-bg { background: linear-gradient(135deg, rgba(250, 245, 255, 0.5) 0%, rgba(243, 232, 255, 0.5) 100%); }
-        .summary-value { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
-        .green-text { color: #059669; }
-        .blue-text { color: #007aff; }
-        .purple-text { color: #7c3aed; }
-        .summary-label { font-size: 11px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; color: var(--text-secondary); }
-
-        .back-button { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; width: 36px; height: 36px; text-decoration: none; color: var(--text-primary); font-size: 18px; font-weight: 600; will-change: transform; }
-        .back-button:hover { background: var(--input-hover); transform: translateX(-2px) translateZ(0); }
-        .back-button:active { transform: scale(0.95) translateX(-2px) translateZ(0); }
-
-        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
-        .footer .heart { animation: heartbeat 2s ease-in-out infinite; display: inline-block; vertical-align: middle; }
-        @keyframes heartbeat { 0% { transform: scale(1); } 10% { transform: scale(1.2); } 20% { transform: scale(1); } 30% { transform: scale(1.15); } 40% { transform: scale(1); } 100% { transform: scale(1); } }
-
-        .collapse-header { cursor: pointer; padding: 16px 24px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; user-select: none; transition: all 0.2s ease; }
-        .collapse-header:hover { opacity: 0.8; }
-        .collapse-header:active { opacity: 0.6; }
-        .collapse-arrow { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 12px; color: var(--text-secondary); font-weight: 600; }
-        .collapse-arrow.open { transform: rotate(180deg); }
-        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .collapsible-content.open { max-height: 2000px; }
-
-        .toggle-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; padding: 14px; background: linear-gradient(135deg, rgba(239, 246, 255, 0.6) 0%, rgba(219, 234, 254, 0.6) 100%); border-radius: 12px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; border: 1px solid rgba(147, 197, 253, 0.3); }
-        .toggle-container:hover { box-shadow: var(--shadow-md); }
-        body.dark-mode .toggle-container { background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(29, 78, 216, 0.2) 100%); border: 1px solid rgba(96, 165, 250, 0.2); }
-        .toggle-label { font-size: 14px; font-weight: 500; color: var(--text-primary); }
-        .toggle-switch { position: relative; display: inline-block; width: 51px; height: 31px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--input-bg); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 31px; }
-        .toggle-slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: var(--bg-card); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .toggle-slider { background-color: #34c759; }
-        input:checked + .toggle-slider:before { transform: translateX(20px); }
-
-        select { padding: 8px 32px 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; background: var(--bg-card); font-weight: 500; cursor: pointer; transition: all 0.2s ease; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2386868b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; color: var(--text-primary); }
-        select:hover { background-color: var(--input-hover); }
-        select:focus { outline: none; border-color: #007aff; box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1); }
-
-        .dark-mode-toggle { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; width: 36px; height: 36px; will-change: transform; }
-        .dark-mode-toggle:hover { background: var(--input-hover); }
-        .dark-mode-toggle:active { transform: scale(0.95) translateZ(0); }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <a href="https://heyitsmejosh.com" class="back-button" aria-label="Back to home">‹</a>
-            <div>
-                <h1 style="display: flex; align-items: center; gap: 8px;">
-                    Henry
-                    <span style="font-size: 11px; font-weight: 500; background: rgba(0, 122, 255, 0.1); color: #007aff; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">USD</span>
-                </h1>
-                <div style="display: flex; gap: 12px; margin-top: 2px;">
-                    <div id="nextPayday" style="font-size: 11px; color: var(--text-secondary);">Next pay: 11/19, 12/17</div>
-                </div>
-            </div>
-        </div>
-        <button class="dark-mode-toggle" aria-label="Toggle dark mode">
-            <svg id="darkModeIcon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: var(--text-primary);">
-                <path d="M10 3V1M10 19V17M17 10H19M1 10H3M15.66 15.66L17.07 17.07M2.93 2.93L4.34 4.34M15.66 4.34L17.07 2.93M2.93 17.07L4.34 15.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
-            </svg>
-        </button>
-    </div>
+    <a href="https://heyitsmejosh.com" class="back-button">←</a>
 
     <div class="container">
-        <div class="card portfolio-card" style="margin-bottom: 24px;">
-            <div class="chart-section portfolio-chart-section" style="border-top: none; padding-top: 24px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 style="font-weight: 600; color: var(--text-primary); letter-spacing: -0.3px; margin: 0;">Financial Overview</h3>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Extra Income</span>
-                        <label class="toggle-switch" style="margin: 0;">
-                            <input type="checkbox" id="potentialIncomeToggle" onchange="togglePotentialIncome()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Debt Payoff Hero - Mint Style -->
-                <div style="background: linear-gradient(135deg, var(--mint-primary) 0%, var(--mint-secondary) 100%); border-radius: 12px; padding: 32px; margin-bottom: 20px; box-shadow: var(--shadow-md);">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-                        <div>
-                            <div style="font-size: 14px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600;">Savings Goal Progress</div>
-                            <div style="font-size: 36px; font-weight: 700; color: white; margin-bottom: 4px;">
-                                <span id="currentSavingsHero">$1,095</span> <span style="font-size: 20px; opacity: 0.8;">/ $5,000</span>
-                            </div>
-                            <div style="font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px;">
-                                <span id="monthlySavingsHero">$162</span>/mo savings • <span id="monthsToPayoffHero">~21 months</span> to goal
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 48px; font-weight: 700; color: white; line-height: 1;" id="savingsProgressPercent">25%</div>
-                            <div style="font-size: 12px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.5px;">Complete</div>
-                        </div>
-                    </div>
-                    <div class="progress-bar" style="background: rgba(255,255,255,0.2); height: 12px;">
-                        <div class="progress-fill" id="savingsProgressBar" style="background: white; width: 25%;"></div>
-                    </div>
-                    <div style="font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 12px;">
-                        <span id="currentIncomeHero">$774</span> income − <span id="currentExpensesHero">$612</span> expenses = <span id="monthlySavingsHero2">$162</span>/mo
-                    </div>
-                </div>
-
-                <!-- Summary Stats -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;">
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(110, 231, 183, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('progressValue').textContent)" title="Click to copy">
-                        <div id="progressValue" style="font-size: 18px; font-weight: 600; color: #6ee7b7;">12.7%</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Progress</div>
-                    </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(147, 197, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('netWorthValue').textContent)" title="Click to copy">
-                        <div id="netWorthValue" style="font-size: 18px; font-weight: 600; color: #93c5fd;">-$7,686</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Net Worth</div>
-                    </div>
-                    <div style="text-align: center; padding: 12px; border-radius: 6px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid rgba(196, 181, 253, 0.3); cursor: pointer;" onclick="copyToClipboard(document.getElementById('monthlySurplus').textContent)" title="Click to copy">
-                        <div id="monthlySurplus" style="font-size: 18px; font-weight: 600; color: #c4b5fd;">-$69</div>
-                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-secondary);">Monthly Surplus</div>
-                    </div>
-                </div>
-
-                <!-- Chart Container -->
-                <div class="chart-container" style="margin-top: 20px;">
-                    <svg id="chart" class="chart" viewBox="0 0 1000 450" preserveAspectRatio="xMidYMid meet"></svg>
-                </div>
-            </div>
+        <div class="glass-card">
+            <h1>Henry</h1>
+            <p class="subtitle">Portfolio Tracker • Last updated: October 27, 2025</p>
         </div>
 
-        <!-- Financial Dashboard -->
-        <div class="card" style="margin-top: 24px; margin-bottom: 24px;">
-            <div class="collapse-header">
-                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Financial Dashboard</h3>
-                <span class="collapse-arrow">▼</span>
-            </div>
-            <div class="collapsible-content">
-                <div style="padding: 24px; background: var(--bg-secondary);">
-                    <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border-color);">
-                        <h4 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px;">Market Insights</h4>
-                        <div id="aiInsights" style="font-size: 14px; line-height: 1.6; color: var(--text-primary);"></div>
-                    </div>
-                    <div>
-                        <h4 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px;">Budget Breakdown</h4>
-                        <div class="table-wrapper">
-                            <table style="font-size: 14px;">
-                                <thead><tr><th>Category</th><th>Amount</th></tr></thead>
-                                <tbody id="dataTable"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="glass-card">
+            <h2>Stock Portfolio</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Shares</th>
+                        <th>Current Price</th>
+                        <th>Current Value</th>
+                        <th>Target Price</th>
+                        <th>Target Value</th>
+                        <th>Gain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/SPY" target="_blank">SPY</a></td>
+                        <td>0.336</td>
+                        <td>$685.24</td>
+                        <td>$230</td>
+                        <td>$1,250</td>
+                        <td>$420</td>
+                        <td>+82%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a></td>
+                        <td>0.513</td>
+                        <td>$189.18</td>
+                        <td>$97</td>
+                        <td>$520</td>
+                        <td>$267</td>
+                        <td>+175%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a></td>
+                        <td>0.264</td>
+                        <td>$191.49</td>
+                        <td>$51</td>
+                        <td>$560</td>
+                        <td>$148</td>
+                        <td>+192%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a></td>
+                        <td>0.435</td>
+                        <td>$268.81</td>
+                        <td>$117</td>
+                        <td>$500</td>
+                        <td>$218</td>
+                        <td>+86%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a></td>
+                        <td>1.246</td>
+                        <td>$145.86</td>
+                        <td>$182</td>
+                        <td>$420</td>
+                        <td>$523</td>
+                        <td>+188%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a></td>
+                        <td>0.149</td>
+                        <td>$269.27</td>
+                        <td>$40</td>
+                        <td>$570</td>
+                        <td>$85</td>
+                        <td>+112%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a></td>
+                        <td>0.0069</td>
+                        <td>$452.42</td>
+                        <td>$3</td>
+                        <td>$820</td>
+                        <td>$6</td>
+                        <td>+81%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/ATZ.TO" target="_blank">ATZ.TO</a></td>
+                        <td>0.0503</td>
+                        <td>$96.19</td>
+                        <td>$5</td>
+                        <td>$115</td>
+                        <td>$6</td>
+                        <td>+20%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/ETH-USD" target="_blank">ETH</a></td>
+                        <td>0.00261</td>
+                        <td>$4,098.10</td>
+                        <td>$11</td>
+                        <td>$11,500</td>
+                        <td>$30</td>
+                        <td>+181%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/BTC-USD" target="_blank">BTC</a></td>
+                        <td>0.0000432</td>
+                        <td>$113,886.23</td>
+                        <td>$5</td>
+                        <td>$320,000</td>
+                        <td>$14</td>
+                        <td>+181%</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://finance.yahoo.com/quote/SOL-USD" target="_blank">SOL</a></td>
+                        <td>0.0414</td>
+                        <td>$201.37</td>
+                        <td>$8</td>
+                        <td>$550</td>
+                        <td>$23</td>
+                        <td>+173%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>$749</strong></td>
+                        <td></td>
+                        <td><strong>$1,740</strong></td>
+                        <td><strong>+132%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Stock Portfolio Section -->
-        <div class="card" style="margin-top: 24px; margin-bottom: 24px;">
-            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color);">
-                <h3 style="font-weight: 600; margin: 0; color: var(--text-primary); font-size: 16px; letter-spacing: -0.3px;">Stock Portfolio</h3>
-            </div>
-            <div style="display: block;">
-                <div class="stocks-section" style="border-top: none; padding-top: 24px;">
-                    <div style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);">
-                        <div class="portfolio-header-metrics" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                            <div>
-                                <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600;">Total Portfolio Value</div>
-                                <div style="font-size: 28px; font-weight: 700; color: var(--mint-primary);" id="portfolioValue">$540</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600;">2030 Target</div>
-                                <div style="font-size: 28px; font-weight: 700; color: #22c55e;" id="portfolioTarget">$1,331</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600;">Potential Gain</div>
-                                <div style="font-size: 28px; font-weight: 700; color: #22c55e;" id="portfolioGain">+146%</div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="glass-card">
+            <h2>Budget Breakdown</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Wallet / Savings</td>
+                        <td>$912</td>
+                    </tr>
+                    <tr>
+                        <td>Income</td>
+                        <td>$1,060</td>
+                    </tr>
+                    <tr>
+                        <td>Debt</td>
+                        <td>-$4,000</td>
+                    </tr>
+                    <tr>
+                        <td>Food</td>
+                        <td>-$300</td>
+                    </tr>
+                    <tr>
+                        <td>iPhone (Monthly)</td>
+                        <td>-$300</td>
+                    </tr>
+                    <tr class="future-expense">
+                        <td>Apple Watch (starts Nov, $300 down)</td>
+                        <td>-$33</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                    <div class="stock-list" id="stockList">
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">SPY</div>
-                                <div class="stock-prices">0.336 shares • $677.25 → $1,250.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$228 → $420</div>
-                                <div class="stock-gain">+$192 (+85%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">PLTR</div>
-                                <div class="stock-prices">0.513 shares • $184.63 → $365.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$95 → $187</div>
-                                <div class="stock-gain">+$92 (+98%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">NVDA</div>
-                                <div class="stock-prices">0.264 shares • $186.26 → $600.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$49 → $158</div>
-                                <div class="stock-gain">+$109 (+222%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">AAPL</div>
-                                <div class="stock-prices">0.435 shares • $262.82 → $480.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$114 → $209</div>
-                                <div class="stock-gain">+$95 (+83%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">HOOD</div>
-                                <div class="stock-prices">1.246 shares • $139.79 → $250.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$174 → $312</div>
-                                <div class="stock-gain">+$138 (+79%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">GOOGL</div>
-                                <div class="stock-prices">0.149 shares • $259.92 → $480.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$39 → $72</div>
-                                <div class="stock-gain">+$33 (+85%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">TSLA</div>
-                                <div class="stock-prices">0.0069 shares • $433.72 → $600.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$3 → $4</div>
-                                <div class="stock-gain">+$1 (+38%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">ATZ</div>
-                                <div class="stock-prices">0.0503 shares • $67.91 → $111.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$3 → $6</div>
-                                <div class="stock-gain">+$3 (+73%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">ETH</div>
-                                <div class="stock-prices">0.00407 shares • $3,940.00 → $7,585.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$16 → $20</div>
-                                <div class="stock-gain">+$4 (+27%)</div>
-                            </div>
-                        </div>
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">SOL</div>
-                                <div class="stock-prices">0.0414 shares • $193.10 → $388.00 (2030)</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">$8 → $12</div>
-                                <div class="stock-gain">+$4 (+55%)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="glass-card">
+            <h2>Summary</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><strong>Total Portfolio Value</strong></td>
+                        <td>$749</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2030 Target</strong></td>
+                        <td>$1,740</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Potential Gain</strong></td>
+                        <td>+$991 (+132%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Net Worth</strong></td>
+                        <td>$912 - $4,000 = -$3,088</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monthly Surplus (Current)</strong></td>
+                        <td>$1,060 - $600 = $460</td>
+                    </tr>
+                    <tr class="future-expense">
+                        <td><strong>Monthly Surplus (Nov+)</strong></td>
+                        <td>$1,060 - $633 = $427</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <div class="footer" style="padding-bottom: 40px;">Made with <svg class="heart" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.0 0 0 0 0-7.78z" fill="#FF4136"/></svg> in Vancouver, BC</div>
-
-    <script>
-        // Dark mode handling
-        function initDarkMode() {
-            const saved = localStorage.getItem('darkMode');
-            if (saved === 'dark' || (saved === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.add('light-mode');
-            }
-        }
-
-        function toggleDarkMode() {
-            if (document.body.classList.contains('dark-mode')) {
-                document.body.classList.remove('dark-mode');
-                document.body.classList.add('light-mode');
-                localStorage.setItem('darkMode', 'light');
-            } else {
-                document.body.classList.remove('light-mode');
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('darkMode', 'dark');
-            }
-            updateChart(); // Redraw unified chart with new colors
-        }
-
-        initDarkMode();
-
-        // All amounts in USD (converted from CAD at 1 CAD = 0.73 USD)
-        let data = [
-            { category: 'Goal', amount: 5000, type: 'goal' },
-            { category: 'Wallet / Savings', amount: 912, type: 'asset' }, // 1250 CAD * 0.73
-            { category: 'Potential Income', amount: 1212, type: 'asset' },
-            { category: 'Income', amount: 1060, type: 'income' },
-            { category: 'Debt', amount: 4000, type: 'debt' },
-            { category: 'Food', amount: 300, type: 'expense' },
-            { category: 'iPhone (Monthly)', amount: 300, type: 'expense' }, // Currently $300 (dual payments), drops to $135 in 2 months when iPhone 15 paid off
-            { category: 'Claude', amount: 20, type: 'expense' }
-        ];
-
-        // Debt tracking data
-        let debtData = {
-            currentDebt: 4000, // Collections debt (~$7,800 original, settling for ~50%)
-            iPhone15Payment: 165, // Monthly payment for iPhone 15 Pro Max (2 months remaining)
-            iPhone15Remaining: 2, // Months remaining on iPhone 15 Pro Max
-            iPhone17Payment: 135, // Monthly payment for iPhone 17 Pro Max (ongoing)
-            iPhone17Total: 36, // Total months for iPhone 17 Pro Max contract
-            dualPaymentMonths: 2, // Months carrying both payments ($300/mo total, then drops to $135)
-            interestRate: 0, // APR (0% for device payments typically)
-            lastUpdated: Date.now()
-        };
-
-        // Stock portfolio tracking (all USD values, prices auto-updated)
-        // Shares verified from Wealthsimple Oct 25, 2025. Current: $540 → Target: $1330 (146% gain)
-        // 2030 targets: moderately bullish upgrade for 150% portfolio gain target
-        // Top performers: PLTR 17% annual, NVDA 17% annual, SOL 16% annual, HOOD 15% annual, ETH 15% annual
-        let stocks = {
-            'SPY': { current: 685.24, shares: 0.336, target: 1250, year: 2030 },   // +85% / 1.85x (market baseline, 13% annual)
-            'PLTR': { current: 189.18, shares: 0.513, target: 520, year: 2030 },   // +182% / 2.8x (growth stock, 25% annual)
-            'NVDA': { current: 191.49, shares: 0.264, target: 560, year: 2030 },  // +201% / 3.0x (AI leader, 25% annual)
-            'AAPL': { current: 268.81, shares: 0.435, target: 500, year: 2030 },  // +90% / 1.9x (mature tech, 13% annual)
-            'HOOD': { current: 145.86, shares: 1.246, target: 420, year: 2030 },    // +201% / 3.0x (fintech growth, 15% annual)
-            'GOOGL': { current: 269.27, shares: 0.149, target: 570, year: 2030 }, // +119% / 2.2x (solid tech, 17% annual)
-            'TSLA': { current: 452.42, shares: 0.0069, target: 820, year: 2030 },   // +89% / 1.9x (EV leader, 13% annual)
-            'ATZ': { current: 96.19, shares: 0.0503, target: 115, year: 2030 },   // +69% / 1.7x (cyclical, 11% annual)
-            'ETH': { current: 4098.10, shares: 0.00261, target: 11500, year: 2030 },  // +172% / 2.7x (crypto leader, 16% annual)
-            'BTC': { current: 113886.23, shares: 0.0000432, target: 320000, year: 2030 }, // +177% / 2.8x (store of value, 16% annual)
-            'SOL': { current: 201.37, shares: 0.0414, target: 550, year: 2030 }      // +169% / 2.7x (alt crypto, 22% annual)
-        };
-
-        // Portfolio value cache
-        let portfolioValueCache = null;
-        let portfolioValueCacheTime = 0;
-
-        // Stock price auto-refresh with caching and error handling
-        async function fetchStockPrice(symbol, timeout = 5000) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-            try {
-                const response = await fetch(
-                    `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
-                    {
-                        signal: controller.signal,
-                        headers: { 'User-Agent': 'Mozilla/5.0' }
-                    }
-                );
-                clearTimeout(timeoutId);
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-                const data = await response.json();
-                const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-
-                if (!price || isNaN(price)) throw new Error('Invalid price data');
-
-                return parseFloat(price.toFixed(2));
-            } catch (error) {
-                clearTimeout(timeoutId);
-                console.warn(`Failed to fetch ${symbol}:`, error.message);
-                return null;
-            }
-        }
-
-        async function updateStockPrices() {
-            try {
-                // Check cache - only refresh if older than 15 minutes
-                const cacheKey = 'stockPricesCache_oct27';
-                const cacheTimeKey = 'stockPricesCacheTime_oct27';
-                const cacheAge = Date.now() - (parseInt(localStorage.getItem(cacheTimeKey)) || 0);
-                const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
-
-                if (cacheAge < CACHE_TTL) {
-                    const cached = localStorage.getItem(cacheKey);
-                    if (cached) {
-                        const cachedPrices = JSON.parse(cached);
-                        Object.keys(cachedPrices).forEach(symbol => {
-                            if (stocks[symbol]) {
-                                stocks[symbol].current = cachedPrices[symbol];
-                            }
-                        });
-                        console.log('Loaded stock prices from cache');
-                        return true;
-                    }
-                }
-
-                console.log('Fetching fresh stock prices...');
-                const symbols = Object.keys(stocks);
-                const prices = {};
-                let successCount = 0;
-
-                // Fetch all stocks in parallel with timeout
-                const results = await Promise.allSettled(
-                    symbols.map(symbol => fetchStockPrice(symbol))
-                );
-
-                results.forEach((result, index) => {
-                    const symbol = symbols[index];
-                    if (result.status === 'fulfilled' && result.value !== null) {
-                        stocks[symbol].current = result.value;
-                        prices[symbol] = result.value;
-                        successCount++;
-                    }
-                });
-
-                // Cache successful results (even partial)
-                if (successCount > 0) {
-                    localStorage.setItem(cacheKey, JSON.stringify(prices));
-                    localStorage.setItem(cacheTimeKey, Date.now().toString());
-                    console.log(`Updated ${successCount}/${symbols.length} stock prices`);
-
-                    // Invalidate portfolio cache when prices update
-                    portfolioValueCache = null;
-
-                    // Re-render if stocks were updated
-                    renderStockList();
-                    generateAIInsights();
-                }
-
-                return successCount > 0;
-            } catch (error) {
-                console.error('Error updating stock prices:', error);
-                return false;
-            }
-        }
-
-        // Monte Carlo simulation for price predictions
-        function monteCarloPredictions() {
-            const simulations = 1000;
-            const predictions = {};
-
-            Object.entries(stocks).forEach(([symbol, stock]) => {
-                // Historical volatility estimates (annualized)
-                const volatilityMap = {
-                    'SPY': 0.12, 'PLTR': 0.35, 'NVDA': 0.28, 'AAPL': 0.20,
-                    'HOOD': 0.38, 'GOOGL': 0.18, 'TSLA': 0.42, 'ATZ': 0.25,
-                    'ETH': 0.65, 'BTC': 0.60, 'SOL': 0.70
-                };
-
-                const volatility = volatilityMap[symbol] || 0.25;
-                const driftDaily = 0.0003; // Daily drift (~7% annual)
-                const driftWeekly = driftDaily * 5; // 5 trading days
-
-                // Tomorrow simulation
-                const tomorrowPrices = [];
-                for (let i = 0; i < simulations; i++) {
-                    const randomNormal = Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
-                    const dailyReturn = driftDaily + volatility / Math.sqrt(252) * randomNormal;
-                    const tomorrowPrice = stock.current * (1 + dailyReturn);
-                    tomorrowPrices.push(tomorrowPrice);
-                }
-
-                // Weekly simulation
-                const weeklyPrices = [];
-                for (let i = 0; i < simulations; i++) {
-                    let price = stock.current;
-                    for (let day = 0; day < 5; day++) {
-                        const randomNormal = Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
-                        const dailyReturn = driftDaily + volatility / Math.sqrt(252) * randomNormal;
-                        price *= (1 + dailyReturn);
-                    }
-                    weeklyPrices.push(price);
-                }
-
-                tomorrowPrices.sort((a, b) => a - b);
-                weeklyPrices.sort((a, b) => a - b);
-
-                predictions[symbol] = {
-                    current: stock.current,
-                    tomorrow: {
-                        p10: tomorrowPrices[Math.floor(simulations * 0.1)],
-                        median: tomorrowPrices[Math.floor(simulations * 0.5)],
-                        p90: tomorrowPrices[Math.floor(simulations * 0.9)],
-                        avgChange: (tomorrowPrices.reduce((a, b) => a + b) / simulations - stock.current) / stock.current * 100
-                    },
-                    week: {
-                        p10: weeklyPrices[Math.floor(simulations * 0.1)],
-                        median: weeklyPrices[Math.floor(simulations * 0.5)],
-                        p90: weeklyPrices[Math.floor(simulations * 0.9)],
-                        avgChange: (weeklyPrices.reduce((a, b) => a + b) / simulations - stock.current) / stock.current * 100
-                    }
-                };
-            });
-
-            return predictions;
-        }
-
-        let usePotentialIncome = false;
-
-        function get(category) {
-            const item = data.find(item => item.category === category);
-            return item ? item.amount : 0;
-        }
-
-        function calculateSurplus() {
-            const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
-            return income - totalExpenses;
-        }
-
-        function togglePotentialIncome() {
-            usePotentialIncome = document.getElementById('potentialIncomeToggle').checked;
-            updateAll();
-        }
-
-        function calculateNeeded() {
-            return get('Goal') - get('Wallet / Savings');
-        }
-
-        function projectValue(months) {
-            const r = 0.01; // Individual stocks: 1.0% monthly (12.7% annual)
-            const surplus = calculateSurplus();
-
-            const fv = get('Wallet / Savings') * Math.pow(1 + r, months);
-            const annuity = surplus * ((Math.pow(1 + r, months) - 1) / r);
-
-            // Ensure the line never goes down - minimum is compound growth on existing balance
-            return Math.max(fv, fv + annuity);
-        }
-
-        function generateChartData() {
-            const chartData = [];
-            const r = 0.01; // 1.0% monthly growth rate (12.7% annual)
-            const currentValue = get('Wallet / Savings');
-            const surplus = calculateSurplus();
-            const monthsAgo = 12; // Started investing Oct 2024 (12 months ago)
-
-            // Get debt projection
-            const { timeline: debtTimeline } = calculateDebtPayoff(selectedPayment);
-
-            let previousValue = 0;
-
-            // Generate past data (from -12 to 0) - started from $0 in Oct 2024
-            for (let i = -monthsAgo; i <= 0; i++) {
-                const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
-                const monthYear = date.toLocaleDateString('en', { month: 'short', year: 'numeric' });
-
-                let val;
-                if (i === 0) {
-                    // At NOW, show the actual current wallet balance
-                    val = currentValue;
-                } else {
-                    // Linear growth from $0 (Oct 2024) to current value (now)
-                    const monthsElapsed = monthsAgo + i;
-                    val = (currentValue / monthsAgo) * monthsElapsed;
-                }
-
-                // Ensure monotonic increase - never go down
-                val = Math.max(val, previousValue);
-                previousValue = val;
-
-                // Debt stays constant in the past
-                const debt = debtData.currentDebt;
-
-                chartData.push({
-                    month: monthYear,
-                    val: val,
-                    debt: debt,
-                    netWorth: val - debt,
-                    monthIndex: i
-                });
-            }
-
-            // Generate future data (from 1 to 48 months to balance the view)
-            for (let i = 1; i <= 48; i++) {
-                const date = new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000);
-                const monthYear = date.toLocaleDateString('en', { month: 'short', year: 'numeric' });
-
-                let val = projectValue(i);
-                // Ensure monotonic increase - never go down
-                val = Math.max(val, previousValue);
-                previousValue = val;
-
-                // Debt pays off via lump sum when savings hit $5,000
-                const debt = val >= 5000 ? 0 : debtData.currentDebt;
-
-                chartData.push({
-                    month: monthYear,
-                    val: val,
-                    debt: debt,
-                    netWorth: val - debt,
-                    monthIndex: i
-                });
-            }
-
-            return chartData;
-        }
-
-        function updateTable() {
-            const tbody = document.getElementById('dataTable');
-            const surplus = calculateSurplus();
-            const needed = calculateNeeded();
-            
-            tbody.innerHTML = '';
-            
-            data.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="font-weight: 500;">${item.category}</td>
-                    <td>
-                        <input type="text" value="${item.amount.toLocaleString()}" 
-                               class="${item.type}" data-index="${index}"
-                               onchange="updateValue(${index}, this.value)">
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-
-            // Add calculated rows
-            const incomeDiff = get('Potential Income') - get('Income');
-            const incomeDiffRow = document.createElement('tr');
-            incomeDiffRow.innerHTML = `
-                <td style="font-weight: 500;">Income Difference</td>
-                <td class="calculated">$${incomeDiff.toLocaleString()}</td>
-            `;
-            tbody.appendChild(incomeDiffRow);
-
-            const surplusRow = document.createElement('tr');
-            surplusRow.innerHTML = `
-                <td style="font-weight: 500;">Monthly Surplus</td>
-                <td class="calculated">$${surplus.toLocaleString()}</td>
-            `;
-            tbody.appendChild(surplusRow);
-
-            const neededRow = document.createElement('tr');
-            neededRow.innerHTML = `
-                <td style="font-weight: 500;">Amount Needed</td>
-                <td class="calculated">$${needed.toLocaleString()}</td>
-            `;
-            tbody.appendChild(neededRow);
-
-            // iPhone 15 Sale Section
-            const iphoneSaleRow = document.createElement('tr');
-            iphoneSaleRow.innerHTML = `
-                <td colspan="2" style="padding-top: 16px; font-weight: 600; color: #3b82f6; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;">iPhone 15 Sale (Pending)</td>
-            `;
-            tbody.appendChild(iphoneSaleRow);
-
-            const iphoneIncomeRow = document.createElement('tr');
-            iphoneIncomeRow.innerHTML = `
-                <td style="font-weight: 500; padding-left: 32px;">Sale Price</td>
-                <td class="income">+$700</td>
-            `;
-            tbody.appendChild(iphoneIncomeRow);
-
-            const iphonePayoffRow = document.createElement('tr');
-            iphonePayoffRow.innerHTML = `
-                <td style="font-weight: 500; padding-left: 32px;">Device Payoff</td>
-                <td class="expense">-$500</td>
-            `;
-            tbody.appendChild(iphonePayoffRow);
-
-            const iphoneBillsRow = document.createElement('tr');
-            iphoneBillsRow.innerHTML = `
-                <td style="font-weight: 500; padding-left: 32px;">Remaining Bills (2mo)</td>
-                <td class="expense">-$338</td>
-            `;
-            tbody.appendChild(iphoneBillsRow);
-
-            const iphoneNetRow = document.createElement('tr');
-            iphoneNetRow.innerHTML = `
-                <td style="font-weight: 500; padding-left: 32px;">Net Impact</td>
-                <td class="expense">-$138</td>
-            `;
-            tbody.appendChild(iphoneNetRow);
-        }
-
-        function updateChart() {
-            requestAnimationFrame(() => {
-                const chartData = generateChartData();
-                // Find max/min across all three metrics
-                const allValues = chartData.flatMap(d => [d.val, d.debt, d.netWorth]);
-                const maxVal = Math.max(...allValues);
-                const minVal = 0; // Always start at $0
-                const svg = document.getElementById('chart');
-
-            // Fixed dimensions
-            const marginTop = 30;
-            const marginBottom = 50;
-            const chartHeight = 350;
-            const labelY = marginTop + chartHeight + 35;
-            const hoverHeight = 245;
-
-            // Dark mode aware colors
-            const isDark = document.body.classList.contains('dark-mode');
-            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : '#e5e7eb';
-            const textColor = isDark ? '#98989d' : '#6b7280';
-
-            svg.innerHTML = '';
-
-            // Add grid lines and Y-axis labels (both sides)
-            for (let i = 0; i <= 4; i++) {
-                const y = marginTop + (i * chartHeight / 4);
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', '60');
-                line.setAttribute('y1', y);
-                line.setAttribute('x2', '960');
-                line.setAttribute('y2', y);
-                line.setAttribute('stroke', gridColor);
-                line.setAttribute('stroke-width', '1');
-                svg.appendChild(line);
-
-                const val = maxVal - (i * (maxVal - minVal) / 4);
-
-                // Left Y-axis label
-                const labelLeft = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                labelLeft.setAttribute('x', '50');
-                labelLeft.setAttribute('y', y + 4);
-                labelLeft.setAttribute('text-anchor', 'end');
-                labelLeft.setAttribute('font-size', '11');
-                labelLeft.setAttribute('fill', textColor);
-                labelLeft.textContent = '$' + Math.round(val).toLocaleString();
-                svg.appendChild(labelLeft);
-
-                // Right Y-axis label
-                const labelRight = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                labelRight.setAttribute('x', '970');
-                labelRight.setAttribute('y', y + 4);
-                labelRight.setAttribute('text-anchor', 'start');
-                labelRight.setAttribute('font-size', '11');
-                labelRight.setAttribute('fill', textColor);
-                labelRight.textContent = '$' + Math.round(val).toLocaleString();
-                svg.appendChild(labelRight);
-            }
-
-            const bottomY = marginTop + chartHeight;
-            const goal = get('Goal');
-
-            // Create 3 polylines: Portfolio (green), Debt (orange), Net Worth (blue)
-
-            // 1. Portfolio line (green)
-            const portfolioPoints = chartData.map((d, i) =>
-                `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight}`
-            ).join(' ');
-            const portfolioLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-            portfolioLine.setAttribute('points', portfolioPoints);
-            portfolioLine.setAttribute('fill', 'none');
-            portfolioLine.setAttribute('stroke', '#4ade80');
-            portfolioLine.setAttribute('stroke-width', '2.5');
-            portfolioLine.setAttribute('opacity', '0.9');
-            svg.appendChild(portfolioLine);
-
-            // 2. Debt line (orange) - only show if there's debt, stop when paid off
-            const debtPayoffIndex = chartData.findIndex(d => d.debt === 0);
-            const hasDebt = chartData.some(d => d.debt > 0);
-
-            if (hasDebt && debtPayoffIndex !== -1) {
-                const debtPoints = chartData.slice(0, debtPayoffIndex + 1).map((d, i) =>
-                    `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.debt-minVal)/(maxVal-minVal)) * chartHeight}`
-                ).join(' ');
-                const debtLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-                debtLine.setAttribute('points', debtPoints);
-                debtLine.setAttribute('fill', 'none');
-                debtLine.setAttribute('stroke', '#ff9500');
-                debtLine.setAttribute('stroke-width', '2.5');
-                debtLine.setAttribute('opacity', '0.8');
-                svg.appendChild(debtLine);
-            }
-
-            // 3. Net Worth line (blue) - thicker to emphasize
-            const netWorthPoints = chartData.map((d, i) =>
-                `${80 + (i * 860/(chartData.length-1))},${bottomY - ((d.netWorth-minVal)/(maxVal-minVal)) * chartHeight}`
-            ).join(' ');
-            const netWorthLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-            netWorthLine.setAttribute('points', netWorthPoints);
-            netWorthLine.setAttribute('fill', 'none');
-            netWorthLine.setAttribute('stroke', '#2563eb');
-            netWorthLine.setAttribute('stroke-width', '3');
-            netWorthLine.setAttribute('class', 'main-line');
-            svg.appendChild(netWorthLine);
-
-            // Add hover highlight circle
-            const hoverCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            hoverCircle.setAttribute('r', '6');
-            hoverCircle.setAttribute('fill', '#4ade80');
-            hoverCircle.setAttribute('stroke', 'white');
-            hoverCircle.setAttribute('stroke-width', '2');
-            hoverCircle.setAttribute('opacity', '0');
-            hoverCircle.setAttribute('id', 'hoverCircle');
-            svg.appendChild(hoverCircle);
-
-            // Add milestone markers at fixed intervals (0, 2000, 4000, 6000, etc.) - lines only, no right labels
-            const stepSize = 2000;
-            for (let milestone = 0; milestone <= maxVal; milestone += stepSize) {
-                if (milestone >= minVal && milestone <= maxVal) {
-                    const milestoneY = bottomY - ((milestone - minVal) / (maxVal - minVal)) * chartHeight;
-                    const isDebtPayoff = milestone === 5000;
-
-                    // Subtle dashed line
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', '60');
-                    line.setAttribute('y1', milestoneY);
-                    line.setAttribute('x2', '960');
-                    line.setAttribute('y2', milestoneY);
-                    line.setAttribute('stroke', isDebtPayoff ? '#ff9500' : '#86868b');
-                    line.setAttribute('stroke-width', '1');
-                    line.setAttribute('stroke-dasharray', '4,4');
-                    line.setAttribute('opacity', isDebtPayoff ? '0.4' : '0.15');
-                    svg.appendChild(line);
-                }
-            }
-
-            // Add circles and hover areas for all months
-            chartData.forEach((d, i) => {
-                const x = 80 + (i * 860/(chartData.length-1));
-                const y = bottomY - ((d.val-minVal)/(maxVal-minVal)) * chartHeight;
-
-                // Show circles only at yearly intervals and endpoints
-                const showDot = (i % 12 === 0 && i !== 12) || i === 0 || i === chartData.length - 1;
-                if (showDot && d.monthIndex !== 0) {
-                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    circle.setAttribute('cx', x);
-                    circle.setAttribute('cy', y);
-                    circle.setAttribute('r', '4');
-                    circle.setAttribute('fill', '#4ade80');
-                    svg.appendChild(circle);
-                }
-
-                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('x', x - 20);
-                rect.setAttribute('y', marginTop);
-                rect.setAttribute('width', '40');
-                rect.setAttribute('height', hoverHeight);
-                rect.setAttribute('fill', 'transparent');
-                rect.style.cursor = 'pointer';
-                rect.addEventListener('mouseenter', () => {
-                    showTooltip(i, d);
-                    const hoverCircle = document.getElementById('hoverCircle');
-                    if (hoverCircle) {
-                        hoverCircle.setAttribute('cx', x);
-                        hoverCircle.setAttribute('cy', y);
-                        hoverCircle.setAttribute('opacity', '1');
-                    }
-                });
-                rect.addEventListener('mouseleave', () => {
-                    hideTooltip();
-                    const hoverCircle = document.getElementById('hoverCircle');
-                    if (hoverCircle) hoverCircle.setAttribute('opacity', '0');
-                });
-                svg.appendChild(rect);
-            });
-
-            // Add "NOW" marker at month 0 (which is at index 24 in the array)
-            const nowIndex = chartData.findIndex(d => d.monthIndex === 0);
-            if (nowIndex >= 0) {
-                const currentX = 80 + (nowIndex * 860/(chartData.length-1));
-                const currentY = bottomY - ((chartData[nowIndex].val-minVal)/(maxVal-minVal)) * chartHeight;
-                const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                marker.setAttribute('cx', currentX);
-                marker.setAttribute('cy', currentY);
-                marker.setAttribute('r', '7');
-                marker.setAttribute('fill', '#2563eb');
-                marker.setAttribute('stroke', 'white');
-                marker.setAttribute('stroke-width', '2');
-                svg.appendChild(marker);
-
-                const currentLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                currentLabel.setAttribute('x', currentX);
-                currentLabel.setAttribute('y', currentY - 14);
-                currentLabel.setAttribute('text-anchor', 'middle');
-                currentLabel.setAttribute('font-size', '12');
-                currentLabel.setAttribute('font-weight', '600');
-                currentLabel.setAttribute('fill', '#2563eb');
-                currentLabel.textContent = 'NOW';
-                svg.appendChild(currentLabel);
-            }
-
-            // Add month labels (every 12 months for better spacing with longer timeline)
-            chartData.forEach((d, i) => {
-                if (i % 12 === 0 || d.monthIndex === 0) {
-                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', 80 + (i * 860/(chartData.length-1)));
-                    text.setAttribute('y', labelY);
-                    text.setAttribute('text-anchor', 'middle');
-                    text.setAttribute('font-size', '12');
-                    text.setAttribute('fill', textColor);
-                    text.textContent = d.month;
-                    svg.appendChild(text);
-                }
-            });
-            });
-        }
-
-        function showTooltip(index, data, event) {
-            const tooltip = document.getElementById('tooltip');
-            const goal = get('Goal');
-            const hoverProgress = ((data.val / goal) * 100).toFixed(1);
-            tooltip.innerHTML = `
-                <div style="font-weight: 600; font-size: 11px; opacity: 0.7; margin-bottom: 6px;">${data.month}</div>
-                <div style="font-size: 12px; margin-bottom: 3px;">
-                    <span style="color: #4ade80;">●</span> Portfolio: <strong style="color: #4ade80;">$${Math.round(data.val).toLocaleString()}</strong>
-                </div>
-                <div style="font-size: 12px; margin-bottom: 3px;">
-                    <span style="color: #ff9500;">●</span> Debt: <strong style="color: #ff9500;">$${Math.round(data.debt).toLocaleString()}</strong>
-                </div>
-                <div style="font-size: 12px; border-top: 1px solid var(--border-color); padding-top: 4px; margin-top: 4px;">
-                    <span style="color: #2563eb;">●</span> Net Worth: <strong style="color: ${data.netWorth >= 0 ? '#2563eb' : '#ff3b30'};">$${Math.round(data.netWorth).toLocaleString()}</strong>
-                </div>
-            `;
-            tooltip.style.display = 'block';
-
-            // Update net worth card during hover
-            document.getElementById('netWorthValue').textContent = `$${Math.round(data.netWorth).toLocaleString()}`;
-        }
-
-        function hideTooltip() {
-            document.getElementById('tooltip').style.display = 'none';
-            // Reset to current actual values
-            const progress = (get('Wallet / Savings') / get('Goal') * 100).toFixed(1);
-            document.getElementById('progressValue').textContent = `${progress}%`;
-            const currentNetWorth = get('Wallet / Savings') - debtData.currentDebt;
-            document.getElementById('netWorthValue').textContent = `$${Math.round(currentNetWorth).toLocaleString()}`;
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                // Brief visual feedback
-                const el = event.target.closest('div');
-                const orig = el.style.transform;
-                el.style.transform = 'scale(0.95)';
-                setTimeout(() => el.style.transform = orig, 100);
-            });
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return;
-            if (e.key === 'd' || e.key === 'D') toggleDarkMode();
-            if (e.key === 'b' || e.key === 'B') toggleBudget();
-            if (e.key === 'p' || e.key === 'P') togglePortfolio();
-            if (e.key === 'c' || e.key === 'C') toggleCrypto();
-        });
-
-        function updateValue(index, value) {
-            const cleanValue = parseFloat(value.replace(/,/g, '')) || 0;
-            data[index].amount = cleanValue;
-            updateAll();
-        }
-
-        function updateSummary() {
-            const progress = (get('Wallet / Savings') / get('Goal') * 100).toFixed(1);
-            const surplus = calculateSurplus();
-            const currentNetWorth = get('Wallet / Savings') - debtData.currentDebt;
-
-            document.getElementById('progressValue').textContent = `${progress}%`;
-            document.getElementById('netWorthValue').textContent = `$${Math.round(currentNetWorth).toLocaleString()}`;
-            document.getElementById('monthlySurplus').textContent = `$${surplus.toLocaleString()}`;
-        }
-
-        function updateAll() {
-            updateTable();
-            updateChart();
-            updateSummary();
-            updateDebtPayoffHero();
-        }
-
-        // Stock targets using 5yr CAGR quant model: Tech/growth 12-15%, Mega-cap 10-12%, Metals 7% (inflation hedge)
-        // Toggle sections
-        function toggleBudget() {
-            const content = document.getElementById('budgetContent');
-            const arrow = document.getElementById('budgetArrow');
-            content.classList.toggle('open');
-            arrow.classList.toggle('open');
-        }
-
-        function toggleInsights() {
-            const content = document.getElementById('insightsContent');
-            const arrow = document.getElementById('insightsArrow');
-            content.classList.toggle('open');
-            arrow.classList.toggle('open');
-        }
-
-
-        // Track previous portfolio value for change calculation
-        let previousPortfolioValue = null;
-
-        // Debt tracking variables
-        let selectedPayment = 400; // Default payment scenario
-
-        // Calculate debt payoff timeline
-        function calculateDebtPayoff(monthlyPayment) {
-            const debtTimeline = [];
-            let remainingDebt = debtData.currentDebt;
-            const monthlyRate = debtData.interestRate / 12 / 100;
-            let month = 0;
-            let totalInterest = 0;
-
-            while (remainingDebt > 0 && month < 120) { // Cap at 10 years
-                const date = new Date();
-                date.setMonth(date.getMonth() + month);
-                const monthYear = date.toLocaleDateString('en', { month: 'short', year: '2-digit' });
-
-                const interestCharge = remainingDebt * monthlyRate;
-                const principalPayment = Math.min(monthlyPayment - interestCharge, remainingDebt);
-
-                totalInterest += interestCharge;
-                remainingDebt = Math.max(0, remainingDebt - principalPayment);
-
-                debtTimeline.push({
-                    month: monthYear.replace(/(\d{2})$/, "'$1"),
-                    debt: remainingDebt,
-                    monthIndex: month,
-                    payment: monthlyPayment,
-                    interest: interestCharge,
-                    principal: principalPayment
-                });
-
-                month++;
-
-                if (remainingDebt <= 0) break;
-            }
-
-            return { timeline: debtTimeline, totalInterest, monthsToPayoff: month };
-        }
-
-        // Generate debt chart data with multiple scenarios
-        function generateDebtChartData() {
-            const scenarios = [200, 300, 400, 500];
-            const chartData = {};
-
-            scenarios.forEach(payment => {
-                const { timeline } = calculateDebtPayoff(payment);
-                chartData[payment] = timeline;
-            });
-
-            return chartData;
-        }
-
-        // Update debt chart
-        function updateDebtChart() {
-            requestAnimationFrame(() => {
-                const allScenarios = generateDebtChartData();
-                const selectedScenario = allScenarios[selectedPayment];
-                const svg = document.getElementById('debtChart');
-
-                if (!selectedScenario || selectedScenario.length === 0) return;
-
-                const maxDebt = debtData.currentDebt;
-                const maxMonths = Math.max(...Object.values(allScenarios).map(s => s.length));
-
-                // Fixed dimensions
-                const marginTop = 20;
-                const marginBottom = 35;
-                const chartHeight = 245;
-                const labelY = 285;
-
-                // Dark mode aware colors
-                const isDark = document.body.classList.contains('dark-mode');
-                const gridColor = isDark ? 'rgba(255,255,255,0.1)' : '#e5e7eb';
-                const textColor = isDark ? '#98989d' : '#6b7280';
-
-                svg.innerHTML = '';
-
-                // Add grid lines and Y-axis labels
-                for (let i = 0; i <= 4; i++) {
-                    const y = marginTop + (i * chartHeight / 4);
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', '60');
-                    line.setAttribute('y1', y);
-                    line.setAttribute('x2', '960');
-                    line.setAttribute('y2', y);
-                    line.setAttribute('stroke', gridColor);
-                    line.setAttribute('stroke-width', '1');
-                    svg.appendChild(line);
-
-                    const val = maxDebt - (i * maxDebt / 4);
-
-                    // Left Y-axis label
-                    const labelLeft = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    labelLeft.setAttribute('x', '50');
-                    labelLeft.setAttribute('y', y + 4);
-                    labelLeft.setAttribute('text-anchor', 'end');
-                    labelLeft.setAttribute('font-size', '11');
-                    labelLeft.setAttribute('fill', textColor);
-                    labelLeft.textContent = '$' + Math.round(val).toLocaleString();
-                    svg.appendChild(labelLeft);
-
-                    // Right Y-axis label
-                    const labelRight = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    labelRight.setAttribute('x', '970');
-                    labelRight.setAttribute('y', y + 4);
-                    labelRight.setAttribute('text-anchor', 'start');
-                    labelRight.setAttribute('font-size', '11');
-                    labelRight.setAttribute('fill', textColor);
-                    labelRight.textContent = '$' + Math.round(val).toLocaleString();
-                    svg.appendChild(labelRight);
-                }
-
-                const bottomY = marginTop + chartHeight;
-
-                // Draw all scenario lines (faded)
-                const scenarioColors = {
-                    200: '#93c5fd',
-                    300: '#6ee7b7',
-                    400: '#34c759',
-                    500: '#c4b5fd'
-                };
-
-                Object.entries(allScenarios).forEach(([payment, timeline]) => {
-                    const points = timeline.map((d, i) =>
-                        `${80 + (i * 860/(maxMonths-1))},${bottomY - (d.debt/maxDebt) * chartHeight}`
-                    ).join(' ');
-
-                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-                    polyline.setAttribute('points', points);
-                    polyline.setAttribute('fill', 'none');
-                    polyline.setAttribute('stroke', scenarioColors[payment]);
-                    polyline.setAttribute('stroke-width', payment == selectedPayment ? '3' : '1.5');
-                    polyline.setAttribute('opacity', payment == selectedPayment ? '1' : '0.3');
-                    polyline.setAttribute('stroke-dasharray', payment == selectedPayment ? '0' : '4,4');
-                    svg.appendChild(polyline);
-                });
-
-                // Add hover highlight circle
-                const hoverCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                hoverCircle.setAttribute('r', '6');
-                hoverCircle.setAttribute('fill', scenarioColors[selectedPayment]);
-                hoverCircle.setAttribute('stroke', 'white');
-                hoverCircle.setAttribute('stroke-width', '2');
-                hoverCircle.setAttribute('opacity', '0');
-                hoverCircle.setAttribute('id', 'debtHoverCircle');
-                svg.appendChild(hoverCircle);
-
-                // Add "DEBT FREE" marker at the end of selected scenario
-                const lastPoint = selectedScenario[selectedScenario.length - 1];
-                const endX = 80 + ((selectedScenario.length - 1) * 860/(maxMonths-1));
-                const endY = bottomY - (lastPoint.debt/maxDebt) * chartHeight;
-
-                const endMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                endMarker.setAttribute('cx', endX);
-                endMarker.setAttribute('cy', endY);
-                endMarker.setAttribute('r', '7');
-                endMarker.setAttribute('fill', '#34c759');
-                endMarker.setAttribute('stroke', 'white');
-                endMarker.setAttribute('stroke-width', '2');
-                svg.appendChild(endMarker);
-
-                const endLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                endLabel.setAttribute('x', endX);
-                endLabel.setAttribute('y', endY - 14);
-                endLabel.setAttribute('text-anchor', 'middle');
-                endLabel.setAttribute('font-size', '12');
-                endLabel.setAttribute('font-weight', '600');
-                endLabel.setAttribute('fill', '#34c759');
-                endLabel.textContent = 'DEBT FREE';
-                svg.appendChild(endLabel);
-
-                // Add hover areas for selected scenario
-                selectedScenario.forEach((d, i) => {
-                    const x = 80 + (i * 860/(maxMonths-1));
-                    const y = bottomY - (d.debt/maxDebt) * chartHeight;
-
-                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    rect.setAttribute('x', x - 20);
-                    rect.setAttribute('y', marginTop);
-                    rect.setAttribute('width', '40');
-                    rect.setAttribute('height', chartHeight);
-                    rect.setAttribute('fill', 'transparent');
-                    rect.style.cursor = 'pointer';
-                    rect.addEventListener('mouseenter', () => {
-                        showDebtTooltip(d);
-                        const hoverCircle = document.getElementById('debtHoverCircle');
-                        if (hoverCircle) {
-                            hoverCircle.setAttribute('cx', x);
-                            hoverCircle.setAttribute('cy', y);
-                            hoverCircle.setAttribute('opacity', '1');
-                        }
-                    });
-                    rect.addEventListener('mouseleave', () => {
-                        hideDebtTooltip();
-                        const hoverCircle = document.getElementById('debtHoverCircle');
-                        if (hoverCircle) hoverCircle.setAttribute('opacity', '0');
-                    });
-                    svg.appendChild(rect);
-                });
-
-                // Add month labels (every 6 months for debt timeline)
-                const labelInterval = Math.max(1, Math.ceil(selectedScenario.length / 8));
-                selectedScenario.forEach((d, i) => {
-                    if (i % labelInterval === 0 || i === selectedScenario.length - 1) {
-                        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                        text.setAttribute('x', 80 + (i * 860/(maxMonths-1)));
-                        text.setAttribute('y', labelY);
-                        text.setAttribute('text-anchor', 'middle');
-                        text.setAttribute('font-size', '12');
-                        text.setAttribute('fill', textColor);
-                        text.textContent = d.month;
-                        svg.appendChild(text);
-                    }
-                });
-            });
-        }
-
-        function showDebtTooltip(data) {
-            const tooltip = document.getElementById('debtTooltip');
-            tooltip.innerHTML = `
-                <div style="font-weight: 600; font-size: 11px; opacity: 0.7;">${data.month}</div>
-                <div style="color: #ff9500; font-weight: 600; font-size: 14px;">$${Math.round(data.debt).toLocaleString()}</div>
-                <div style="font-size: 10px; opacity: 0.6; margin-top: 2px;">Remaining debt</div>
-            `;
-            tooltip.style.display = 'block';
-        }
-
-        function hideDebtTooltip() {
-            document.getElementById('debtTooltip').style.display = 'none';
-        }
-
-        function selectPaymentScenario(payment) {
-            selectedPayment = payment;
-
-            // Update active state styling
-            document.querySelectorAll('.payment-scenario').forEach(el => {
-                const scenarioPayment = parseInt(el.getAttribute('data-payment'));
-                if (scenarioPayment === payment) {
-                    el.style.border = '2px solid #34c759';
-                    el.classList.add('active-scenario');
-                } else {
-                    el.style.border = '2px solid var(--border-color)';
-                    el.classList.remove('active-scenario');
-                }
-            });
-
-            updateChart(); // Redraw unified chart with new debt payoff scenario
-            updateDebtSummary();
-        }
-
-        function updateDebtSummary() {
-            const { timeline, totalInterest, monthsToPayoff } = calculateDebtPayoff(selectedPayment);
-
-            // Update months to payoff
-            document.getElementById('monthsToPayoff').textContent = `${monthsToPayoff} mo`;
-
-            // Calculate and format payoff date
-            const payoffDate = new Date();
-            payoffDate.setMonth(payoffDate.getMonth() + monthsToPayoff);
-            const payoffDateStr = payoffDate.toLocaleDateString('en', { month: 'short', year: 'numeric' });
-            document.getElementById('payoffDate').textContent = payoffDateStr;
-
-            // Update total interest
-            document.getElementById('totalInterest').textContent = `$${Math.round(totalInterest).toLocaleString()}`;
-
-            // Update all scenario time estimates
-            [200, 300, 400, 500].forEach(payment => {
-                const { monthsToPayoff } = calculateDebtPayoff(payment);
-                const element = document.getElementById(`months${payment}`);
-                if (element) {
-                    element.textContent = `~${monthsToPayoff} months`;
-                }
-            });
-        }
-
-        function updateDebtAmount(value) {
-            const cleanValue = parseFloat(value.replace(/,/g, '')) || 0;
-            debtData.currentDebt = cleanValue;
-            document.getElementById('currentDebtAmount').textContent = `~$${cleanValue.toLocaleString()}`;
-            updateChart(); // Redraw unified chart with new debt amount
-            updateDebtSummary();
-            updateSummary(); // Update net worth
-        }
-
-        // Calculate portfolio value from stock holdings
-        function calculatePortfolioValue() {
-            // Use cached value if available and recent (5 seconds)
-            const now = Date.now();
-            if (portfolioValueCache && (now - portfolioValueCacheTime) < 5000) {
-                return portfolioValueCache;
-            }
-
-            let currentValue = 0;
-            let targetValue = 0;
-
-            Object.entries(stocks).forEach(([symbol, stock]) => {
-                currentValue += stock.current * stock.shares;
-                targetValue += stock.target * stock.shares;
-            });
-
-            const result = { currentValue, targetValue };
-
-            // Cache the result
-            portfolioValueCache = result;
-            portfolioValueCacheTime = now;
-
-            return result;
-        }
-
-        // Render stock list UI
-        function renderStockList() {
-            try {
-                const stockList = document.getElementById('stockList');
-                if (!stockList) {
-                    console.error('renderStockList: stockList element not found');
-                    return;
-                }
-
-                // Verify stocks object exists and has data
-                if (!stocks || Object.keys(stocks).length === 0) {
-                    console.error('renderStockList: stocks object is empty or undefined');
-                    stockList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No stocks in portfolio</div>';
-                    return;
-                }
-
-                const { currentValue, targetValue } = calculatePortfolioValue();
-                const totalGain = ((targetValue - currentValue) / currentValue * 100).toFixed(0);
-
-                // Update summary cards with error handling
-                const portfolioValueEl = document.getElementById('portfolioValue');
-                const portfolioTargetEl = document.getElementById('portfolioTarget');
-                const portfolioGainEl = document.getElementById('portfolioGain');
-
-                if (portfolioValueEl) portfolioValueEl.textContent = `$${Math.round(currentValue).toLocaleString()}`;
-                if (portfolioTargetEl) portfolioTargetEl.textContent = `$${Math.round(targetValue).toLocaleString()}`;
-                if (portfolioGainEl) portfolioGainEl.textContent = `+${totalGain}%`;
-
-                // Sort stocks by growth percentage (best to worst)
-                const sortedStocks = Object.entries(stocks)
-                    .map(([symbol, stock]) => ({
-                        symbol,
-                        ...stock,
-                        currentValue: stock.current * stock.shares,
-                        targetValue: stock.target * stock.shares,
-                        growthPercent: ((stock.target - stock.current) / stock.current * 100)
-                    }))
-                    .sort((a, b) => b.growthPercent - a.growthPercent);
-
-                console.log(`renderStockList: Rendering ${sortedStocks.length} stocks`);
-
-                // Generate stock rows
-                stockList.innerHTML = sortedStocks.map(stock => {
-                    const gain = ((stock.target - stock.current) / stock.current * 100).toFixed(0);
-                    const gainValue = stock.targetValue - stock.currentValue;
-                    const portfolioPercent = ((stock.currentValue / currentValue) * 100).toFixed(1);
-
-                    // Map symbol to Yahoo Finance ticker
-                    const yahooTicker = {
-                        'ETH': 'ETH-USD',
-                        'BTC': 'BTC-USD',
-                        'SOL': 'SOL-USD',
-                        'ATZ': 'ATZ.TO'
-                    }[stock.symbol] || stock.symbol;
-                    const yahooUrl = `https://finance.yahoo.com/quote/${yahooTicker}`;
-
-                    return `
-                    <a href="${yahooUrl}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
-                        <div class="stock-row">
-                            <div class="stock-left">
-                                <div class="stock-symbol">
-                                    ${stock.symbol}
-                                    <span style="
-                                        display: inline-block;
-                                        margin-left: 8px;
-                                        padding: 2px 6px;
-                                        font-size: 10px;
-                                        font-weight: 600;
-                                        color: rgba(255, 255, 255, 0.6);
-                                        background: rgba(255, 255, 255, 0.08);
-                                        backdrop-filter: blur(10px);
-                                        -webkit-backdrop-filter: blur(10px);
-                                        border-radius: 4px;
-                                        border: 0.5px solid rgba(255, 255, 255, 0.1);
-                                    ">${portfolioPercent}%</span>
-                                </div>
-                                <div class="stock-prices">
-                                    ${stock.shares.toFixed(3)} shares • $${stock.current.toFixed(2)} → $${stock.target.toFixed(2)} (${stock.year})
-                                </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">
-                                    $${Math.round(stock.currentValue)} → $${Math.round(stock.targetValue)}
-                                </div>
-                                <div class="stock-gain">
-                                    +$${Math.round(gainValue)} (+${gain}%)
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                `;
-                }).join('');
-
-                console.log('renderStockList: Stock list rendered successfully');
-            } catch (error) {
-                console.error('renderStockList: Error rendering stock list', error);
-            }
-        }
-
-        // Generate AI portfolio insights (automated based on live data)
-        function generateAIInsights() {
-            try {
-                const { currentValue, targetValue } = calculatePortfolioValue();
-                const potentialGain = ((targetValue - currentValue) / currentValue * 100).toFixed(1);
-
-                // Calculate portfolio change since last update
-                const portfolioChange = previousPortfolioValue
-                    ? (((currentValue - previousPortfolioValue) / previousPortfolioValue) * 100).toFixed(1)
-                    : 0;
-                previousPortfolioValue = currentValue;
-
-                // Analyze portfolio composition
-                const techStocks = ['PLTR', 'GOOGL', 'AAPL', 'HOOD', 'NVDA'];
-                const techExposure = Object.entries(stocks)
-                    .filter(([sym]) => techStocks.includes(sym))
-                    .reduce((sum, [_, stock]) => sum + (stock.current * stock.shares), 0);
-                const techPercent = currentValue > 0 ? (techExposure / currentValue * 100).toFixed(0) : 0;
-
-                // Top holdings by value
-                const topHoldings = Object.entries(stocks)
-                    .map(([sym, stock]) => ({
-                        sym,
-                        value: stock.current * stock.shares,
-                        shares: stock.shares,
-                        price: stock.current
-                    }))
-                    .filter(h => h.value > 0)
-                    .sort((a, b) => b.value - a.value)
-                    .slice(0, 3);
-
-                // Find stocks with highest upside
-                const topOpportunities = Object.entries(stocks)
-                    .filter(([_, stock]) => stock.shares > 0)
-                    .map(([sym, stock]) => ({
-                        sym,
-                        upside: ((stock.target - stock.current) / stock.current * 100).toFixed(0),
-                        year: stock.year,
-                        current: stock.current,
-                        target: stock.target,
-                        shares: stock.shares
-                    }))
-                    .sort((a, b) => parseFloat(b.upside) - parseFloat(a.upside))
-                    .slice(0, 3);
-
-                // Find biggest movers
-                const biggestMovers = Object.entries(stocks)
-                    .filter(([_, stock]) => stock.shares > 0)
-                    .map(([sym, stock]) => ({
-                        sym,
-                        price: stock.current,
-                        target: stock.target,
-                        upside: ((stock.target - stock.current) / stock.current * 100).toFixed(1)
-                    }))
-                    .sort((a, b) => Math.abs(parseFloat(b.upside)) - Math.abs(parseFloat(a.upside)))
-                    .slice(0, 2);
-
-                // Dynamic sentiment based on portfolio performance
-                const sentiment = portfolioChange > 0 ? "Green day" : portfolioChange < 0 ? "Red day" : "Steady";
-                const sentimentColor = portfolioChange > 0 ? "#34c759" : portfolioChange < 0 ? "#ff3b30" : "#93c5fd";
-                const sentimentAction = portfolioChange < -1 ? "accumulate on weakness" : portfolioChange > 1 ? "consider taking profits" : "hold and observe";
-
-                // Progress to goal
-                const progressPercent = ((currentValue / 2190) * 100).toFixed(0);
-                const goalColor = progressPercent >= 75 ? "#34c759" : progressPercent >= 50 ? "#93c5fd" : "#f59e0b";
-
-                const holdingsText = topHoldings.length > 0
-                    ? topHoldings.map(h => `<strong>${h.sym}</strong> $${Math.round(h.value)}`).join(' • ')
-                    : 'Building position';
-
-                const opportunitiesText = topOpportunities.length > 0
-                    ? topOpportunities.slice(0, 3).map(opp => `<strong>${opp.sym}</strong> ${opp.shares} shares @ $${opp.current.toFixed(2)}: <strong style="color: #6ee7b7;">+${opp.upside}%</strong> to $${opp.target} (${opp.year})`).join(' • ')
-                    : 'No current holdings';
-
-                const moversText = biggestMovers.length > 0
-                    ? biggestMovers.map(m => `<strong>${m.sym}</strong> $${m.price.toFixed(2)}`).join(', ')
-                    : 'No positions';
-
-                const changeText = portfolioChange != 0
-                    ? `<strong style="color: ${sentimentColor};">${portfolioChange >= 0 ? '+' : ''}${portfolioChange}%</strong> today.`
-                    : '';
-
-                const insights = `
-                    <div style="margin-bottom: 16px;">
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7;">
-                            <strong style="color: ${sentimentColor};">${sentiment}</strong> ${changeText} Current value: <strong>$${Math.round(currentValue)}</strong> → Target <strong>$${Math.round(targetValue)}</strong> (<strong style="color: #6ee7b7;">+${potentialGain}%</strong> upside). Progress: <strong style="color: ${goalColor};">${progressPercent}%</strong> to $2,190 goal. Core: ${holdingsText}.
-                        </p>
-                    </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <strong style="color: #7c3aed; font-size: 14px;">Top Opportunities (by upside %):</strong>
-                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                            ${opportunitiesText}
-                        </p>
-                    </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <strong style="color: #7c3aed; font-size: 14px;">Tactical Alert</strong>
-                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                            Signal: <strong style="color: ${sentimentColor};">${sentimentAction}</strong>. Biggest movers: ${moversText}. Check <a href="https://finance.yahoo.com/quote/SPY" target="_blank" style="color: #007aff;">SPY</a> for macro context. <a href="https://www.cnbc.com/quotes/AAPL,%20AAPL,%20GOOGL,%20TSLA,%20MSFT,%20NVDA" target="_blank" style="color: #007aff;">Market news →</a>
-                        </p>
-                    </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <strong style="color: #f59e0b; font-size: 14px;">Risk Increase TLDR</strong>
-                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                            Bump crypto from 2.5% to 5% of portfolio • Keep only 1 month emergency cash, rest in stocks • Add small-cap growth ETF or more individual high-growth stocks • You're 26, can handle volatility
-                        </p>
-                    </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <strong style="color: #10b981; font-size: 14px;">Target Upgrade: 150% by 2030</strong>
-                        <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
-                            Bump crypto to 16-18% annual (ETH $9k, SOL $500+) • PLTR 15% annual ($65+) • NVDA 17% annual ($425+) • HOOD 14% annual ($280+) • Rest stay 8-10% annual • Sweet spot: moderately bullish tech/crypto thesis, more realistic than moon, way better than current 129%
-                        </p>
-                    </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <strong style="color: #f97316; font-size: 14px;">Monte Carlo Predictions (1000 simulations)</strong>
-                        <p style="margin: 8px 0 0 0; color: var(--text-secondary); font-size: 13px;">
-                            ${(() => {
-                                const preds = monteCarloPredictions();
-                                const tomorrow = Object.entries(preds)
-                                    .map(([sym, p]) => ({ sym, change: p.tomorrow.avgChange }))
-                                    .sort((a, b) => b.change - a.change);
-                                const week = Object.entries(preds)
-                                    .map(([sym, p]) => ({ sym, change: p.week.avgChange }))
-                                    .sort((a, b) => b.change - a.change);
-                                const bestTomorrow = tomorrow.slice(0, 2).map(t => `<strong>${t.sym}</strong> ${t.change > 0 ? '+' : ''}${t.change.toFixed(1)}%`).join(', ');
-                                const worstTomorrow = tomorrow.slice(-2).map(t => `<strong>${t.sym}</strong> ${t.change.toFixed(1)}%`).join(', ');
-                                const bestWeek = week.slice(0, 2).map(w => `<strong>${w.sym}</strong> ${w.change > 0 ? '+' : ''}${w.change.toFixed(1)}%`).join(', ');
-                                const worstWeek = week.slice(-2).map(w => `<strong>${w.sym}</strong> ${w.change.toFixed(1)}%`).join(', ');
-                                return `Tomorrow: Best ${bestTomorrow} | Worst ${worstTomorrow}. Week: Best ${bestWeek} | Worst ${worstWeek}.`;
-                            })()}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 13px; font-style: italic;">
-                            <strong>Strategy:</strong> Stay focused on 2030 targets. Tech thesis intact (${techPercent}% allocation). DCA weakness. You've built $${Math.round(currentValue)} in ${progressPercent}% to goal – momentum is on your side.
-                        </p>
-                    </div>
-                `;
-
-                document.getElementById('aiInsights').innerHTML = insights;
-            } catch (error) {
-                console.error('Error generating insights:', error);
-                document.getElementById('aiInsights').innerHTML = `
-                    <p style="color: var(--text-secondary);">Portfolio insights loading...</p>
-                `;
-            }
-        }
-
-        // Calculate debt payoff timeline
-        function updateDebtPayoffHero() {
-            const currentSavings = get('Wallet / Savings');
-            const monthlyRate = calculateSurplus(); // Dynamic based on income/expenses
-            const targetSavings = 5000;
-            const remainingNeeded = Math.max(0, targetSavings - currentSavings);
-            const monthsToPayoff = remainingNeeded > 0 && monthlyRate > 0 ? Math.ceil(remainingNeeded / monthlyRate) : 0;
-            const progressPercent = ((currentSavings / targetSavings) * 100).toFixed(0);
-
-            const income = usePotentialIncome ? get('Potential Income') : get('Income');
-            const totalExpenses = get('Food') + get('iPhone (Monthly)') + get('Claude');
-
-            document.getElementById('monthsToPayoffHero').textContent = monthsToPayoff === 0 ? '✓ Goal Reached!' : `~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''}`;
-            document.getElementById('currentSavingsHero').textContent = `$${currentSavings.toLocaleString()}`;
-            document.getElementById('monthlySavingsHero').textContent = `$${monthlyRate.toLocaleString()}`;
-            if (document.getElementById('monthlySavingsHero2')) {
-                document.getElementById('monthlySavingsHero2').textContent = `$${monthlyRate.toLocaleString()}`;
-            }
-            document.getElementById('currentIncomeHero').textContent = `$${income.toLocaleString()}`;
-            document.getElementById('currentExpensesHero').textContent = `$${totalExpenses.toLocaleString()}`;
-
-            // Update progress bar and percentage
-            if (document.getElementById('savingsProgressPercent')) {
-                document.getElementById('savingsProgressPercent').textContent = `${progressPercent}%`;
-            }
-            if (document.getElementById('savingsProgressBar')) {
-                document.getElementById('savingsProgressBar').style.width = `${progressPercent}%`;
-            }
-        }
-
-        // Initialize - wrap in DOMContentLoaded to ensure DOM is ready
-        async function initialize() {
-            // Attach collapse handlers for ALL collapse headers
-            document.querySelectorAll('.collapse-header').forEach(header => {
-                header.addEventListener('click', function() {
-                    const content = this.nextElementSibling;
-                    const arrow = this.querySelector('.collapse-arrow');
-                    if (content && content.classList.contains('collapsible-content')) {
-                        content.classList.toggle('open');
-                        if (arrow) arrow.classList.toggle('open');
-                    }
-                });
-            });
-
-            // Force clear old cache on version update
-            const cacheVersion = localStorage.getItem('cacheVersion');
-            if (cacheVersion !== '2.0') {
-                localStorage.clear();
-                localStorage.setItem('cacheVersion', '2.0');
-                console.log('Cache cleared for version 2.0');
-            }
-
-            // AUTO-UPDATE DISABLED - Prices manually updated in code
-            // Try to update stock prices (uses cache if recent, fetches if stale)
-            // This runs in background and doesn't block page load
-            // updateStockPrices().catch(err => {
-            //     console.warn('Stock price update failed, using defaults:', err);
-            // });
-
-            // Continue with normal initialization (uses current stock values)
-            updateAll();
-            updateDebtSummary(); // Calculate debt payoff stats
-            renderStockList();
-            generateAIInsights();
-            updateDebtPayoffHero();
-        }
-
-        // Run initialization when DOM is fully loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initialize);
-        } else {
-            // DOM already loaded, run immediately
-            initialize();
-        }
-    </script>
 </body>
 </html>
