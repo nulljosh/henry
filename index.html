@@ -120,6 +120,14 @@
             background: #1d1d1f;
         }
 
+        body.dark #heroGraph path {
+            stroke: #34c759 !important;
+        }
+
+        body.dark #heroGraph linearGradient stop {
+            stop-color: #34c759 !important;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -449,15 +457,15 @@
 
     <div class="container">
         <div class="glass-card" style="text-align: center; padding: 48px 32px; position: relative; overflow: hidden;">
-            <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15; z-index: 0;" viewBox="0 0 800 300" preserveAspectRatio="none">
+            <svg id="heroGraph" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15; z-index: 0;" viewBox="0 0 800 300" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="graphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" style="stop-color:#007aff;stop-opacity:0.3" />
                         <stop offset="100%" style="stop-color:#007aff;stop-opacity:0" />
                     </linearGradient>
                 </defs>
-                <path d="M0,250 L100,240 L200,220 L300,230 L400,200 L500,180 L600,160 L700,120 L800,80" stroke="#007aff" stroke-width="3" fill="none"/>
-                <path d="M0,250 L100,240 L200,220 L300,230 L400,200 L500,180 L600,160 L700,120 L800,80 L800,300 L0,300 Z" fill="url(#graphGradient)"/>
+                <path d="M0,280 L80,275 L160,265 L240,250 L320,235 L400,215 L480,205 L560,180 L640,160 L720,135 L800,110" stroke="#007aff" stroke-width="3" fill="none"/>
+                <path d="M0,280 L80,275 L160,265 L240,250 L320,235 L400,215 L480,205 L560,180 L640,160 L720,135 L800,110 L800,300 L0,300 Z" fill="url(#graphGradient)"/>
             </svg>
             <h1 style="font-size: 64px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; position: relative; z-index: 1;">
                 Henry
