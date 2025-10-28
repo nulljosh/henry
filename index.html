@@ -455,45 +455,49 @@
             });
         });
 
-        // Interactive graph hover
-        const graph = document.getElementById('heroGraph');
-        const dot = document.getElementById('graphDot');
-        const tooltip = document.getElementById('graphTooltip');
+        // Interactive graph hover - wait for DOM
+        window.addEventListener('DOMContentLoaded', function() {
+            const graph = document.getElementById('heroGraph');
+            const dot = document.getElementById('graphDot');
+            const tooltip = document.getElementById('graphTooltip');
 
-        // Portfolio values: start $300, current $695, target $1657
-        const graphPoints = [
-            {x:0,y:220,val:300}, {x:100,y:210,val:400}, {x:200,y:195,val:500},
-            {x:300,y:185,val:600}, {x:400,y:165,val:695}, {x:500,y:150,val:900},
-            {x:600,y:120,val:1200}, {x:700,y:95,val:1450}, {x:800,y:60,val:1657}
-        ];
+            if (!graph || !dot || !tooltip) return;
 
-        graph.addEventListener('mousemove', (e) => {
-            const rect = graph.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 800;
+            // Portfolio values: start $300, current $695, target $1657
+            const graphPoints = [
+                {x:0,y:220,val:300}, {x:100,y:210,val:400}, {x:200,y:195,val:500},
+                {x:300,y:185,val:600}, {x:400,y:165,val:695}, {x:500,y:150,val:900},
+                {x:600,y:120,val:1200}, {x:700,y:95,val:1450}, {x:800,y:60,val:1657}
+            ];
 
-            // Find closest points and interpolate
-            let i = 0;
-            while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
+            graph.addEventListener('mousemove', (e) => {
+                const rect = graph.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 800;
 
-            const p1 = graphPoints[i];
-            const p2 = graphPoints[i + 1] || p1;
-            const ratio = (x - p1.x) / (p2.x - p1.x || 1);
-            const y = p1.y + (p2.y - p1.y) * ratio;
-            const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
+                // Find closest points and interpolate
+                let i = 0;
+                while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
 
-            dot.setAttribute('cx', x);
-            dot.setAttribute('cy', y);
-            dot.setAttribute('opacity', '1');
+                const p1 = graphPoints[i];
+                const p2 = graphPoints[i + 1] || p1;
+                const ratio = (x - p1.x) / (p2.x - p1.x || 1);
+                const y = p1.y + (p2.y - p1.y) * ratio;
+                const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
 
-            tooltip.textContent = `$${val}`;
-            tooltip.style.left = e.clientX - rect.left + 'px';
-            tooltip.style.top = e.clientY - rect.top - 40 + 'px';
-            tooltip.style.opacity = '1';
-        });
+                dot.setAttribute('cx', x);
+                dot.setAttribute('cy', y);
+                dot.setAttribute('opacity', '1');
 
-        graph.addEventListener('mouseleave', () => {
-            dot.setAttribute('opacity', '0');
-            tooltip.style.opacity = '0';
+                tooltip.textContent = `$${val}`;
+                tooltip.style.left = e.clientX - rect.left + 'px';
+                tooltip.style.top = e.clientY - rect.top - 40 + 'px';
+                tooltip.style.opacity = '1';
+            });
+
+            graph.addEventListener('mouseleave', () => {
+                dot.setAttribute('opacity', '0');
+                tooltip.style.opacity = '0';
+            });
         });
 
     </script>
