@@ -470,9 +470,9 @@
                 {x:600,y:120,val:1200}, {x:700,y:95,val:1450}, {x:800,y:60,val:1657}
             ];
 
-            graph.addEventListener('mousemove', (e) => {
+            function updateGraphPosition(clientX, clientY) {
                 const rect = graph.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 800;
+                const x = ((clientX - rect.left) / rect.width) * 800;
 
                 // Find closest points and interpolate
                 let i = 0;
@@ -489,14 +489,39 @@
                 dot.setAttribute('opacity', '1');
 
                 tooltip.textContent = `$${val}`;
-                tooltip.style.left = e.clientX - rect.left + 'px';
-                tooltip.style.top = e.clientY - rect.top - 40 + 'px';
+                tooltip.style.left = clientX - rect.left + 'px';
+                tooltip.style.top = clientY - rect.top - 40 + 'px';
                 tooltip.style.opacity = '1';
-            });
+            }
 
-            graph.addEventListener('mouseleave', () => {
+            function hideGraph() {
                 dot.setAttribute('opacity', '0');
                 tooltip.style.opacity = '0';
+            }
+
+            // Mouse events
+            graph.addEventListener('mousemove', (e) => {
+                updateGraphPosition(e.clientX, e.clientY);
+            });
+
+            graph.addEventListener('mouseleave', hideGraph);
+
+            // Touch events for mobile
+            graph.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevent scrolling
+                const touch = e.touches[0];
+                updateGraphPosition(touch.clientX, touch.clientY);
+            });
+
+            graph.addEventListener('touchmove', (e) => {
+                e.preventDefault(); // Prevent scrolling
+                const touch = e.touches[0];
+                updateGraphPosition(touch.clientX, touch.clientY);
+            });
+
+            graph.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                hideGraph();
             });
         });
 
