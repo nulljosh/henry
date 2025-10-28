@@ -19,10 +19,9 @@
             color: #1d1d1f;
         }
 
-        .back-button {
+        .back-button, .theme-toggle {
             position: fixed;
             top: 20px;
-            left: 20px;
             width: 44px;
             height: 44px;
             background: rgba(0, 0, 0, 0.8);
@@ -33,43 +32,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
             color: white;
-            font-size: 24px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 9999;
         }
 
-        .back-button:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.05);
+        .back-button {
+            left: 20px;
+            text-decoration: none;
+            font-size: 24px;
         }
 
         .theme-toggle {
-            position: fixed;
-            top: 20px;
             right: 20px;
-            width: 44px;
-            height: 44px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
             font-size: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
             border: none;
-            z-index: 9999;
         }
 
-        .theme-toggle:hover {
+        .back-button:hover, .theme-toggle:hover {
             background: rgba(0, 0, 0, 0.9);
             transform: scale(1.05);
         }
@@ -84,16 +66,11 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
 
-        body.dark h1,
-        body.dark h2 {
+        body.dark h1, body.dark h2 {
             color: #f5f5f7;
         }
 
-        body.dark .subtitle {
-            color: #98989d;
-        }
-
-        body.dark p {
+        body.dark .subtitle, body.dark p {
             color: #98989d;
         }
 
@@ -120,14 +97,6 @@
 
         body.dark tbody tr:last-child td {
             background: #1d1d1f;
-        }
-
-        body.dark #heroGraph path {
-            stroke: #34c759 !important;
-        }
-
-        body.dark #heroGraph linearGradient stop {
-            stop-color: #34c759 !important;
         }
 
         .container {
@@ -290,17 +259,10 @@
                 padding: 10px 6px;
             }
 
-            .back-button {
+            .back-button, .theme-toggle {
                 top: 12px;
-                left: 12px;
             }
 
-            .theme-toggle {
-                top: 12px;
-                right: 12px;
-            }
-
-            /* Mobile-specific earnings badge styling */
             .earnings-badge {
                 font-size: 8px;
                 padding: 3px 5px;
@@ -311,20 +273,10 @@
                 white-space: nowrap;
             }
 
-            /* Hide less important columns on mobile for stock table */
-            #stockTable th:nth-child(2),
-            #stockTable td:nth-child(2),
-            #stockTable th:nth-child(3),
-            #stockTable td:nth-child(3),
-            #stockTable th:nth-child(5),
-            #stockTable td:nth-child(5) {
+            #stockTable th:nth-child(2), #stockTable td:nth-child(2),
+            #stockTable th:nth-child(3), #stockTable td:nth-child(3),
+            #stockTable th:nth-child(5), #stockTable td:nth-child(5) {
                 display: none;
-            }
-
-            /* Adjust remaining visible columns */
-            #stockTable th:first-child,
-            #stockTable td:first-child {
-                width: auto;
             }
         }
 
@@ -359,30 +311,26 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
-        // Auto dark mode based on system preference
-        if (localStorage.getItem('theme') === 'dark' ||
-            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.body.classList.add('dark');
             document.getElementById('themeIcon').textContent = '🌙';
         }
 
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme')) {
+        matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!theme) {
                 document.body.classList.toggle('dark', e.matches);
                 document.getElementById('themeIcon').textContent = e.matches ? '🌙' : '☀️';
             }
         });
 
-        // Table sorting functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             const table = document.getElementById('stockTable');
             if (!table) return;
 
             const headers = table.querySelectorAll('th');
             const tbody = table.querySelector('tbody');
 
-            // Add sortable class to all headers
             headers.forEach((header, index) => {
                 header.classList.add('sortable');
                 header.dataset.column = index;
@@ -393,136 +341,85 @@
                 const cell = row.cells[index];
                 if (!cell) return '';
                 const text = cell.textContent.trim();
-
-                // Handle currency and percentages
-                if (text.startsWith('$')) {
-                    return parseFloat(text.replace(/[$,]/g, '')) || 0;
-                }
-                if (text.includes('%')) {
-                    return parseFloat(text.replace(/[+%]/g, '')) || 0;
-                }
-                // Handle numeric values
-                if (!isNaN(text) && text !== '') {
-                    return parseFloat(text);
-                }
-                // Default to text
+                if (text.startsWith('$')) return parseFloat(text.replace(/[$,]/g, '')) || 0;
+                if (text.includes('%')) return parseFloat(text.replace(/[+%]/g, '')) || 0;
+                if (!isNaN(text) && text !== '') return parseFloat(text);
                 return text.toLowerCase();
             }
 
             function sortTable(column, order) {
                 const rows = Array.from(tbody.querySelectorAll('tr'));
-                const totalRow = rows.pop(); // Remove TOTAL row
+                const totalRow = rows.pop();
 
                 rows.sort((a, b) => {
                     const aVal = getCellValue(a, column);
                     const bVal = getCellValue(b, column);
-
                     if (typeof aVal === 'number' && typeof bVal === 'number') {
                         return order === 'asc' ? aVal - bVal : bVal - aVal;
                     }
-
-                    if (order === 'asc') {
-                        return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
-                    } else {
-                        return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
-                    }
+                    return order === 'asc' ? (aVal > bVal ? 1 : aVal < bVal ? -1 : 0) : (aVal < bVal ? 1 : aVal > bVal ? -1 : 0);
                 });
 
-                // Clear tbody and re-append sorted rows
                 tbody.innerHTML = '';
                 rows.forEach(row => tbody.appendChild(row));
-                tbody.appendChild(totalRow); // Add TOTAL row back at the end
+                tbody.appendChild(totalRow);
             }
 
             headers.forEach(header => {
                 header.addEventListener('click', () => {
                     const column = parseInt(header.dataset.column);
-                    const currentOrder = header.dataset.order;
-                    const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+                    const newOrder = header.dataset.order === 'asc' ? 'desc' : 'asc';
 
-                    // Remove sort classes from all headers
                     headers.forEach(h => {
                         h.classList.remove('sorted-asc', 'sorted-desc');
                         h.dataset.order = 'desc';
                     });
 
-                    // Add sort class to clicked header
                     header.classList.add(newOrder === 'asc' ? 'sorted-asc' : 'sorted-desc');
                     header.dataset.order = newOrder;
-
                     sortTable(column, newOrder);
                 });
             });
-        });
 
-        // Interactive graph hover - wait for DOM
-        window.addEventListener('DOMContentLoaded', function() {
             const graph = document.getElementById('heroGraph');
             const dot = document.getElementById('graphDot');
             const tooltip = document.getElementById('graphTooltip');
+            if (!graph) return;
 
-            if (!graph || !dot || !tooltip) return;
-
-            // Portfolio values: start $300, current $695, target $1657
             const graphPoints = [
                 {x:0,y:220,val:300}, {x:100,y:210,val:400}, {x:200,y:195,val:500},
                 {x:300,y:185,val:600}, {x:400,y:165,val:695}, {x:500,y:150,val:900},
                 {x:600,y:120,val:1200}, {x:700,y:95,val:1450}, {x:800,y:60,val:1657}
             ];
 
-            function updateGraphPosition(clientX, clientY) {
+            const updateGraph = (clientX, clientY) => {
                 const rect = graph.getBoundingClientRect();
                 const x = ((clientX - rect.left) / rect.width) * 800;
-
-                // Find closest points and interpolate
                 let i = 0;
                 while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
-
-                const p1 = graphPoints[i];
-                const p2 = graphPoints[i + 1] || p1;
+                const p1 = graphPoints[i], p2 = graphPoints[i + 1] || p1;
                 const ratio = (x - p1.x) / (p2.x - p1.x || 1);
                 const y = p1.y + (p2.y - p1.y) * ratio;
                 const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
-
                 dot.setAttribute('cx', x);
                 dot.setAttribute('cy', y);
                 dot.setAttribute('opacity', '1');
-
                 tooltip.textContent = `$${val}`;
                 tooltip.style.left = clientX - rect.left + 'px';
                 tooltip.style.top = clientY - rect.top - 40 + 'px';
                 tooltip.style.opacity = '1';
-            }
+            };
 
-            function hideGraph() {
+            const hideGraph = () => {
                 dot.setAttribute('opacity', '0');
                 tooltip.style.opacity = '0';
-            }
+            };
 
-            // Mouse events
-            graph.addEventListener('mousemove', (e) => {
-                updateGraphPosition(e.clientX, e.clientY);
-            });
-
+            graph.addEventListener('mousemove', e => updateGraph(e.clientX, e.clientY));
             graph.addEventListener('mouseleave', hideGraph);
-
-            // Touch events for mobile
-            graph.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Prevent scrolling
-                const touch = e.touches[0];
-                updateGraphPosition(touch.clientX, touch.clientY);
-            });
-
-            graph.addEventListener('touchmove', (e) => {
-                e.preventDefault(); // Prevent scrolling
-                const touch = e.touches[0];
-                updateGraphPosition(touch.clientX, touch.clientY);
-            });
-
-            graph.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                hideGraph();
-            });
+            graph.addEventListener('touchstart', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
+            graph.addEventListener('touchmove', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
+            graph.addEventListener('touchend', e => { e.preventDefault(); hideGraph(); });
         });
 
     </script>
@@ -536,26 +433,19 @@
                         <stop offset="100%" style="stop-color:#007aff;stop-opacity:0" />
                     </linearGradient>
                 </defs>
-                <!-- Start ~$300, Current $695 (middle), Target $1,657 (end) -->
-                <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60" stroke="#007aff" stroke-width="3" fill="none"/>
                 <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60 L800,300 L0,300 Z" fill="url(#graphGradient)"/>
+                <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60" stroke="#007aff" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
                 <circle id="graphDot" r="6" fill="#007aff" opacity="0" style="transition: opacity 0.2s;"/>
             </svg>
             <div id="graphTooltip" style="position: absolute; background: rgba(0, 0, 0, 0.9); color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10;"></div>
             <h1 style="font-size: 64px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; position: relative; z-index: 1;">
                 Henry
-                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.9;">
-                    <!-- Body -->
+                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" style="opacity: 0.9;">
                     <path d="M12 28C12 28 12 20 18 18C24 16 36 16 42 22C42 22 42 30 36 32C30 34 18 34 12 28Z" fill="currentColor" opacity="0.2"/>
-                    <!-- Multiple spikes across back -->
                     <path d="M14 22L12 16M17 20L15 14M20 18L18 12M23 17L21 11M26 17L24 11M29 18L27 12M32 20L30 14M35 22L33 16M38 24L36 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                    <!-- Snout/face -->
                     <circle cx="40" cy="26" r="4" fill="currentColor" opacity="0.15"/>
-                    <!-- Eyes -->
                     <circle cx="38" cy="25" r="1.2" fill="currentColor"/>
-                    <!-- Nose tip -->
                     <circle cx="42" cy="27" r="1.8" fill="currentColor"/>
-                    <!-- Feet -->
                     <line x1="20" y1="32" x2="20" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     <line x1="28" y1="32" x2="28" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
