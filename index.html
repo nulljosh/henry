@@ -381,6 +381,14 @@
                 });
             });
 
+            // Sort by gain percentage (column 6) by default
+            const gainHeader = headers[6];
+            if (gainHeader) {
+                gainHeader.classList.add('sorted-desc');
+                gainHeader.dataset.order = 'desc';
+                sortTable(6, 'desc');
+            }
+
             const graph = document.getElementById('heroGraph');
             const dot = document.getElementById('graphDot');
             const tooltip = document.getElementById('graphTooltip');
