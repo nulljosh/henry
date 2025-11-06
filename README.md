@@ -47,7 +47,7 @@ All figures are entered manually and rounded to the nearest dollar for readabili
 ## Features (current)
 
 - Responsive glassmorphism UI with light/dark mode toggle (persists via `localStorage`)
-- Sortable holdings table with trailing total row
+- Portfolio allocation pie chart with legend, plus one-click toggle back to the sortable table
 - Interactive hero chart hover/touch tooltip
 - Debt payoff progress bar and upcoming payday countdown
 - iOS mockup (`ios-index.html`) that mirrors the desktop experience

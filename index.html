@@ -219,6 +219,131 @@
             font-weight: 700;
         }
 
+        .portfolio-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .view-toggle {
+            display: inline-flex;
+            padding: 4px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .view-toggle button {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #1d1d1f;
+        }
+
+        .view-toggle button.active {
+            background: #007aff;
+            color: #f5f5f7;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.25);
+        }
+
+        .portfolio-views {
+            position: relative;
+        }
+
+        .portfolio-pie-view {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .pie-chart {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .pie-center-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: #1d1d1f;
+            padding: 14px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            min-width: 140px;
+            line-height: 1.3;
+        }
+
+        .pie-center-label span {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6e6e73;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .chart-legend {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            flex: 1;
+        }
+
+        .chart-legend li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .legend-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-label {
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .legend-value {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .portfolio-table-view {
+            margin-top: 12px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         .hero-divider {
             width: 1px;
             height: 40px;
@@ -502,20 +627,24 @@
                 top: 12px;
             }
 
-            .earnings-badge {
-                font-size: 8px;
-                padding: 3px 5px;
-                border-radius: 3px;
-                margin-left: 5px;
-                margin-top: 2px;
-                display: inline-block;
-                white-space: nowrap;
+            .portfolio-pie-view {
+                flex-direction: column;
+                align-items: center;
             }
 
-            #stockTable th:nth-child(2), #stockTable td:nth-child(2),
-            #stockTable th:nth-child(3), #stockTable td:nth-child(3),
-            #stockTable th:nth-child(5), #stockTable td:nth-child(5) {
-                display: none;
+            .pie-chart {
+                width: 220px;
+                height: 220px;
+            }
+
+            .pie-center-label {
+                min-width: 120px;
+                font-size: 18px;
+            }
+
+            .chart-legend {
+                width: 100%;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             }
         }
 
@@ -529,16 +658,16 @@
 
     <script>
         const holdingsData = [
-            { symbol: 'PLTR', currentValue: 75, targetValue: 190 },
-            { symbol: 'HOOD', currentValue: 54, targetValue: 124 },
-            { symbol: 'NVDA', currentValue: 48, targetValue: 127 },
-            { symbol: 'GOOGL', currentValue: 42, targetValue: 82 },
-            { symbol: 'TSLA', currentValue: 50, targetValue: 90 },
-            { symbol: 'AAPL', currentValue: 172, targetValue: 317 },
-            { symbol: 'SPY', currentValue: 227, targetValue: 372 },
-            { symbol: 'SBUX', currentValue: 12, targetValue: 19 },
-            { symbol: 'V', currentValue: 86, targetValue: 141 },
-            { symbol: 'BTC', currentValue: 20, targetValue: 48 }
+            { symbol: 'PLTR', shares: 0.4219, price: 178.04, currentValue: 75, targetPrice: 450, targetValue: 190, gainPercent: 153, color: '#4c8bf5' },
+            { symbol: 'HOOD', shares: 0.4129, price: 131.64, currentValue: 54, targetPrice: 300, targetValue: 124, gainPercent: 130, color: '#5ec2aa' },
+            { symbol: 'NVDA', shares: 0.2541, price: 189.49, currentValue: 48, targetPrice: 500, targetValue: 127, gainPercent: 165, color: '#ff9f43' },
+            { symbol: 'GOOGL', shares: 0.1485, price: 285.60, currentValue: 42, targetPrice: 550, targetValue: 82, gainPercent: 95, color: '#ff6b6b' },
+            { symbol: 'TSLA', shares: 0.1122, price: 448.80, currentValue: 50, targetPrice: 800, targetValue: 90, gainPercent: 80, color: '#845ef7' },
+            { symbol: 'AAPL', shares: 0.6338, price: 271.63, currentValue: 172, targetPrice: 500, targetValue: 317, gainPercent: 184, color: '#2dd4bf' },
+            { symbol: 'SPY', shares: 0.3378, price: 671.99, currentValue: 227, targetPrice: 1100, targetValue: 372, gainPercent: 64, color: '#ffd43b' },
+            { symbol: 'SBUX', shares: 0.1432, price: 82.71, currentValue: 12, targetPrice: 130, targetValue: 19, gainPercent: 58, color: '#94a3b8' },
+            { symbol: 'V', shares: 0.2570, price: 336.34, currentValue: 86, targetPrice: 550, targetValue: 141, gainPercent: 64, color: '#f38eb3' },
+            { symbol: 'BTC', shares: 0.0001927, price: 101631, currentValue: 20, targetPrice: 250000, targetValue: 48, gainPercent: 140, color: '#34a853' }
         ];
 
         const formatCurrency = (value) => `$${Math.round(value).toLocaleString('en-US')}`;
@@ -567,6 +696,7 @@
             const table = document.getElementById('stockTable');
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
+            const totalsRow = table ? table.querySelector('tfoot tr') : null;
 
             const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
             const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
@@ -576,12 +706,16 @@
             if (heroCurrent) heroCurrent.textContent = formatCurrency(currentTotal);
             if (heroTarget) heroTarget.textContent = formatCurrency(targetTotal);
 
-            const totalsRow = table ? table.querySelector('tbody tr:last-child') : null;
             if (totalsRow) {
                 const currentCell = totalsRow.querySelector('td:nth-child(4)');
                 const targetCell = totalsRow.querySelector('td:nth-child(6)');
+                const gainCell = totalsRow.querySelector('td:nth-child(7)');
                 if (currentCell) currentCell.innerHTML = `<strong>${formatCurrency(currentTotal)}</strong>`;
                 if (targetCell) targetCell.innerHTML = `<strong>${formatCurrency(targetTotal)}</strong>`;
+                if (gainCell) {
+                    const totalGainPercent = Math.round(((targetTotal - currentTotal) / currentTotal) * 100);
+                    gainCell.innerHTML = `<strong>+${totalGainPercent}%</strong>`;
+                }
             }
 
             const summaryTotal = document.getElementById('summaryTotalPortfolio');
@@ -594,6 +728,67 @@
                 const netGainPercent = Math.round((netGain / 867) * 100);
                 summaryGain.textContent = `+${formatCurrency(netGain)} (+${netGainPercent}%)`;
             }
+
+            const pieChart = document.getElementById('stockPieChart');
+            const pieCenter = document.getElementById('stockPieCenter');
+            const pieLegend = document.getElementById('stockPieLegend');
+            if (pieChart && pieCenter && pieLegend) {
+                let start = 0;
+                const segments = holdingsData.map(item => {
+                    const sweep = (item.currentValue / currentTotal) * 100;
+                    const definition = `${item.color} ${start}% ${start + sweep}%`;
+                    start += sweep;
+                    return definition;
+                });
+                pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
+                pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
+
+                pieLegend.innerHTML = '';
+                holdingsData.forEach(item => {
+                    const li = document.createElement('li');
+                    const swatch = document.createElement('span');
+                    swatch.className = 'legend-swatch';
+                    swatch.style.background = item.color;
+
+                    const label = document.createElement('span');
+                    label.className = 'legend-label';
+                    label.textContent = item.symbol;
+
+                    const value = document.createElement('span');
+                    value.className = 'legend-value';
+                    value.textContent = formatCurrency(item.currentValue);
+
+                    li.appendChild(swatch);
+                    li.appendChild(label);
+                    li.appendChild(value);
+                    pieLegend.appendChild(li);
+                });
+            }
+
+            const pieView = document.getElementById('stockPieView');
+            const tableView = document.getElementById('stockTableWrapper');
+            const viewToggleButtons = document.querySelectorAll('[data-view-toggle]');
+
+            function setPortfolioView(view) {
+                if (!pieView || !tableView) return;
+                if (view === 'table') {
+                    pieView.classList.add('hidden');
+                    tableView.classList.remove('hidden');
+                } else {
+                    pieView.classList.remove('hidden');
+                    tableView.classList.add('hidden');
+                }
+            }
+
+            viewToggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const view = button.dataset.viewToggle;
+                    viewToggleButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+                    setPortfolioView(view);
+                });
+            });
+
+            setPortfolioView('pie');
 
             headers.forEach((header, index) => {
                 header.classList.add('sortable');
@@ -614,8 +809,6 @@
             function sortTable(column, order) {
                 if (!tbody) return;
                 const rows = Array.from(tbody.querySelectorAll('tr'));
-                const totalRow = rows.pop();
-
                 rows.sort((a, b) => {
                     const aVal = getCellValue(a, column);
                     const bVal = getCellValue(b, column);
@@ -627,7 +820,6 @@
 
                 tbody.innerHTML = '';
                 rows.forEach(row => tbody.appendChild(row));
-                if (totalRow) tbody.appendChild(totalRow);
             }
 
             headers.forEach(header => {
@@ -795,133 +987,139 @@
         </div>
 
         <div class="glass-card">
-            <h2>Stock Portfolio</h2>
-            <table id="stockTable">
-                <thead>
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Shares</th>
-                        <th>Current Price</th>
-                        <!-- <th>Today</th> -->
-                        <th>Current Value</th>
-                        <th>Target Price</th>
-                        <th>Target Value</th>
-                        <th>Gain</th>
-                    </tr>
-                </thead>
-                <tbody>
-<tr>
-                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank"><span class="earnings-badge completed">Completed Nov 3</span></a></td>
-                        <td>0.4219</td>
-                        <td>$178.04</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+2.14%</span></td> -->
-                        <td>$75</td>
-                        <td>$450</td>
-                        <td>$190</td>
-                        <td>+153%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank"><span class="earnings-badge completed">Completed Nov 5</span></a></td>
-                        <td>0.4129</td>
-                        <td>$131.64</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+2.82%</span></td> -->
-                        <td>$54</td>
-                        <td>$300</td>
-                        <td>$124</td>
-                        <td>+130%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank"><span class="earnings-badge">Upcoming Nov 19</span></a></td>
-                        <td>0.2541</td>
-                        <td>$189.49</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+2.04%</span></td> -->
-                        <td>$48</td>
-                        <td>$500</td>
-                        <td>$127</td>
-                        <td>+165%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank"><span class="earnings-badge completed">Completed Oct 29</span></a></td>
-                        <td>0.1485</td>
-                        <td>$285.60</td>
-                        <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.28%</span></td> -->
-                        <td>$42</td>
-                        <td>$550</td>
-                        <td>$82</td>
-                        <td>+95%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank"><span class="earnings-badge completed">Completed Oct 23</span></a></td>
-                        <td>0.1122</td>
-                        <td>$448.80</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+4.63%</span></td> -->
-                        <td>$50</td>
-                        <td>$800</td>
-                        <td>$90</td>
-                        <td>+80%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank"><span class="earnings-badge completed">Completed Oct 30</span></a></td>
-                        <td>0.6338</td>
-                        <td>$271.63</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+0.63%</span></td> -->
-                        <td>$172</td>
-                        <td>$500</td>
-                        <td>$317</td>
-                        <td>+184%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/SPY" target="_blank">SPY</a></td>
-                        <td>0.3378</td>
-                        <td>$671.99</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+1.10%</span></td> -->
-                        <td>$227</td>
-                        <td>$1,100</td>
-                        <td>$372</td>
-                        <td>+64%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/SBUX" target="_blank">SBUX</a></td>
-                        <td>0.1432</td>
-                        <td>$82.71</td>
-                        <!-- <td><span style="color: #ff3b30; font-weight: 600;">-1.47%</span></td> -->
-                        <td>$12</td>
-                        <td>$130</td>
-                        <td>$19</td>
-                        <td>+58%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/V" target="_blank">V</a></td>
-                        <td>0.2570</td>
-                        <td>$336.34</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+1.10%</span></td> -->
-                        <td>$86</td>
-                        <td>$550</td>
-                        <td>$141</td>
-                        <td>+64%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.coinbase.com/price/bitcoin" target="_blank">BTC-USD</a></td>
-                        <td>0.0001927</td>
-                        <td>$101,631</td>
-                        <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.5%</span></td> -->
-                        <td>$20</td>
-                        <td>$250,000</td>
-                        <td>$48</td>
-                        <td>+140%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>TOTAL</strong></td>
-                        <td></td>
-                        <td></td>
-                        <!-- <td></td> -->
-                        <td><strong>$786</strong></td>
-                        <td></td>
-                        <td><strong>$1,510</strong></td>
-                        <td><strong>+92%</strong></td>
-                    </tr>
-                
-            </table>
+            <div class="portfolio-header">
+                <h2>Stock Portfolio</h2>
+                <div class="view-toggle" role="group" aria-label="Toggle portfolio view">
+                    <button type="button" class="active" data-view-toggle="pie">Pie</button>
+                    <button type="button" data-view-toggle="table">Table</button>
+                </div>
+            </div>
+            <div class="portfolio-views" data-current-view="pie">
+                <div class="portfolio-pie-view" id="stockPieView">
+                    <div class="pie-chart" id="stockPieChart">
+                        <div class="pie-center-label" id="stockPieCenter"></div>
+                    </div>
+                    <ul class="chart-legend" id="stockPieLegend"></ul>
+                </div>
+                <div class="portfolio-table-view hidden" id="stockTableWrapper">
+                    <table id="stockTable">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Shares</th>
+                                <th>Current Price</th>
+                                <th>Current Value</th>
+                                <th>Target Price</th>
+                                <th>Target Value</th>
+                                <th>Gain</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a></td>
+                                <td>0.4219</td>
+                                <td>$178.04</td>
+                                <td>$75</td>
+                                <td>$450</td>
+                                <td>$190</td>
+                                <td>+153%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a></td>
+                                <td>0.4129</td>
+                                <td>$131.64</td>
+                                <td>$54</td>
+                                <td>$300</td>
+                                <td>$124</td>
+                                <td>+130%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a></td>
+                                <td>0.2541</td>
+                                <td>$189.49</td>
+                                <td>$48</td>
+                                <td>$500</td>
+                                <td>$127</td>
+                                <td>+165%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a></td>
+                                <td>0.1485</td>
+                                <td>$285.60</td>
+                                <td>$42</td>
+                                <td>$550</td>
+                                <td>$82</td>
+                                <td>+95%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a></td>
+                                <td>0.1122</td>
+                                <td>$448.80</td>
+                                <td>$50</td>
+                                <td>$800</td>
+                                <td>$90</td>
+                                <td>+80%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a></td>
+                                <td>0.6338</td>
+                                <td>$271.63</td>
+                                <td>$172</td>
+                                <td>$500</td>
+                                <td>$317</td>
+                                <td>+184%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/SPY" target="_blank">SPY</a></td>
+                                <td>0.3378</td>
+                                <td>$671.99</td>
+                                <td>$227</td>
+                                <td>$1,100</td>
+                                <td>$372</td>
+                                <td>+64%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/SBUX" target="_blank">SBUX</a></td>
+                                <td>0.1432</td>
+                                <td>$82.71</td>
+                                <td>$12</td>
+                                <td>$130</td>
+                                <td>$19</td>
+                                <td>+58%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://finance.yahoo.com/quote/V" target="_blank">V</a></td>
+                                <td>0.2570</td>
+                                <td>$336.34</td>
+                                <td>$86</td>
+                                <td>$550</td>
+                                <td>$141</td>
+                                <td>+64%</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://www.coinbase.com/price/bitcoin" target="_blank">BTC-USD</a></td>
+                                <td>0.0001927</td>
+                                <td>$101,631</td>
+                                <td>$20</td>
+                                <td>$250,000</td>
+                                <td>$48</td>
+                                <td>+140%</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong>$786</strong></td>
+                                <td></td>
+                                <td><strong>$1,510</strong></td>
+                                <td><strong>+92%</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="glass-card">
