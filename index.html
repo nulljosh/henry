@@ -1187,17 +1187,17 @@
                         }
                         pieLogos.appendChild(logo);
                         logoMap[item.symbol] = logo;
-                        const enterLogo = () => activateSlice(item.symbol);
-                        const leaveLogo = () => resetSlice();
-                        logo.addEventListener('mouseenter', enterLogo);
-                        logo.addEventListener('mouseleave', leaveLogo);
-                        logo.addEventListener('focus', enterLogo);
-                        logo.addEventListener('blur', leaveLogo);
-                        logo.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            toggleSlice(item.symbol);
-                        });
-                        angleAccumulator += sweep;
+                const enterLogo = () => activateSlice(item.symbol);
+                const leaveLogo = () => resetSlice();
+                logo.addEventListener('mouseenter', enterLogo);
+                logo.addEventListener('mouseleave', leaveLogo);
+                logo.addEventListener('focus', enterLogo);
+                logo.addEventListener('blur', leaveLogo);
+                logo.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleSlice(item.symbol);
+                });
+                angleAccumulator += sweep;
                     });
                 }
                 defaultCenter();
