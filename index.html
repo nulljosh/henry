@@ -24,6 +24,9 @@
             --success: #34c759;
             --text-secondary: #86868b;
         }
+        :root {
+            --logo-ring: rgba(255, 255, 255, 0.7);
+        }
 
         .back-button, .theme-toggle {
             position: fixed;
@@ -66,6 +69,7 @@
             background: #1d1d1f;
             color: #f5f5f7;
             --text-secondary: #98989d;
+            --logo-ring: rgba(0, 0, 0, 0.6);
         }
 
         body.dark .glass-card {
@@ -411,7 +415,7 @@
             font-size: 15px;
             font-weight: 700;
             color: #1d1d1f;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), 0 0 0 3px #ffffff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), 0 0 0 3px var(--logo-ring);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
         }
@@ -422,18 +426,17 @@
 
         body.dark .pie-logo {
             color: #f5f5f7;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(0, 0, 0, 0.6);
         }
 
         .pie-logo:hover,
         .pie-logo:focus-visible {
             transform: translate(-50%, -50%) scale(1.12);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25), 0 0 0 3px var(--logo-ring);
         }
 
         body.dark .pie-logo:hover,
         body.dark .pie-logo:focus-visible {
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--logo-ring);
         }
 
         .portfolio-table-view {
