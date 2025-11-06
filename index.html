@@ -395,9 +395,9 @@
             if (!graph) return;
 
             const graphPoints = [
-                {x:0,y:220,val:300}, {x:100,y:210,val:400}, {x:200,y:195,val:500},
-                {x:300,y:185,val:600}, {x:400,y:165,val:716}, {x:500,y:150,val:900},
-                {x:600,y:120,val:1200}, {x:700,y:95,val:1450}, {x:800,y:60,val:1720}
+                {x:0,y:220,val:300,date:'Oct 28'}, {x:100,y:210,val:400,date:'Oct 29'}, {x:200,y:195,val:500,date:'Oct 30'},
+                {x:300,y:185,val:600,date:'Oct 31'}, {x:400,y:165,val:716,date:'Nov 1'}, {x:500,y:150,val:900,date:'Nov 2'},
+                {x:600,y:120,val:1200,date:'Nov 3'}, {x:700,y:95,val:1450,date:'Nov 4'}, {x:800,y:60,val:1720,date:'Nov 5'}
             ];
 
             const updateGraph = (clientX, clientY) => {
@@ -412,7 +412,8 @@
                 dot.setAttribute('cx', x);
                 dot.setAttribute('cy', y);
                 dot.setAttribute('opacity', '1');
-                tooltip.textContent = `$${val}`;
+                const nearestPoint = graphPoints[Math.min(i + (ratio > 0.5 ? 1 : 0), graphPoints.length - 1)];
+                tooltip.innerHTML = `<div style="font-size: 11px; opacity: 0.7; margin-bottom: 2px;">${nearestPoint.date}</div><div style="font-size: 14px;">$${val}</div>`;
                 tooltip.style.left = clientX - rect.left + 'px';
                 tooltip.style.top = clientY - rect.top - 40 + 'px';
                 tooltip.style.opacity = '1';
@@ -428,6 +429,49 @@
             graph.addEventListener('touchstart', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
             graph.addEventListener('touchmove', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
             graph.addEventListener('touchend', e => { e.preventDefault(); hideGraph(); });
+
+            // Payday countdown
+            function updatePaydayCountdown() {
+                const now = new Date();
+                const paydays = [
+                    new Date('2025-11-19T00:00:00'),
+                    new Date('2025-12-17T00:00:00'),
+                    new Date('2026-01-19T00:00:00')
+                ];
+                let nextPayday = null;
+                for (const payday of paydays) {
+                    if (payday > now) {
+                        nextPayday = payday;
+                        break;
+                    }
+                }
+                if (!nextPayday) {
+                    const el = document.getElementById('paydayCountdown');
+                    if (el) el.textContent = 'No upcoming payday';
+                    return;
+                }
+                const diff = nextPayday - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const el = document.getElementById('paydayCountdown');
+                if (el) {
+                    if (days === 0 && hours === 0) {
+                        el.textContent = 'Today!';
+                    } else if (days === 0) {
+                        el.textContent = `${hours}h`;
+                    } else if (days === 1) {
+                        el.textContent = `1 day, ${hours}h`;
+                    } else {
+                        el.textContent = `${days} days`;
+                    }
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', updatePaydayCountdown);
+            } else {
+                updatePaydayCountdown();
+            }
+            setInterval(updatePaydayCountdown, 60000);
         });
 
     </script>
@@ -463,25 +507,23 @@
                 <span style="font-size: 28px;">📈</span>
                 <div style="text-align: left;">
                     <div style="font-size: 14px; font-weight: 600; color: #007aff;">Portfolio Value</div>
-                    <div style="font-size: 24px; font-weight: 700;">$867</div>
+                    <div style="font-size: 24px; font-weight: 700;">$786</div>
                 </div>
                 <div style="width: 1px; height: 40px; background: rgba(0, 0, 0, 0.1); margin: 0 12px;"></div>
                 <div style="text-align: left;">
                     <div style="font-size: 14px; font-weight: 600; color: #34c759;">2030 Target</div>
-                    <div style="font-size: 24px; font-weight: 700;">$2,098</div>
+                    <div style="font-size: 24px; font-weight: 700;">$1,510</div>
                 </div>
             </div>
         </div>
 
         <div class="glass-card">
             <h2>Market Insights</h2>
-            <p style="font-size: 15px; line-height: 1.8; color: var(--text-secondary);">
-                <strong>Top performers:</strong> BTC (+235%), PLTR (+221%), HOOD (+218%), NVDA (+198%) leading the portfolio. Strong tech rally today.<br>
-                <strong>Today:</strong> Markets recovering - GOOGL up 2.0% to $283, TSLA up 2.8% to $457. HOOD up 2.8% to $141 ahead of earnings after market close. NVDA up 1.1% to $201. PLTR down 2.1% to $187 continuing post-earnings digestion. SBUX up 2.9% to $82. BTC down to $102K. SPY up 0.7% to $680.<br>
-                <strong>2030 outlook:</strong> $2,098 target (+142%) driven by AI expansion, defense tech growth, fintech adoption, crypto mainstream adoption.<br>
-                <strong>Risks:</strong> Valuation concerns post-earnings, rate volatility, profit-taking at ATHs, crypto volatility.<br>
-                <strong>This week:</strong> PLTR reported Nov 3 (strong results, stock sold off), HOOD earnings TODAY after close (Nov 5), NVDA earnings Nov 19.
-            </p>
+            <p style="font-size: 15px; line-height: 1.8; color: var(--text-secondary);"><strong>Top 2030 targets:</strong> NVDA (+165%), PLTR (+153%), BTC (+140%), HOOD (+130%) lead realistic upside with 12-21% annual growth.<br>
+                <strong>Today (Nov 6):</strong> Markets mixed as tech faces AI valuation pressure. NVDA dipped below $190 ahead of Nov 19 earnings. TSLA voting on Musk's $1T pay package today. Layoffs spike as companies cut costs amid AI transition. BTC holding above $101K. Fed rate cut likely December.<br>
+                <strong>2030 outlook:</strong> $1,510 target (+92%) assumes moderate growth — AI expansion (NVDA, GOOGL), defense tech (PLTR), fintech adoption (HOOD, V), crypto maturation (BTC), steady market returns (SPY 10% CAGR).<br>
+                <strong>Risks:</strong> Supreme Court tariff decisions, AI bubble concerns, layoff acceleration, valuation compression, rate policy uncertainty.<br>
+                <strong>Earnings:</strong> PLTR beat Nov 3, HOOD crushed Nov 5, NVDA reports Nov 19 (critical for AI sector momentum).</p>
         </div>
 
         <div class="glass-card">
@@ -500,122 +542,127 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+<tr>
                         <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Nov 3</span></a></td>
-                        <td>0.8219</td>
-                        <td>$186.61</td>
+                        <td>0.4219</td>
+                        <td>$178.04</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.14%</span></td> -->
-                        <td>$153</td>
-                        <td>$600</td>
-                        <td>$493</td>
-                        <td>+221%</td>
+                        <td>$75</td>
+                        <td>$450</td>
+                        <td>$190</td>
+                        <td>+153%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank" style="text-decoration: none;"><span class="earnings-badge upcoming-soon">📊 Today AMC</span></a></td>
-                        <td>0.3595</td>
-                        <td>$140.69</td>
+                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Nov 5</span></a></td>
+                        <td>0.4129</td>
+                        <td>$131.64</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.82%</span></td> -->
-                        <td>$51</td>
-                        <td>$450</td>
-                        <td>$162</td>
-                        <td>+218%</td>
+                        <td>$54</td>
+                        <td>$300</td>
+                        <td>$124</td>
+                        <td>+130%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank" style="text-decoration: none;"><span class="earnings-badge">📊 Nov 19</span></a></td>
-                        <td>0.2341</td>
-                        <td>$200.91</td>
+                        <td>0.2541</td>
+                        <td>$189.49</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.04%</span></td> -->
-                        <td>$47</td>
-                        <td>$600</td>
-                        <td>$140</td>
-                        <td>+198%</td>
+                        <td>$48</td>
+                        <td>$500</td>
+                        <td>$127</td>
+                        <td>+165%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 29</span></a></td>
                         <td>0.1485</td>
-                        <td>$282.98</td>
+                        <td>$285.60</td>
                         <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.28%</span></td> -->
                         <td>$42</td>
-                        <td>$650</td>
-                        <td>$97</td>
-                        <td>+131%</td>
+                        <td>$550</td>
+                        <td>$82</td>
+                        <td>+95%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 23</span></a></td>
                         <td>0.1122</td>
-                        <td>$456.88</td>
+                        <td>$448.80</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+4.63%</span></td> -->
-                        <td>$51</td>
-                        <td>$1,000</td>
-                        <td>$112</td>
-                        <td>+119%</td>
+                        <td>$50</td>
+                        <td>$800</td>
+                        <td>$90</td>
+                        <td>+80%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 30</span></a></td>
                         <td>0.6338</td>
-                        <td>$270.07</td>
+                        <td>$271.63</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+0.63%</span></td> -->
-                        <td>$171</td>
+                        <td>$172</td>
                         <td>$500</td>
                         <td>$317</td>
-                        <td>+85%</td>
+                        <td>+184%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/SPY" target="_blank">SPY</a></td>
                         <td>0.3378</td>
-                        <td>$680.19</td>
+                        <td>$671.99</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+1.10%</span></td> -->
-                        <td>$230</td>
-                        <td>$1,250</td>
-                        <td>$422</td>
-                        <td>+83%</td>
+                        <td>$227</td>
+                        <td>$1,100</td>
+                        <td>$372</td>
+                        <td>+64%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/SBUX" target="_blank">SBUX</a></td>
                         <td>0.1432</td>
-                        <td>$81.88</td>
+                        <td>$82.71</td>
                         <!-- <td><span style="color: #ff3b30; font-weight: 600;">-1.47%</span></td> -->
                         <td>$12</td>
-                        <td>$100</td>
-                        <td>$14</td>
-                        <td>+17%</td>
+                        <td>$130</td>
+                        <td>$19</td>
+                        <td>+58%</td>
                     </tr>
                     <tr>
                         <td><a href="https://finance.yahoo.com/quote/V" target="_blank">V</a></td>
                         <td>0.2570</td>
-                        <td>$338.65</td>
+                        <td>$336.34</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+1.10%</span></td> -->
-                        <td>$87</td>
+                        <td>$86</td>
                         <td>$550</td>
                         <td>$141</td>
-                        <td>+62%</td>
+                        <td>+64%</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.coinbase.com/price/bitcoin" target="_blank">BTC-USD</a></td>
                         <td>0.0001927</td>
-                        <td>$102,000</td>
+                        <td>$101,631</td>
                         <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.5%</span></td> -->
                         <td>$20</td>
-                        <td>$350,000</td>
-                        <td>$67</td>
-                        <td>+235%</td>
+                        <td>$250,000</td>
+                        <td>$48</td>
+                        <td>+140%</td>
                     </tr>
                     <tr>
                         <td><strong>TOTAL</strong></td>
                         <td></td>
                         <td></td>
                         <!-- <td></td> -->
-                        <td><strong>$867</strong></td>
+                        <td><strong>$786</strong></td>
                         <td></td>
-                        <td><strong>$2,098</strong></td>
-                        <td><strong>+142%</strong></td>
+                        <td><strong>$1,510</strong></td>
+                        <td><strong>+92%</strong></td>
                     </tr>
-                </tbody>
+                
             </table>
         </div>
 
         <div class="glass-card">
             <h2>Budget Breakdown</h2>
+            <div style="background: rgba(52, 199, 89, 0.1); border: 1px solid rgba(52, 199, 89, 0.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; text-align: center;">
+                <div style="font-size: 13px; font-weight: 600; color: #34c759; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Next Payday</div>
+                <div id="paydayCountdown" style="font-size: 24px; font-weight: 700; color: #34c759; margin-bottom: 4px;">Loading...</div>
+                <div style="font-size: 13px; color: #86868b;">$1,060 monthly / ~$530 to invest</div>
+            </div>
             <table>
                 <thead>
                     <tr>
