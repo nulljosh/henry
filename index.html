@@ -381,6 +381,16 @@
             color: #d1d1d6;
         }
 
+        .chart-legend li.active {
+            background: rgba(0, 122, 255, 0.12);
+            color: #007aff;
+        }
+
+        body.dark .chart-legend li.active {
+            background: rgba(10, 132, 255, 0.25);
+            color: #0a84ff;
+        }
+
         .pie-logo-ring {
             position: absolute;
             top: 0;
@@ -402,6 +412,8 @@
             font-weight: 700;
             color: #1d1d1f;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), 0 0 0 3px #ffffff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
         }
 
         .pie-logo span {
@@ -411,6 +423,17 @@
         body.dark .pie-logo {
             color: #f5f5f7;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(0, 0, 0, 0.6);
+        }
+
+        .pie-logo:hover,
+        .pie-logo:focus-visible {
+            transform: translate(-50%, -50%) scale(1.12);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .pie-logo:hover,
+        body.dark .pie-logo:focus-visible {
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.5);
         }
 
         .portfolio-table-view {
@@ -1024,6 +1047,37 @@
             const pieCenter = document.getElementById('stockPieCenter');
             const pieLegend = document.getElementById('stockPieLegend');
             const pieLogos = document.getElementById('stockPieLogos');
+            const legendMap = {};
+            const logoMap = {};
+            let activeSymbol = null;
+
+            const defaultCenter = () => {
+                if (pieCenter) {
+                    pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
+                }
+                if (pieChart) {
+                    pieChart.style.boxShadow = '0 10px 24px rgba(0, 0, 0, 0.08)';
+                }
+                Object.values(legendMap).forEach(li => li.classList.remove('active'));
+            };
+
+            const activateSlice = (symbol) => {
+                const item = holdingsData.find(entry => entry.symbol === symbol);
+                if (!item || !pieCenter) return;
+                activeSymbol = symbol;
+                pieCenter.innerHTML = `${formatCurrency(item.currentValue)}<span>${item.symbol} • ${formatPercent(item.gainPercent)} target</span>`;
+                if (pieChart) {
+                    pieChart.style.boxShadow = '0 18px 40px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(0, 0, 0, 0.05)';
+                }
+                Object.entries(legendMap).forEach(([sym, li]) => {
+                    li.classList.toggle('active', sym === symbol);
+                });
+            };
+
+            const resetSlice = () => {
+                activeSymbol = null;
+                defaultCenter();
+            };
             if (pieChart && pieCenter && pieLegend) {
                 let start = 0;
                 const segments = holdingsData.map(item => {
@@ -1058,6 +1112,16 @@
                     li.appendChild(label);
                     li.appendChild(value);
                     pieLegend.appendChild(li);
+                    legendMap[item.symbol] = li;
+                    li.tabIndex = 0;
+                    li.setAttribute('role', 'button');
+                    li.setAttribute('aria-label', `${item.symbol} ${formatCurrency(item.currentValue)}, ${formatPercent(item.gainPercent)} potential`);
+                    const enterLegend = () => activateSlice(item.symbol);
+                    const leaveLegend = () => resetSlice();
+                    li.addEventListener('mouseenter', enterLegend);
+                    li.addEventListener('mouseleave', leaveLegend);
+                    li.addEventListener('focus', enterLegend);
+                    li.addEventListener('blur', leaveLegend);
                 });
 
                 if (pieLogos) {
@@ -1071,17 +1135,28 @@
                         const y = 130 + Math.sin(radians) * radius;
                         const logo = document.createElement('div');
                         logo.className = 'pie-logo';
-                        logo.setAttribute('aria-hidden', 'true');
                         logo.style.background = item.color;
                         logo.style.left = `${x}px`;
                         logo.style.top = `${y}px`;
+                        logo.dataset.symbol = item.symbol;
+                        logo.tabIndex = 0;
+                        logo.setAttribute('role', 'button');
+                        logo.setAttribute('aria-label', `${item.symbol} ${formatCurrency(item.currentValue)}, ${formatPercent(item.gainPercent)} potential`);
                         const span = document.createElement('span');
                         span.textContent = item.logo || item.symbol[0];
                         logo.appendChild(span);
                         pieLogos.appendChild(logo);
+                        logoMap[item.symbol] = logo;
+                        const enterLogo = () => activateSlice(item.symbol);
+                        const leaveLogo = () => resetSlice();
+                        logo.addEventListener('mouseenter', enterLogo);
+                        logo.addEventListener('mouseleave', leaveLogo);
+                        logo.addEventListener('focus', enterLogo);
+                        logo.addEventListener('blur', leaveLogo);
                         angleAccumulator += sweep;
                     });
                 }
+                defaultCenter();
             }
 
             const pieView = document.getElementById('stockPieView');
@@ -1103,9 +1178,14 @@
                     btn.classList.toggle('active', isActive);
                     btn.setAttribute('aria-pressed', String(isActive));
                 });
+
+                if (view === 'pie') {
+                    resetSlice();
+                }
             }
 
             setPortfolioView('pie');
+            defaultCenter();
 
             viewToggleButtons.forEach(button => {
                 button.addEventListener('click', () => {
