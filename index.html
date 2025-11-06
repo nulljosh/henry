@@ -524,36 +524,76 @@
 <body>
     <a href="https://heyitsmejosh.com" class="back-button">←</a>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-        <span id="themeIcon">☀️</span>
+        <span id="themeIcon">Light</span>
     </button>
 
     <script>
+        const holdingsData = [
+            { symbol: 'PLTR', currentValue: 75, targetValue: 190 },
+            { symbol: 'HOOD', currentValue: 54, targetValue: 124 },
+            { symbol: 'NVDA', currentValue: 48, targetValue: 127 },
+            { symbol: 'GOOGL', currentValue: 42, targetValue: 82 },
+            { symbol: 'TSLA', currentValue: 50, targetValue: 90 },
+            { symbol: 'AAPL', currentValue: 172, targetValue: 317 },
+            { symbol: 'SPY', currentValue: 227, targetValue: 372 },
+            { symbol: 'SBUX', currentValue: 12, targetValue: 19 },
+            { symbol: 'V', currentValue: 86, targetValue: 141 },
+            { symbol: 'BTC', currentValue: 20, targetValue: 48 }
+        ];
+
+        const formatCurrency = (value) => `$${Math.round(value).toLocaleString('en-US')}`;
+
         function toggleTheme() {
             document.body.classList.toggle('dark');
             const isDark = document.body.classList.contains('dark');
-            document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+            document.getElementById('themeIcon').textContent = isDark ? 'Dark' : 'Light';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
         const theme = localStorage.getItem('theme');
         if (theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.body.classList.add('dark');
-            document.getElementById('themeIcon').textContent = '🌙';
+            document.getElementById('themeIcon').textContent = 'Dark';
         }
 
         matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             if (!theme) {
                 document.body.classList.toggle('dark', e.matches);
-                document.getElementById('themeIcon').textContent = e.matches ? '🌙' : '☀️';
+                document.getElementById('themeIcon').textContent = e.matches ? 'Dark' : 'Light';
             }
         });
 
         document.addEventListener('DOMContentLoaded', () => {
             const table = document.getElementById('stockTable');
-            if (!table) return;
+            const headers = table ? table.querySelectorAll('th') : [];
+            const tbody = table ? table.querySelector('tbody') : null;
 
-            const headers = table.querySelectorAll('th');
-            const tbody = table.querySelector('tbody');
+            const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
+            const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
+
+            const heroCurrent = document.getElementById('heroCurrentValue');
+            const heroTarget = document.getElementById('heroTargetValue');
+            if (heroCurrent) heroCurrent.textContent = formatCurrency(currentTotal);
+            if (heroTarget) heroTarget.textContent = formatCurrency(targetTotal);
+
+            const totalsRow = table ? table.querySelector('tbody tr:last-child') : null;
+            if (totalsRow) {
+                const currentCell = totalsRow.querySelector('td:nth-child(4)');
+                const targetCell = totalsRow.querySelector('td:nth-child(6)');
+                if (currentCell) currentCell.innerHTML = `<strong>${formatCurrency(currentTotal)}</strong>`;
+                if (targetCell) targetCell.innerHTML = `<strong>${formatCurrency(targetTotal)}</strong>`;
+            }
+
+            const summaryTotal = document.getElementById('summaryTotalPortfolio');
+            const summaryTarget = document.getElementById('summaryTargetPortfolio');
+            const summaryGain = document.getElementById('summaryPotentialGain');
+            if (summaryTotal) summaryTotal.textContent = formatCurrency(867);
+            if (summaryTarget) summaryTarget.textContent = formatCurrency(2098);
+            if (summaryGain) {
+                const netGain = 2098 - 867;
+                const netGainPercent = Math.round((netGain / 867) * 100);
+                summaryGain.textContent = `+${formatCurrency(netGain)} (+${netGainPercent}%)`;
+            }
 
             headers.forEach((header, index) => {
                 header.classList.add('sortable');
@@ -562,7 +602,7 @@
             });
 
             function getCellValue(row, index) {
-                const cell = row.cells[index];
+                const cell = row ? row.cells[index] : null;
                 if (!cell) return '';
                 const text = cell.textContent.trim();
                 if (text.startsWith('$')) return parseFloat(text.replace(/[$,]/g, '')) || 0;
@@ -572,6 +612,7 @@
             }
 
             function sortTable(column, order) {
+                if (!tbody) return;
                 const rows = Array.from(tbody.querySelectorAll('tr'));
                 const totalRow = rows.pop();
 
@@ -586,12 +627,12 @@
 
                 tbody.innerHTML = '';
                 rows.forEach(row => tbody.appendChild(row));
-                tbody.appendChild(totalRow);
+                if (totalRow) tbody.appendChild(totalRow);
             }
 
             headers.forEach(header => {
                 header.addEventListener('click', () => {
-                    const column = parseInt(header.dataset.column);
+                    const column = parseInt(header.dataset.column, 10);
                     const newOrder = header.dataset.order === 'asc' ? 'desc' : 'asc';
 
                     headers.forEach(h => {
@@ -605,7 +646,6 @@
                 });
             });
 
-            // Sort by gain percentage (column 6) by default
             const gainHeader = headers[6];
             if (gainHeader) {
                 gainHeader.classList.add('sorted-desc');
@@ -616,48 +656,48 @@
             const graph = document.getElementById('heroGraph');
             const dot = document.getElementById('graphDot');
             const tooltip = document.getElementById('graphTooltip');
-            if (!graph) return;
 
-            const graphPoints = [
-                {x:0,y:220,val:300,date:'Oct 28'}, {x:100,y:210,val:400,date:'Oct 29'}, {x:200,y:195,val:500,date:'Oct 30'},
-                {x:300,y:185,val:600,date:'Oct 31'}, {x:400,y:165,val:716,date:'Nov 1'}, {x:500,y:150,val:900,date:'Nov 2'},
-                {x:600,y:120,val:1200,date:'Nov 3'}, {x:700,y:95,val:1450,date:'Nov 4'}, {x:800,y:60,val:1720,date:'Nov 5'}
-            ];
+            if (graph && dot && tooltip) {
+                const graphPoints = [
+                    {x:0,y:220,val:300,date:'Oct 28'}, {x:100,y:210,val:400,date:'Oct 29'}, {x:200,y:195,val:500,date:'Oct 30'},
+                    {x:300,y:185,val:600,date:'Oct 31'}, {x:400,y:165,val:716,date:'Nov 1'}, {x:500,y:150,val:900,date:'Nov 2'},
+                    {x:600,y:120,val:1200,date:'Nov 3'}, {x:700,y:95,val:1450,date:'Nov 4'}, {x:800,y:60,val:1720,date:'Nov 5'}
+                ];
 
-            const updateGraph = (clientX, clientY) => {
-                const rect = graph.getBoundingClientRect();
-                const x = ((clientX - rect.left) / rect.width) * 800;
-                const y = ((clientY - rect.top) / rect.height) * 300;
+                const updateGraph = (clientX, clientY) => {
+                    const rect = graph.getBoundingClientRect();
+                    const x = ((clientX - rect.left) / rect.width) * 800;
+                    const y = ((clientY - rect.top) / rect.height) * 300;
 
-                // Only show if mouse is roughly in graph area (expanded hit zone)
-                if (y > 250 || y < 40) return;
+                    if (y > 250 || y < 40) return;
 
-                let i = 0;
-                while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
-                const p1 = graphPoints[i], p2 = graphPoints[i + 1] || p1;
-                const ratio = (x - p1.x) / (p2.x - p1.x || 1);
-                const graphY = p1.y + (p2.y - p1.y) * ratio;
-                const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
-                dot.setAttribute('cx', x);
-                dot.setAttribute('cy', graphY);
-                dot.setAttribute('opacity', '1');
-                const nearestPoint = graphPoints[Math.min(i + (ratio > 0.5 ? 1 : 0), graphPoints.length - 1)];
-                tooltip.innerHTML = `<div class="graph-tooltip-date">${nearestPoint.date}</div><div class="graph-tooltip-value">$${val}</div>`;
-                tooltip.style.left = clientX - rect.left + 'px';
-                tooltip.style.top = clientY - rect.top - 40 + 'px';
-                tooltip.style.opacity = '1';
-            };
+                    let i = 0;
+                    while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
+                    const p1 = graphPoints[i], p2 = graphPoints[i + 1] || p1;
+                    const ratio = (x - p1.x) / (p2.x - p1.x || 1);
+                    const graphY = p1.y + (p2.y - p1.y) * ratio;
+                    const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
+                    dot.setAttribute('cx', x);
+                    dot.setAttribute('cy', graphY);
+                    dot.setAttribute('opacity', '1');
+                    const nearestPoint = graphPoints[Math.min(i + (ratio > 0.5 ? 1 : 0), graphPoints.length - 1)];
+                    tooltip.innerHTML = `<div class="graph-tooltip-date">${nearestPoint.date}</div><div class="graph-tooltip-value">$${val}</div>`;
+                    tooltip.style.left = clientX - rect.left + 'px';
+                    tooltip.style.top = clientY - rect.top - 40 + 'px';
+                    tooltip.style.opacity = '1';
+                };
 
-            const hideGraph = () => {
-                dot.setAttribute('opacity', '0');
-                tooltip.style.opacity = '0';
-            };
+                const hideGraph = () => {
+                    dot.setAttribute('opacity', '0');
+                    tooltip.style.opacity = '0';
+                };
 
-            graph.addEventListener('mousemove', e => updateGraph(e.clientX, e.clientY));
-            graph.addEventListener('mouseleave', hideGraph);
-            graph.addEventListener('touchstart', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
-            graph.addEventListener('touchmove', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
-            graph.addEventListener('touchend', e => { e.preventDefault(); hideGraph(); });
+                graph.addEventListener('mousemove', e => updateGraph(e.clientX, e.clientY));
+                graph.addEventListener('mouseleave', hideGraph);
+                graph.addEventListener('touchstart', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
+                graph.addEventListener('touchmove', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
+                graph.addEventListener('touchend', e => { e.preventDefault(); hideGraph(); });
+            }
 
             // Payday countdown
             function updatePaydayCountdown() {
