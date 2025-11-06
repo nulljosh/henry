@@ -200,10 +200,6 @@
             z-index: 1;
         }
 
-        .hero-pill-icon {
-            font-size: 28px;
-        }
-
         .hero-metric {
             text-align: left;
         }
@@ -490,21 +486,6 @@
             }
         }
 
-        .heart {
-            color: #ff0000;
-            animation: heartbeat 2s ease-in-out infinite;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            10% { transform: scale(1.2); }
-            20% { transform: scale(1); }
-            30% { transform: scale(1.15); }
-            40% { transform: scale(1); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
 <body>
@@ -719,7 +700,6 @@
             </h1>
             <h2 class="hero-subtitle">The Intelligent Portfolio Companion</h2>
             <div class="hero-pill">
-                <span class="hero-pill-icon">📈</span>
                 <div class="hero-metric">
                     <div class="hero-metric-label">Portfolio Value</div>
                     <div class="hero-metric-value" id="heroCurrentValue">$786</div>
@@ -758,7 +738,7 @@
                 </thead>
                 <tbody>
 <tr>
-                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank"><span class="earnings-badge completed">✓ Nov 3</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank"><span class="earnings-badge completed">Completed Nov 3</span></a></td>
                         <td>0.4219</td>
                         <td>$178.04</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.14%</span></td> -->
@@ -768,7 +748,7 @@
                         <td>+153%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank"><span class="earnings-badge completed">✓ Nov 5</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank"><span class="earnings-badge completed">Completed Nov 5</span></a></td>
                         <td>0.4129</td>
                         <td>$131.64</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.82%</span></td> -->
@@ -778,7 +758,7 @@
                         <td>+130%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank"><span class="earnings-badge">📊 Nov 19</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank"><span class="earnings-badge">Upcoming Nov 19</span></a></td>
                         <td>0.2541</td>
                         <td>$189.49</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.04%</span></td> -->
@@ -788,7 +768,7 @@
                         <td>+165%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank"><span class="earnings-badge completed">✓ Oct 29</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank"><span class="earnings-badge completed">Completed Oct 29</span></a></td>
                         <td>0.1485</td>
                         <td>$285.60</td>
                         <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.28%</span></td> -->
@@ -798,7 +778,7 @@
                         <td>+95%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank"><span class="earnings-badge completed">✓ Oct 23</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank"><span class="earnings-badge completed">Completed Oct 23</span></a></td>
                         <td>0.1122</td>
                         <td>$448.80</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+4.63%</span></td> -->
@@ -808,7 +788,7 @@
                         <td>+80%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank"><span class="earnings-badge completed">✓ Oct 30</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank"><span class="earnings-badge completed">Completed Oct 30</span></a></td>
                         <td>0.6338</td>
                         <td>$271.63</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+0.63%</span></td> -->
@@ -1002,7 +982,7 @@
     </div>
 
     <footer class="site-footer">
-        Made with <span class="heart">&hearts;</span> in Vancouver, BC<br>
+        Built in Vancouver, BC<br>
         &copy; 2025-2026
     </footer>
 </body>

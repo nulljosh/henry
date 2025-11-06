@@ -1,61 +1,69 @@
 # Henry
 
-A fund/portfolio management system for tracking investments and performance.
+Henry is a manually curated portfolio dashboard. Everything in `index.html` is static for now—update the figures by editing the markup directly.
 
-## Current Portfolio
+## Snapshot (updated Nov 6, 2025)
 
-**Stock Holdings**: $989 USD
-**Crypto Holdings**: $24 USD (ETH + SOL)
-**Cash/Savings**: $1,095 USD
-**Total Liquid**: $2,108 USD (Target: $5,000) - **42.2% to goal!**
+- Stock holdings: **$786 USD** with a **$1,510** 2030 target (+92% upside)
+- Total portfolio (stocks + savings): **$867 USD** with a **$2,098** target (+$1,231 gain)
+- Cash & savings: **$320 CAD** (~$321 USD)
+- Debt payoff goal: **$5,000** with **$3,812** remaining (24% funded)
+- Monthly surplus: **$453** in November, rising to **$630** once the old phone payment rolls off
 
-### Stock Portfolio (8 holdings, sorted by 2030 potential)
+## Stock Portfolio
 
-| Ticker | Shares | Current | Value | 2030 Target | Annual Growth | Return |
-|--------|--------|---------|-------|-------------|----------------|--------|
-| NVDA | 0.264 | $186.26 | $49 | $375 | 15% | +101% |
-| PLTR | 2.045 | $184.63 | $378 | $340 | 13% | +84% |
-| GOOGL | 0.149 | $259.92 | $39 | $419 | 10% | +61% |
-| SPY | 0.336 | $677.25 | $228 | $1,042 | 9% | +54% |
-| AAPL | 0.435 | $262.82 | $114 | $404 | 9% | +54% |
-| HOOD | 1.246 | $139.79 | $174 | $246 | 12% | +76% |
-| ATZ | 0.0503 | $69.39 | $3 | $112 | 10% | +61% |
-| TSLA | 0.0069 | $433.72 | $3 | $637 | 8% | +47% |
+| Symbol | Shares | Price | Value | Target Price | Target Value | Gain |
+|--------|--------|-------|-------|--------------|--------------|------|
+| PLTR | 0.4219 | $178.04 | $75 | $450 | $190 | +153% |
+| HOOD | 0.4129 | $131.64 | $54 | $300 | $124 | +130% |
+| NVDA | 0.2541 | $189.49 | $48 | $500 | $127 | +165% |
+| GOOGL | 0.1485 | $285.60 | $42 | $550 | $82 | +95% |
+| TSLA | 0.1122 | $448.80 | $50 | $800 | $90 | +80% |
+| AAPL | 0.6338 | $271.63 | $172 | $500 | $317 | +184% |
+| SPY | 0.3378 | $671.99 | $227 | $1,100 | $372 | +64% |
+| SBUX | 0.1432 | $82.71 | $12 | $130 | $19 | +58% |
+| V | 0.2570 | $336.34 | $86 | $550 | $141 | +64% |
+| BTC-USD | 0.0001927 | $101,631 | $20 | $250,000 | $48 | +140% |
+| **Total** | | | **$786** | | **$1,510** | **+92%** |
 
-**Stock Portfolio Total**: $989 → $1,575 by 2030 (+59% potential gain)
+All figures are entered manually and rounded to the nearest dollar for readability.
 
-### Crypto Holdings (2 positions, 2026 targets)
+## Other Balances & Goals
 
-| Asset | Holdings | Current | Value | 2026 Target | 2030 Target | Annual Growth |
-|-------|----------|---------|-------|-------------|-------------|----------------|
-| ETH | 0.00407 | $3,939 | $16 | $5,000 | $7,584 | 14% |
-| SOL | 0.0414 | $193.27 | $8 | $300 | $389 | 15% |
+- Savings: $867 USD portfolio + $446 CAD (~$321 USD) = ~$1,188 USD toward the $5,000 goal
+- Debt-free date: projected **July 2026** with the current $453/month surplus
+- Planned MacBook upgrade: **August 2026**
+- Budget snapshot:
 
-**Crypto Portfolio Total**: $24 → $40 by 2030 (+67% potential gain)
+  | Category | Amount |
+  |----------|--------|
+  | Wallet / Savings (CAD) | $320 |
+  | Income | $1,060 |
+  | Food | -$300 |
+  | Phone | -$130 |
+  | Old phone (1 payment left) | -$177 |
 
-### Precious Metals Speculation (not owned, fair value analysis)
+## Features (current)
 
-| Metal | Current | Per Oz | 2030 Target | Annual Growth | Rationale |
-|-------|---------|--------|-------------|----------------|-----------|
-| GOLD | $4,146.67 | troy oz | $5,549 | 6% | Inflation hedge, geopolitical demand |
-| SILVER | $48.59 | troy oz | $71.39 | 8% | Industrial demand + inflation, rarer than gold by price |
+- Responsive glassmorphism UI with light/dark mode toggle (persists via `localStorage`)
+- Sortable holdings table with trailing total row
+- Interactive hero chart hover/touch tooltip
+- Debt payoff progress bar and upcoming payday countdown
+- iOS mockup (`ios-index.html`) that mirrors the desktop experience
 
-*Last updated: Oct 25, 2025 - Moderately bullish 2030 projections (6-15% annual growth based on sector)*
+## Roadmap
 
-## Features
-
-- Real-time stock price updates (auto-refresh with 15min cache)
-- Interactive financial dashboard with savings goal tracking
-- Budget management with income/expense breakdown
-- Stock portfolio visualization with 2030 price targets
-- Net worth and monthly surplus calculations
-- Light/dark mode with responsive design
-- iOS app mockup (see `ios-index.html`)
+- Move inline CSS/JS into dedicated modules for easier maintenance
+- Stand up a `test/beta/api` branch to experiment with live pricing without touching `main`
+- Introduce a JSON data layer to eliminate duplicate manual edits
 
 ## Usage
 
-1. Clone the repository
-2. Open `index.html` in your browser
+```sh
+git clone https://github.com/nulljosh/henry.git
+cd henry
+open index.html
+```
 
 ## License
 
