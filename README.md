@@ -5,6 +5,7 @@ Henry is a manually curated portfolio dashboard. Everything in `index.html` is s
 ## Snapshot (updated Nov 6, 2025)
 
 - Stock holdings: **$786 USD** with a **$1,510** 2030 target (+92% upside)
+- Bitcoin position: **$20 USD** current value targeting **$48** by 2030 (+140% upside)
 - Total portfolio (stocks + savings): **$867 USD** with a **$2,098** target (+$1,231 gain)
 - Cash & savings: **$320 CAD** (~$321 USD)
 - Debt payoff goal: **$5,000** with **$3,812** remaining (24% funded)
