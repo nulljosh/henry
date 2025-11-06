@@ -955,7 +955,8 @@
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
             const totalsRow = table ? table.querySelector('tfoot tr') : null;
-            const sortedHoldings = [...holdingsData].sort((a, b) => b.currentValue - a.currentValue);
+            const pieHoldings = [...holdingsData].sort((a, b) => b.currentValue - a.currentValue);
+            const tableHoldings = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
             const symbolLinks = {
                 PLTR: 'https://finance.yahoo.com/quote/PLTR',
                 HOOD: 'https://finance.yahoo.com/quote/HOOD',
@@ -979,7 +980,7 @@
  
             if (tbody) {
                 tbody.innerHTML = '';
-                sortedHoldings.forEach(item => {
+                tableHoldings.forEach(item => {
                     const tr = document.createElement('tr');
 
                     const symbolCell = document.createElement('td');
@@ -1105,7 +1106,7 @@
             };
             if (pieChart && pieCenter && pieLegend) {
                 let start = 0;
-                const segments = sortedHoldings.map(item => {
+                const segments = pieHoldings.map(item => {
                     const sweep = (item.currentValue / currentTotal) * 100;
                     const definition = `${item.color} ${start}% ${start + sweep}%`;
                     start += sweep;
@@ -1119,7 +1120,7 @@
                     pieLogos.innerHTML = '';
                 }
                 let angleAccumulator = 0;
-                sortedHoldings.forEach(item => {
+                pieHoldings.forEach(item => {
                     const li = document.createElement('li');
                     const swatch = document.createElement('span');
                     swatch.className = 'legend-swatch';
@@ -1152,7 +1153,7 @@
 
                 if (pieLogos) {
                     angleAccumulator = 0;
-                    sortedHoldings.forEach(item => {
+                    pieHoldings.forEach(item => {
                         const sweep = (item.currentValue / currentTotal) * 360;
                         const midAngle = angleAccumulator + sweep / 2;
                         const radians = (midAngle - 90) * (Math.PI / 180);
@@ -1476,7 +1477,7 @@
                                 <th>Symbol</th>
                                 <th>Shares</th>
                                 <th>Current Price</th>
-                                <th>Daily Δ%</th>
+                                <th>Daily %</th>
                                 <th>Current Value</th>
                                 <th>Target Price</th>
                                 <th>Target Value</th>
