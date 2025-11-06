@@ -406,7 +406,7 @@
                 const y = ((clientY - rect.top) / rect.height) * 300;
 
                 // Only show if mouse is roughly in graph area (expanded hit zone)
-                if (y > 240 || y < 0) return;
+                if (y > 250 || y < 40) return;
 
                 let i = 0;
                 while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
