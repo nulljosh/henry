@@ -47,10 +47,10 @@ All figures are entered manually and rounded to the nearest dollar for readabili
 ## Features (current)
 
 - Responsive glassmorphism UI with light/dark mode toggle (persists via `localStorage`)
-- Portfolio allocation pie chart with legend, plus one-click toggle back to the sortable table
-- Interactive hero chart hover/touch tooltip
-- Debt payoff progress bar and upcoming payday countdown
-- iOS mockup (`ios-index.html`) that mirrors the desktop experience
+- Portfolio allocation pie chart (default view) with a one-click toggle back to the sortable table
+- Animated, collapsible Market Insights panel and color-coded earnings indicators
+- Interactive hero chart hover/touch tooltip with payday countdown + date callout
+- Footer link back to this repo and iOS mockup (`ios-index.html`) mirroring the desktop experience
 
 ## Roadmap
 

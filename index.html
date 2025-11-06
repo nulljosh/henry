@@ -193,6 +193,7 @@
             display: inline-flex;
             gap: 12px;
             align-items: center;
+            justify-content: center;
             background: rgba(0, 122, 255, 0.1);
             padding: 12px 24px;
             border-radius: 12px;
@@ -201,7 +202,7 @@
         }
 
         .hero-metric {
-            text-align: left;
+            text-align: center;
         }
 
         .hero-metric-label {
@@ -253,6 +254,20 @@
             box-shadow: 0 4px 10px rgba(0, 122, 255, 0.25);
         }
 
+        body.dark .view-toggle {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        body.dark .view-toggle button {
+            color: #f5f5f7;
+        }
+
+        body.dark .view-toggle button.active {
+            background: rgba(10, 132, 255, 0.85);
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+        }
+
         .portfolio-views {
             position: relative;
         }
@@ -291,6 +306,12 @@
             line-height: 1.3;
         }
 
+        body.dark .pie-center-label {
+            background: rgba(44, 44, 46, 0.92);
+            color: #f5f5f7;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
         .pie-center-label span {
             display: block;
             font-size: 12px;
@@ -298,6 +319,10 @@
             color: #6e6e73;
             text-transform: uppercase;
             letter-spacing: 0.4px;
+        }
+
+        body.dark .pie-center-label span {
+            color: #d1d1d6;
         }
 
         .chart-legend {
@@ -319,6 +344,10 @@
             padding: 10px 14px;
         }
 
+        body.dark .chart-legend li {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
         .legend-swatch {
             width: 12px;
             height: 12px;
@@ -330,10 +359,18 @@
             color: #1d1d1f;
         }
 
+        body.dark .legend-label {
+            color: #f5f5f7;
+        }
+
         .legend-value {
             margin-left: auto;
             color: var(--text-secondary);
             font-weight: 500;
+        }
+
+        body.dark .legend-value {
+            color: #d1d1d6;
         }
 
         .portfolio-table-view {
@@ -342,6 +379,49 @@
 
         .hidden {
             display: none !important;
+        }
+
+        .earnings-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-left: 8px;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+
+        .earnings-badge[data-status="beat"] {
+            background: #34c759;
+        }
+
+        .earnings-badge[data-status="miss"] {
+            background: #ff3b30;
+        }
+
+        .earnings-badge[data-status="upcoming"] {
+            background: #0a84ff;
+        }
+
+        .earnings-badge[data-status="neutral"] {
+            background: rgba(142, 142, 147, 0.5);
+        }
+
+        body.dark .earnings-badge {
+            box-shadow: 0 0 0 2px #1d1d1f;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         .hero-divider {
@@ -358,20 +438,65 @@
         }
 
         .market-insights-card {
-            background: #1d1d1f;
-            color: #f5f5f7;
+            background: #ffffff;
+            color: #1d1d1f;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .market-insights-card h2 {
+        body.dark .market-insights-card {
+            background: #2c2c2e;
             color: #f5f5f7;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .market-insights-toggle {
+            width: 100%;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 600;
+            color: inherit;
+            cursor: pointer;
+            padding: 4px 0 8px;
+        }
+
+        .market-insights-toggle-icon {
+            transition: transform 0.3s ease;
+            font-size: 20px;
+        }
+
+        .market-insights-card.open .market-insights-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .market-insights-content {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+        }
+
+        .market-insights-card.open .market-insights-content {
+            opacity: 1;
+            padding-top: 12px;
         }
 
         .market-insights-card .market-copy {
-            color: #ffffff;
+            color: #1d1d1f;
         }
 
         .market-insights-card .market-copy strong {
-            color: #ffffff;
+            color: #1d1d1f;
+        }
+
+        body.dark .market-insights-card .market-copy,
+        body.dark .market-insights-card .market-copy strong {
+            color: #f5f5f7;
         }
 
         .hidden-row {
@@ -423,6 +548,17 @@
         .payday-note {
             font-size: 13px;
             color: var(--text-secondary);
+        }
+
+        .payday-date {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 6px;
+        }
+
+        body.dark .payday-date {
+            color: #f5f5f7;
         }
 
         .progress-summary {
@@ -481,6 +617,16 @@
             padding: 20px;
             color: #8e8e93;
             font-size: 14px;
+        }
+
+        .site-footer a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .site-footer a:hover {
+            text-decoration: underline;
         }
 
         h1 {
@@ -658,19 +804,24 @@
 
     <script>
         const holdingsData = [
-            { symbol: 'PLTR', shares: 0.4219, price: 178.04, currentValue: 75, targetPrice: 450, targetValue: 190, gainPercent: 153, color: '#4c8bf5' },
-            { symbol: 'HOOD', shares: 0.4129, price: 131.64, currentValue: 54, targetPrice: 300, targetValue: 124, gainPercent: 130, color: '#5ec2aa' },
-            { symbol: 'NVDA', shares: 0.2541, price: 189.49, currentValue: 48, targetPrice: 500, targetValue: 127, gainPercent: 165, color: '#ff9f43' },
-            { symbol: 'GOOGL', shares: 0.1485, price: 285.60, currentValue: 42, targetPrice: 550, targetValue: 82, gainPercent: 95, color: '#ff6b6b' },
-            { symbol: 'TSLA', shares: 0.1122, price: 448.80, currentValue: 50, targetPrice: 800, targetValue: 90, gainPercent: 80, color: '#845ef7' },
-            { symbol: 'AAPL', shares: 0.6338, price: 271.63, currentValue: 172, targetPrice: 500, targetValue: 317, gainPercent: 184, color: '#2dd4bf' },
-            { symbol: 'SPY', shares: 0.3378, price: 671.99, currentValue: 227, targetPrice: 1100, targetValue: 372, gainPercent: 64, color: '#ffd43b' },
-            { symbol: 'SBUX', shares: 0.1432, price: 82.71, currentValue: 12, targetPrice: 130, targetValue: 19, gainPercent: 58, color: '#94a3b8' },
-            { symbol: 'V', shares: 0.2570, price: 336.34, currentValue: 86, targetPrice: 550, targetValue: 141, gainPercent: 64, color: '#f38eb3' },
-            { symbol: 'BTC', shares: 0.0001927, price: 101631, currentValue: 20, targetPrice: 250000, targetValue: 48, gainPercent: 140, color: '#34a853' }
+            { symbol: 'PLTR', shares: 0.4219, price: 178.04, currentValue: 75, targetPrice: 450, targetValue: 190, gainPercent: 153, color: '#4c8bf5', url: 'https://finance.yahoo.com/quote/PLTR', earningsStatus: 'beat', earningsLabel: 'Earnings beat Nov 3' },
+            { symbol: 'HOOD', shares: 0.4129, price: 131.64, currentValue: 54, targetPrice: 300, targetValue: 124, gainPercent: 130, color: '#5ec2aa', url: 'https://finance.yahoo.com/quote/HOOD', earningsStatus: 'beat', earningsLabel: 'Earnings beat Nov 5' },
+            { symbol: 'NVDA', shares: 0.2541, price: 189.49, currentValue: 48, targetPrice: 500, targetValue: 127, gainPercent: 165, color: '#ff9f43', url: 'https://finance.yahoo.com/quote/NVDA', earningsStatus: 'upcoming', earningsLabel: 'Earnings Nov 19' },
+            { symbol: 'GOOGL', shares: 0.1485, price: 285.60, currentValue: 42, targetPrice: 550, targetValue: 82, gainPercent: 95, color: '#ff6b6b', url: 'https://finance.yahoo.com/quote/GOOGL', earningsStatus: 'beat', earningsLabel: 'Earnings beat Oct 29' },
+            { symbol: 'TSLA', shares: 0.1122, price: 448.80, currentValue: 50, targetPrice: 800, targetValue: 90, gainPercent: 80, color: '#845ef7', url: 'https://finance.yahoo.com/quote/TSLA', earningsStatus: 'miss', earningsLabel: 'Earnings missed Oct 23' },
+            { symbol: 'AAPL', shares: 0.6338, price: 271.63, currentValue: 172, targetPrice: 500, targetValue: 317, gainPercent: 184, color: '#2dd4bf', url: 'https://finance.yahoo.com/quote/AAPL', earningsStatus: 'beat', earningsLabel: 'Earnings beat Oct 30' },
+            { symbol: 'SPY', shares: 0.3378, price: 671.99, currentValue: 227, targetPrice: 1100, targetValue: 372, gainPercent: 64, color: '#ffd43b', url: 'https://finance.yahoo.com/quote/SPY', earningsStatus: 'neutral', earningsLabel: 'Index fund' },
+            { symbol: 'SBUX', shares: 0.1432, price: 82.71, currentValue: 12, targetPrice: 130, targetValue: 19, gainPercent: 58, color: '#94a3b8', url: 'https://finance.yahoo.com/quote/SBUX', earningsStatus: 'neutral', earningsLabel: 'Holding steady' },
+            { symbol: 'V', shares: 0.2570, price: 336.34, currentValue: 86, targetPrice: 550, targetValue: 141, gainPercent: 64, color: '#f38eb3', url: 'https://finance.yahoo.com/quote/V', earningsStatus: 'neutral', earningsLabel: 'Holding steady' },
+            { symbol: 'BTC', shares: 0.0001927, price: 101631, currentValue: 20, targetPrice: 250000, targetValue: 48, gainPercent: 140, color: '#34a853', url: 'https://www.coinbase.com/price/bitcoin', earningsStatus: 'neutral', earningsLabel: 'Crypto holding' }
         ];
 
         const formatCurrency = (value) => `$${Math.round(value).toLocaleString('en-US')}`;
+        const formatPrice = (value) => `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const formatShares = (value) => {
+            const fixed = value.toFixed(4);
+            return fixed.replace(/\.?0+$/, '');
+        };
 
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -697,6 +848,18 @@
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
             const totalsRow = table ? table.querySelector('tfoot tr') : null;
+            const symbolLinks = {
+                PLTR: 'https://finance.yahoo.com/quote/PLTR',
+                HOOD: 'https://finance.yahoo.com/quote/HOOD',
+                NVDA: 'https://finance.yahoo.com/quote/NVDA',
+                GOOGL: 'https://finance.yahoo.com/quote/GOOGL',
+                TSLA: 'https://finance.yahoo.com/quote/TSLA',
+                AAPL: 'https://finance.yahoo.com/quote/AAPL',
+                SPY: 'https://finance.yahoo.com/quote/SPY',
+                SBUX: 'https://finance.yahoo.com/quote/SBUX',
+                V: 'https://finance.yahoo.com/quote/V',
+                BTC: 'https://www.coinbase.com/price/bitcoin'
+            };
 
             const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
             const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
@@ -705,6 +868,60 @@
             const heroTarget = document.getElementById('heroTargetValue');
             if (heroCurrent) heroCurrent.textContent = formatCurrency(currentTotal);
             if (heroTarget) heroTarget.textContent = formatCurrency(targetTotal);
+
+            if (tbody) {
+                tbody.innerHTML = '';
+                holdingsData.forEach(item => {
+                    const tr = document.createElement('tr');
+
+                    const symbolCell = document.createElement('td');
+                    const link = document.createElement('a');
+                    link.href = item.url || symbolLinks[item.symbol] || '#';
+                    link.target = '_blank';
+                    link.rel = 'noopener';
+                    link.textContent = item.symbol;
+                    symbolCell.appendChild(link);
+
+                    if (item.earningsStatus) {
+                        const badge = document.createElement('span');
+                        badge.className = 'earnings-badge';
+                        badge.dataset.status = item.earningsStatus;
+                        badge.setAttribute('role', 'img');
+                        badge.setAttribute('aria-label', item.earningsLabel || item.earningsStatus);
+                        badge.title = item.earningsLabel || item.earningsStatus;
+                        symbolCell.appendChild(badge);
+                    }
+
+                    const sharesCell = document.createElement('td');
+                    sharesCell.textContent = formatShares(item.shares);
+
+                    const priceCell = document.createElement('td');
+                    priceCell.textContent = formatPrice(item.price);
+
+                    const currentCell = document.createElement('td');
+                    currentCell.textContent = formatCurrency(item.currentValue);
+
+                    const targetPriceCell = document.createElement('td');
+                    targetPriceCell.textContent = formatPrice(item.targetPrice);
+
+                    const targetValueCell = document.createElement('td');
+                    targetValueCell.textContent = formatCurrency(item.targetValue);
+
+                    const gainCell = document.createElement('td');
+                    const sign = item.gainPercent >= 0 ? '+' : '';
+                    gainCell.textContent = `${sign}${item.gainPercent}%`;
+
+                    tr.appendChild(symbolCell);
+                    tr.appendChild(sharesCell);
+                    tr.appendChild(priceCell);
+                    tr.appendChild(currentCell);
+                    tr.appendChild(targetPriceCell);
+                    tr.appendChild(targetValueCell);
+                    tr.appendChild(gainCell);
+
+                    tbody.appendChild(tr);
+                });
+            }
 
             if (totalsRow) {
                 const currentCell = totalsRow.querySelector('td:nth-child(4)');
@@ -778,17 +995,53 @@
                     pieView.classList.remove('hidden');
                     tableView.classList.add('hidden');
                 }
+
+                viewToggleButtons.forEach(btn => {
+                    const isActive = btn.dataset.viewToggle === view;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', String(isActive));
+                });
             }
+
+            setPortfolioView('pie');
 
             viewToggleButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const view = button.dataset.viewToggle;
-                    viewToggleButtons.forEach(btn => btn.classList.toggle('active', btn === button));
                     setPortfolioView(view);
                 });
             });
 
-            setPortfolioView('pie');
+            const insightsCard = document.getElementById('marketInsightsCard');
+            const insightsToggle = document.getElementById('marketInsightsToggle');
+            const insightsContent = document.getElementById('marketInsightsContent');
+            if (insightsCard) {
+                insightsCard.classList.remove('open');
+            }
+            if (insightsContent) {
+                insightsContent.style.maxHeight = '0px';
+                insightsContent.setAttribute('aria-hidden', 'true');
+            }
+            if (insightsToggle && insightsContent && insightsCard) {
+                insightsToggle.addEventListener('click', () => {
+                    const expanded = insightsToggle.getAttribute('aria-expanded') === 'true';
+                    insightsToggle.setAttribute('aria-expanded', String(!expanded));
+                    insightsCard.classList.toggle('open', !expanded);
+                    if (!expanded) {
+                        insightsContent.style.maxHeight = `${insightsContent.scrollHeight}px`;
+                        insightsContent.setAttribute('aria-hidden', 'false');
+                    } else {
+                        insightsContent.style.maxHeight = '0px';
+                        insightsContent.setAttribute('aria-hidden', 'true');
+                    }
+                });
+
+                window.addEventListener('resize', () => {
+                    if (insightsCard.classList.contains('open')) {
+                        insightsContent.style.maxHeight = `${insightsContent.scrollHeight}px`;
+                    }
+                });
+            }
 
             headers.forEach((header, index) => {
                 header.classList.add('sortable');
@@ -908,7 +1161,9 @@
                 }
                 if (!nextPayday) {
                     const el = document.getElementById('paydayCountdown');
+                    const dateLabel = document.getElementById('paydayDateLabel');
                     if (el) el.textContent = 'No upcoming payday';
+                    if (dateLabel) dateLabel.textContent = '';
                     return;
                 }
                 const diff = nextPayday - now;
@@ -925,6 +1180,12 @@
                     } else {
                         el.textContent = `${days} days`;
                     }
+                }
+                const dateLabel = document.getElementById('paydayDateLabel');
+                if (dateLabel) {
+                    const formattedDate = nextPayday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const weekday = nextPayday.toLocaleDateString('en-US', { weekday: 'short' });
+                    dateLabel.textContent = `${formattedDate} · ${weekday}`;
                 }
             }
             if (document.readyState === 'loading') {
@@ -977,13 +1238,18 @@
             </div>
         </div>
 
-        <div class="glass-card market-insights-card">
-            <h2>Market Insights</h2>
-            <p class="market-copy"><strong>Top 2030 targets:</strong> NVDA (+165%), PLTR (+153%), BTC (+140%), HOOD (+130%) lead realistic upside with 12-21% annual growth.<br>
-                <strong>Today (Nov 6):</strong> Markets mixed as tech faces AI valuation pressure. NVDA dipped below $190 ahead of Nov 19 earnings. TSLA voting on Musk's $1T pay package today. Layoffs spike as companies cut costs amid AI transition. BTC holding above $101K. Fed rate cut likely December.<br>
-                <strong>2030 outlook:</strong> $1,510 target (+92%) assumes moderate growth — AI expansion (NVDA, GOOGL), defense tech (PLTR), fintech adoption (HOOD, V), crypto maturation (BTC), steady market returns (SPY 10% CAGR).<br>
-                <strong>Risks:</strong> Supreme Court tariff decisions, AI bubble concerns, layoff acceleration, valuation compression, rate policy uncertainty.<br>
-                <strong>Earnings:</strong> PLTR beat Nov 3, HOOD crushed Nov 5, NVDA reports Nov 19 (critical for AI sector momentum).</p>
+        <div class="glass-card market-insights-card" id="marketInsightsCard">
+            <button class="market-insights-toggle" id="marketInsightsToggle" type="button" aria-expanded="false" aria-controls="marketInsightsContent">
+                <span>Market Insights</span>
+                <span class="market-insights-toggle-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="market-insights-content" id="marketInsightsContent">
+                <p class="market-copy"><strong>Top 2030 targets:</strong> NVDA (+165%), PLTR (+153%), BTC (+140%), HOOD (+130%) lead realistic upside with 12-21% annual growth.<br>
+                    <strong>Today (Nov 6):</strong> Markets mixed as tech faces AI valuation pressure. NVDA dipped below $190 ahead of Nov 19 earnings. TSLA voting on Musk's $1T pay package today. Layoffs spike as companies cut costs amid AI transition. BTC holding above $101K. Fed rate cut likely December.<br>
+                    <strong>2030 outlook:</strong> $1,510 target (+92%) assumes moderate growth — AI expansion (NVDA, GOOGL), defense tech (PLTR), fintech adoption (HOOD, V), crypto maturation (BTC), steady market returns (SPY 10% CAGR).<br>
+                    <strong>Risks:</strong> Supreme Court tariff decisions, AI bubble concerns, layoff acceleration, valuation compression, rate policy uncertainty.<br>
+                    <strong>Earnings:</strong> PLTR beat Nov 3, HOOD crushed Nov 5, NVDA reports Nov 19 (critical for AI sector momentum).</p>
+            </div>
         </div>
 
         <div class="glass-card">
@@ -1127,6 +1393,7 @@
             <div class="payday-highlight">
                 <div class="payday-title">Next Payday</div>
                 <div id="paydayCountdown" class="payday-amount">Loading...</div>
+                <div id="paydayDateLabel" class="payday-date"></div>
                 <div class="payday-note">$1,060 monthly / ~$530 to invest</div>
             </div>
             <table>
@@ -1253,7 +1520,7 @@
     </div>
 
     <footer class="site-footer">
-        Built with <span class="heart">&hearts;</span> in Vancouver, BC<br>
+        <a href="https://github.com/nulljosh/henry" target="_blank" rel="noopener">Built with <span class="heart">&hearts;</span> in Vancouver, BC</a><br>
         &copy; 2025-2026
     </footer>
 </body>
