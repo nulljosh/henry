@@ -19,6 +19,12 @@
             color: #1d1d1f;
         }
 
+        :root {
+            --accent: #007aff;
+            --success: #34c759;
+            --text-secondary: #86868b;
+        }
+
         .back-button, .theme-toggle {
             position: fixed;
             top: 20px;
@@ -59,6 +65,7 @@
         body.dark {
             background: #1d1d1f;
             color: #f5f5f7;
+            --text-secondary: #98989d;
         }
 
         body.dark .glass-card {
@@ -111,6 +118,214 @@
             padding: 32px;
             margin-bottom: 24px;
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .hero-card {
+            text-align: center;
+            padding: 48px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-graph {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            z-index: 0;
+            cursor: pointer;
+        }
+
+        .graph-dot {
+            transition: opacity 0.2s;
+        }
+
+        .graph-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .graph-tooltip-date {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 2px;
+        }
+
+        .graph-tooltip-value {
+            font-size: 14px;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-logo {
+            opacity: 0.9;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            gap: 12px;
+            align-items: center;
+            background: rgba(0, 122, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-pill-icon {
+            font-size: 28px;
+        }
+
+        .hero-metric {
+            text-align: left;
+        }
+
+        .hero-metric-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .hero-metric-label.target {
+            color: var(--success);
+        }
+
+        .hero-metric-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .hero-divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 12px;
+        }
+
+        .market-copy {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .hidden-row {
+            display: none;
+        }
+
+        .top-gain-badge {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: rgba(0, 122, 255, 0.12);
+            color: var(--accent);
+        }
+
+        .top-gain-row td {
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.08), rgba(0, 122, 255, 0.02));
+        }
+
+        .payday-highlight {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .payday-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--success);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .payday-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 4px;
+        }
+
+        .payday-note {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .progress-summary {
+            margin-bottom: 24px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .progress-labels span:nth-child(2) {
+            color: var(--accent);
+        }
+
+        .progress-bar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            height: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar-fill {
+            background: rgba(0, 122, 255, 0.85);
+            height: 100%;
+            width: 24%;
+            border-radius: 12px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+
+        .site-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #8e8e93;
+            font-size: 14px;
         }
 
         h1 {
@@ -418,7 +633,7 @@
                 dot.setAttribute('cy', graphY);
                 dot.setAttribute('opacity', '1');
                 const nearestPoint = graphPoints[Math.min(i + (ratio > 0.5 ? 1 : 0), graphPoints.length - 1)];
-                tooltip.innerHTML = `<div style="font-size: 11px; opacity: 0.7; margin-bottom: 2px;">${nearestPoint.date}</div><div style="font-size: 14px;">$${val}</div>`;
+                tooltip.innerHTML = `<div class="graph-tooltip-date">${nearestPoint.date}</div><div class="graph-tooltip-value">$${val}</div>`;
                 tooltip.style.left = clientX - rect.left + 'px';
                 tooltip.style.top = clientY - rect.top - 40 + 'px';
                 tooltip.style.opacity = '1';
@@ -482,22 +697,22 @@
     </script>
 
     <div class="container">
-        <div class="glass-card" style="text-align: center; padding: 48px 32px; position: relative;">
-            <svg id="heroGraph" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15; z-index: 0; cursor: pointer;" viewBox="0 0 800 300" preserveAspectRatio="none">
+        <div class="glass-card hero-card">
+            <svg id="heroGraph" class="hero-graph" viewBox="0 0 800 300" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="graphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#007aff;stop-opacity:0.3" />
-                        <stop offset="100%" style="stop-color:#007aff;stop-opacity:0" />
+                        <stop offset="0%" stop-color="#007aff" stop-opacity="0.3" />
+                        <stop offset="100%" stop-color="#007aff" stop-opacity="0" />
                     </linearGradient>
                 </defs>
                 <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60 L800,300 L0,300 Z" fill="url(#graphGradient)"/>
                 <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60" stroke="#007aff" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-                <circle id="graphDot" r="6" fill="#007aff" opacity="0" style="transition: opacity 0.2s;"/>
+                <circle id="graphDot" class="graph-dot" r="6" fill="#007aff" opacity="0"/>
             </svg>
-            <div id="graphTooltip" style="position: absolute; background: rgba(0, 0, 0, 0.9); color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10;"></div>
-            <h1 style="font-size: 64px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; position: relative; z-index: 1;">
+            <div id="graphTooltip" class="graph-tooltip"></div>
+            <h1 class="hero-title">
                 Henry
-                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" style="opacity: 0.9;">
+                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" class="hero-logo">
                     <path d="M12 28C12 28 12 20 18 18C24 16 36 16 42 22C42 22 42 30 36 32C30 34 18 34 12 28Z" fill="currentColor" opacity="0.2"/>
                     <path d="M14 22L12 16M17 20L15 14M20 18L18 12M23 17L21 11M26 17L24 11M29 18L27 12M32 20L30 14M35 22L33 16M38 24L36 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                     <circle cx="40" cy="26" r="4" fill="currentColor" opacity="0.15"/>
@@ -507,24 +722,24 @@
                     <line x1="28" y1="32" x2="28" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             </h1>
-            <p class="subtitle" style="font-size: 20px; margin-bottom: 32px; position: relative; z-index: 1;">The intelligent portfolio companion</p>
-            <div style="display: inline-flex; gap: 12px; align-items: center; background: rgba(0, 122, 255, 0.1); padding: 12px 24px; border-radius: 12px; position: relative; z-index: 1;">
-                <span style="font-size: 28px;">📈</span>
-                <div style="text-align: left;">
-                    <div style="font-size: 14px; font-weight: 600; color: #007aff;">Portfolio Value</div>
-                    <div style="font-size: 24px; font-weight: 700;">$786</div>
+            <p class="subtitle hero-subtitle">The intelligent portfolio companion</p>
+            <div class="hero-pill">
+                <span class="hero-pill-icon">📈</span>
+                <div class="hero-metric">
+                    <div class="hero-metric-label">Portfolio Value</div>
+                    <div class="hero-metric-value" id="heroCurrentValue">$786</div>
                 </div>
-                <div style="width: 1px; height: 40px; background: rgba(0, 0, 0, 0.1); margin: 0 12px;"></div>
-                <div style="text-align: left;">
-                    <div style="font-size: 14px; font-weight: 600; color: #34c759;">2030 Target</div>
-                    <div style="font-size: 24px; font-weight: 700;">$1,510</div>
+                <div class="hero-divider"></div>
+                <div class="hero-metric">
+                    <div class="hero-metric-label target">2030 Target</div>
+                    <div class="hero-metric-value" id="heroTargetValue">$1,510</div>
                 </div>
             </div>
         </div>
 
         <div class="glass-card">
             <h2>Market Insights</h2>
-            <p style="font-size: 15px; line-height: 1.8; color: var(--text-secondary);"><strong>Top 2030 targets:</strong> NVDA (+165%), PLTR (+153%), BTC (+140%), HOOD (+130%) lead realistic upside with 12-21% annual growth.<br>
+            <p class="market-copy"><strong>Top 2030 targets:</strong> NVDA (+165%), PLTR (+153%), BTC (+140%), HOOD (+130%) lead realistic upside with 12-21% annual growth.<br>
                 <strong>Today (Nov 6):</strong> Markets mixed as tech faces AI valuation pressure. NVDA dipped below $190 ahead of Nov 19 earnings. TSLA voting on Musk's $1T pay package today. Layoffs spike as companies cut costs amid AI transition. BTC holding above $101K. Fed rate cut likely December.<br>
                 <strong>2030 outlook:</strong> $1,510 target (+92%) assumes moderate growth — AI expansion (NVDA, GOOGL), defense tech (PLTR), fintech adoption (HOOD, V), crypto maturation (BTC), steady market returns (SPY 10% CAGR).<br>
                 <strong>Risks:</strong> Supreme Court tariff decisions, AI bubble concerns, layoff acceleration, valuation compression, rate policy uncertainty.<br>
@@ -548,7 +763,7 @@
                 </thead>
                 <tbody>
 <tr>
-                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Nov 3</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank"><span class="earnings-badge completed">✓ Nov 3</span></a></td>
                         <td>0.4219</td>
                         <td>$178.04</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.14%</span></td> -->
@@ -558,7 +773,7 @@
                         <td>+153%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Nov 5</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank"><span class="earnings-badge completed">✓ Nov 5</span></a></td>
                         <td>0.4129</td>
                         <td>$131.64</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.82%</span></td> -->
@@ -568,7 +783,7 @@
                         <td>+130%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank" style="text-decoration: none;"><span class="earnings-badge">📊 Nov 19</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank"><span class="earnings-badge">📊 Nov 19</span></a></td>
                         <td>0.2541</td>
                         <td>$189.49</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+2.04%</span></td> -->
@@ -578,7 +793,7 @@
                         <td>+165%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 29</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank"><span class="earnings-badge completed">✓ Oct 29</span></a></td>
                         <td>0.1485</td>
                         <td>$285.60</td>
                         <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.28%</span></td> -->
@@ -588,7 +803,7 @@
                         <td>+95%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 23</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank"><span class="earnings-badge completed">✓ Oct 23</span></a></td>
                         <td>0.1122</td>
                         <td>$448.80</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+4.63%</span></td> -->
@@ -598,7 +813,7 @@
                         <td>+80%</td>
                     </tr>
                     <tr>
-                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank" style="text-decoration: none;"><span class="earnings-badge completed">✓ Oct 30</span></a></td>
+                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank"><span class="earnings-badge completed">✓ Oct 30</span></a></td>
                         <td>0.6338</td>
                         <td>$271.63</td>
                         <!-- <td><span style="color: #34c759; font-weight: 600;">+0.63%</span></td> -->
@@ -663,10 +878,10 @@
 
         <div class="glass-card">
             <h2>Budget Breakdown</h2>
-            <div style="background: rgba(52, 199, 89, 0.1); border: 1px solid rgba(52, 199, 89, 0.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; text-align: center;">
-                <div style="font-size: 13px; font-weight: 600; color: #34c759; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Next Payday</div>
-                <div id="paydayCountdown" style="font-size: 24px; font-weight: 700; color: #34c759; margin-bottom: 4px;">Loading...</div>
-                <div style="font-size: 13px; color: #86868b;">$1,060 monthly / ~$530 to invest</div>
+            <div class="payday-highlight">
+                <div class="payday-title">Next Payday</div>
+                <div id="paydayCountdown" class="payday-amount">Loading...</div>
+                <div class="payday-note">$1,060 monthly / ~$530 to invest</div>
             </div>
             <table>
                 <thead>
@@ -706,21 +921,21 @@
 
         <div class="glass-card">
             <h2>Debt Payoff Progress</h2>
-            <div style="margin-bottom: 24px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                    <span style="font-weight: 600;">$0</span>
-                    <span style="font-weight: 600; color: #007aff;">$1,188 saved (24%)</span>
-                    <span style="font-weight: 600;">$5,000</span>
+            <div class="progress-summary">
+                <div class="progress-labels">
+                    <span>$0</span>
+                    <span>$1,188 saved (24%)</span>
+                    <span>$5,000</span>
                 </div>
-                <div style="background: rgba(0, 0, 0, 0.05); border-radius: 12px; height: 20px; overflow: hidden; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div style="background: rgba(0, 122, 255, 0.85); height: 100%; width: 24%; border-radius: 12px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);"></div>
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill"></div>
                 </div>
             </div>
             <table>
                 <tbody>
                     <tr>
                         <td>Total Assets (Portfolio + Savings)</td>
-                        <td>$867 USD + $446 CAD (~$321 USD) = ~$1,188 USD</td>
+                        <td id="totalAssetsCell">$867 USD + $446 CAD (~$321 USD) = ~$1,188 USD</td>
                     </tr>
                     <tr>
                         <td>Debt Payoff Goal</td>
@@ -728,9 +943,9 @@
                     </tr>
                     <tr>
                         <td>Remaining to Goal</td>
-                        <td>$3,812</td>
+                        <td id="remainingToGoalCell">$3,812</td>
                     </tr>
-                    <tr style="display: none;">
+                    <tr class="hidden-row">
                         <td>Current Debt</td>
                         <td>$4,000</td>
                     </tr>
@@ -744,11 +959,11 @@
                     </tr>
                     <tr>
                         <td>Months Until Debt-Free</td>
-                        <td>8.4 months</td>
+                        <td id="monthsToDebtFreeCell">8.4 months</td>
                     </tr>
                     <tr>
                         <td>Debt-Free Date</td>
-                        <td>July 2026</td>
+                        <td id="debtFreeDateCell">July 2026</td>
                     </tr>
                     <tr>
                         <td>M5 MacBook Pro (16" M5 Pro)</td>
@@ -764,19 +979,19 @@
                 <tbody>
                     <tr>
                         <td><strong>Total Portfolio Value</strong></td>
-                        <td>$867</td>
+                        <td id="summaryTotalPortfolio">$867</td>
                     </tr>
                     <tr>
                         <td><strong>2030 Target</strong></td>
-                        <td>$2,098</td>
+                        <td id="summaryTargetPortfolio">$2,098</td>
                     </tr>
                     <tr>
                         <td><strong>Potential Gain</strong></td>
-                        <td>+$1,231 (+142%)</td>
+                        <td id="summaryPotentialGain">+$1,231 (+142%)</td>
                     </tr>
                     <tr>
                         <td><strong>Net Worth</strong></td>
-                        <td>$1,188 - $5,000 = -$3,812</td>
+                        <td id="summaryNetWorth">$1,188 - $5,000 = -$3,812</td>
                     </tr>
                     <tr>
                         <td><strong>Monthly Surplus (Nov)</strong></td>
@@ -791,7 +1006,7 @@
         </div>
     </div>
 
-    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #8e8e93; font-size: 14px;">
+    <footer class="site-footer">
         Made with <span class="heart">&hearts;</span> in Vancouver, BC<br>
         &copy; 2025-2026
     </footer>
