@@ -1096,6 +1096,13 @@
                 activeSymbol = null;
                 defaultCenter();
             };
+            const toggleSlice = (symbol) => {
+                if (activeSymbol === symbol) {
+                    resetSlice();
+                } else {
+                    activateSlice(symbol);
+                }
+            };
             if (pieChart && pieCenter && pieLegend) {
                 let start = 0;
                 const segments = sortedHoldings.map(item => {
@@ -1140,6 +1147,7 @@
                     li.addEventListener('mouseleave', leaveLegend);
                     li.addEventListener('focus', enterLegend);
                     li.addEventListener('blur', leaveLegend);
+                    li.addEventListener('click', () => toggleSlice(item.symbol));
                 });
 
                 if (pieLogos) {
@@ -1172,6 +1180,10 @@
                         logo.addEventListener('mouseleave', leaveLogo);
                         logo.addEventListener('focus', enterLogo);
                         logo.addEventListener('blur', leaveLogo);
+                        logo.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleSlice(item.symbol);
+                        });
                         angleAccumulator += sweep;
                     });
                 }
