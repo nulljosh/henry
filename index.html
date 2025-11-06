@@ -219,6 +219,73 @@
             font-weight: 700;
         }
 
+        .portfolio-chart {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .pie-chart {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .pie-center-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .pie-center-label span {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .chart-legend {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            flex: 1;
+        }
+
+        .chart-legend li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .legend-swatch {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-label {
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .legend-value {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
         .hero-divider {
             width: 1px;
             height: 40px;
@@ -420,25 +487,6 @@
             font-style: italic;
         }
 
-        .earnings-badge {
-            background: #007aff;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-weight: 600;
-            margin-left: 4px;
-            white-space: nowrap;
-        }
-
-        .earnings-badge.completed {
-            background: #8e8e93;
-        }
-
-        .earnings-badge.upcoming-soon {
-            background: #34c759;
-        }
-
         @media (max-width: 768px) {
             body {
                 padding: 12px;
@@ -468,22 +516,6 @@
             .back-button, .theme-toggle {
                 top: 12px;
             }
-
-            .earnings-badge {
-                font-size: 8px;
-                padding: 3px 5px;
-                border-radius: 3px;
-                margin-left: 5px;
-                margin-top: 2px;
-                display: inline-block;
-                white-space: nowrap;
-            }
-
-            #stockTable th:nth-child(2), #stockTable td:nth-child(2),
-            #stockTable th:nth-child(3), #stockTable td:nth-child(3),
-            #stockTable th:nth-child(5), #stockTable td:nth-child(5) {
-                display: none;
-            }
         }
 
     </style>
@@ -491,93 +523,99 @@
 <body>
     <a href="https://heyitsmejosh.com" class="back-button">←</a>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-        <span id="themeIcon">☀️</span>
+        <span id="themeIcon">Light</span>
     </button>
 
     <script>
         function toggleTheme() {
             document.body.classList.toggle('dark');
             const isDark = document.body.classList.contains('dark');
-            document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+            document.getElementById('themeIcon').textContent = isDark ? 'Dark' : 'Light';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
         const theme = localStorage.getItem('theme');
         if (theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.body.classList.add('dark');
-            document.getElementById('themeIcon').textContent = '🌙';
+            document.getElementById('themeIcon').textContent = 'Dark';
         }
 
         matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             if (!theme) {
                 document.body.classList.toggle('dark', e.matches);
-                document.getElementById('themeIcon').textContent = e.matches ? '🌙' : '☀️';
+                document.getElementById('themeIcon').textContent = e.matches ? 'Dark' : 'Light';
             }
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const table = document.getElementById('stockTable');
-            if (!table) return;
+            const holdings = [
+                { symbol: 'PLTR', currentValue: 75, targetValue: 190, color: '#4c8bf5' },
+                { symbol: 'HOOD', currentValue: 54, targetValue: 124, color: '#5ec2aa' },
+                { symbol: 'NVDA', currentValue: 48, targetValue: 127, color: '#ff9f43' },
+                { symbol: 'GOOGL', currentValue: 42, targetValue: 82, color: '#ff6b6b' },
+                { symbol: 'TSLA', currentValue: 50, targetValue: 90, color: '#845ef7' },
+                { symbol: 'AAPL', currentValue: 172, targetValue: 317, color: '#2dd4bf' },
+                { symbol: 'SPY', currentValue: 227, targetValue: 372, color: '#ffd43b' },
+                { symbol: 'SBUX', currentValue: 12, targetValue: 19, color: '#94a3b8' },
+                { symbol: 'V', currentValue: 86, targetValue: 141, color: '#f38eb3' },
+                { symbol: 'BTC', currentValue: 20, targetValue: 48, color: '#34a853' }
+            ];
 
-            const headers = table.querySelectorAll('th');
-            const tbody = table.querySelector('tbody');
+            const formatCurrency = (value) => `$${Math.round(value).toLocaleString('en-US')}`;
+            const currentTotal = holdings.reduce((sum, item) => sum + item.currentValue, 0);
+            const targetTotal = holdings.reduce((sum, item) => sum + item.targetValue, 0);
+            const gainValue = targetTotal - currentTotal;
+            const gainPercent = (gainValue / currentTotal) * 100;
 
-            headers.forEach((header, index) => {
-                header.classList.add('sortable');
-                header.dataset.column = index;
-                header.dataset.order = 'desc';
-            });
+            const heroCurrent = document.getElementById('heroCurrentValue');
+            const heroTarget = document.getElementById('heroTargetValue');
+            if (heroCurrent) heroCurrent.textContent = formatCurrency(currentTotal);
+            if (heroTarget) heroTarget.textContent = formatCurrency(targetTotal);
 
-            function getCellValue(row, index) {
-                const cell = row.cells[index];
-                if (!cell) return '';
-                const text = cell.textContent.trim();
-                if (text.startsWith('$')) return parseFloat(text.replace(/[$,]/g, '')) || 0;
-                if (text.includes('%')) return parseFloat(text.replace(/[+%]/g, '')) || 0;
-                if (!isNaN(text) && text !== '') return parseFloat(text);
-                return text.toLowerCase();
-            }
+            const summaryTotal = document.getElementById('summaryTotalPortfolio');
+            const summaryTarget = document.getElementById('summaryTargetPortfolio');
+            const summaryGain = document.getElementById('summaryPotentialGain');
+            if (summaryTotal) summaryTotal.textContent = formatCurrency(867); // includes additional savings
+            if (summaryTarget) summaryTarget.textContent = formatCurrency(2098);
+            if (summaryGain) summaryGain.textContent = '+$1,231 (+142%)';
 
-            function sortTable(column, order) {
-                const rows = Array.from(tbody.querySelectorAll('tr'));
-                const totalRow = rows.pop();
-
-                rows.sort((a, b) => {
-                    const aVal = getCellValue(a, column);
-                    const bVal = getCellValue(b, column);
-                    if (typeof aVal === 'number' && typeof bVal === 'number') {
-                        return order === 'asc' ? aVal - bVal : bVal - aVal;
-                    }
-                    return order === 'asc' ? (aVal > bVal ? 1 : aVal < bVal ? -1 : 0) : (aVal < bVal ? 1 : aVal > bVal ? -1 : 0);
+            const pieChart = document.getElementById('stockPieChart');
+            const pieLegend = document.getElementById('stockPieLegend');
+            if (pieChart && pieLegend) {
+                let start = 0;
+                const segments = holdings.map(item => {
+                    const sweep = (item.currentValue / currentTotal) * 100;
+                    const seg = `${item.color} ${start}% ${start + sweep}%`;
+                    start += sweep;
+                    return seg;
                 });
+                pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
 
-                tbody.innerHTML = '';
-                rows.forEach(row => tbody.appendChild(row));
-                tbody.appendChild(totalRow);
-            }
+                const centerLabel = pieChart.querySelector('.pie-center-label');
+                if (centerLabel) {
+                    centerLabel.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
+                }
 
-            headers.forEach(header => {
-                header.addEventListener('click', () => {
-                    const column = parseInt(header.dataset.column);
-                    const newOrder = header.dataset.order === 'asc' ? 'desc' : 'asc';
+                pieLegend.innerHTML = '';
+                holdings.forEach(item => {
+                    const li = document.createElement('li');
+                    const label = document.createElement('span');
+                    label.className = 'legend-label';
+                    label.textContent = item.symbol;
 
-                    headers.forEach(h => {
-                        h.classList.remove('sorted-asc', 'sorted-desc');
-                        h.dataset.order = 'desc';
-                    });
+                    const swatch = document.createElement('span');
+                    swatch.className = 'legend-swatch';
+                    swatch.style.background = item.color;
 
-                    header.classList.add(newOrder === 'asc' ? 'sorted-asc' : 'sorted-desc');
-                    header.dataset.order = newOrder;
-                    sortTable(column, newOrder);
+                    const value = document.createElement('span');
+                    value.className = 'legend-value';
+                    value.textContent = formatCurrency(item.currentValue);
+
+                    li.appendChild(swatch);
+                    li.appendChild(label);
+                    li.appendChild(value);
+                    pieLegend.appendChild(li);
                 });
-            });
-
-            // Sort by gain percentage (column 6) by default
-            const gainHeader = headers[6];
-            if (gainHeader) {
-                gainHeader.classList.add('sorted-desc');
-                gainHeader.dataset.order = 'desc';
-                sortTable(6, 'desc');
             }
 
             const graph = document.getElementById('heroGraph');
@@ -723,132 +761,15 @@
 
         <div class="glass-card">
             <h2>Stock Portfolio</h2>
-            <table id="stockTable">
-                <thead>
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Shares</th>
-                        <th>Current Price</th>
-                        <!-- <th>Today</th> -->
-                        <th>Current Value</th>
-                        <th>Target Price</th>
-                        <th>Target Value</th>
-                        <th>Gain</th>
-                    </tr>
-                </thead>
-                <tbody>
-<tr>
-                        <td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank">PLTR</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=PLTR" target="_blank"><span class="earnings-badge completed">Completed Nov 3</span></a></td>
-                        <td>0.4219</td>
-                        <td>$178.04</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+2.14%</span></td> -->
-                        <td>$75</td>
-                        <td>$450</td>
-                        <td>$190</td>
-                        <td>+153%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/HOOD" target="_blank">HOOD</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=HOOD" target="_blank"><span class="earnings-badge completed">Completed Nov 5</span></a></td>
-                        <td>0.4129</td>
-                        <td>$131.64</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+2.82%</span></td> -->
-                        <td>$54</td>
-                        <td>$300</td>
-                        <td>$124</td>
-                        <td>+130%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank">NVDA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=NVDA" target="_blank"><span class="earnings-badge">Upcoming Nov 19</span></a></td>
-                        <td>0.2541</td>
-                        <td>$189.49</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+2.04%</span></td> -->
-                        <td>$48</td>
-                        <td>$500</td>
-                        <td>$127</td>
-                        <td>+165%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank">GOOGL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=GOOGL" target="_blank"><span class="earnings-badge completed">Completed Oct 29</span></a></td>
-                        <td>0.1485</td>
-                        <td>$285.60</td>
-                        <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.28%</span></td> -->
-                        <td>$42</td>
-                        <td>$550</td>
-                        <td>$82</td>
-                        <td>+95%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank">TSLA</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=TSLA" target="_blank"><span class="earnings-badge completed">Completed Oct 23</span></a></td>
-                        <td>0.1122</td>
-                        <td>$448.80</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+4.63%</span></td> -->
-                        <td>$50</td>
-                        <td>$800</td>
-                        <td>$90</td>
-                        <td>+80%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank">AAPL</a> <a href="https://finance.yahoo.com/calendar/earnings?symbol=AAPL" target="_blank"><span class="earnings-badge completed">Completed Oct 30</span></a></td>
-                        <td>0.6338</td>
-                        <td>$271.63</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+0.63%</span></td> -->
-                        <td>$172</td>
-                        <td>$500</td>
-                        <td>$317</td>
-                        <td>+184%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/SPY" target="_blank">SPY</a></td>
-                        <td>0.3378</td>
-                        <td>$671.99</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+1.10%</span></td> -->
-                        <td>$227</td>
-                        <td>$1,100</td>
-                        <td>$372</td>
-                        <td>+64%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/SBUX" target="_blank">SBUX</a></td>
-                        <td>0.1432</td>
-                        <td>$82.71</td>
-                        <!-- <td><span style="color: #ff3b30; font-weight: 600;">-1.47%</span></td> -->
-                        <td>$12</td>
-                        <td>$130</td>
-                        <td>$19</td>
-                        <td>+58%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://finance.yahoo.com/quote/V" target="_blank">V</a></td>
-                        <td>0.2570</td>
-                        <td>$336.34</td>
-                        <!-- <td><span style="color: #34c759; font-weight: 600;">+1.10%</span></td> -->
-                        <td>$86</td>
-                        <td>$550</td>
-                        <td>$141</td>
-                        <td>+64%</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.coinbase.com/price/bitcoin" target="_blank">BTC-USD</a></td>
-                        <td>0.0001927</td>
-                        <td>$101,631</td>
-                        <!-- <td><span style="color: #ff3b30; font-weight: 600;">-0.5%</span></td> -->
-                        <td>$20</td>
-                        <td>$250,000</td>
-                        <td>$48</td>
-                        <td>+140%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>TOTAL</strong></td>
-                        <td></td>
-                        <td></td>
-                        <!-- <td></td> -->
-                        <td><strong>$786</strong></td>
-                        <td></td>
-                        <td><strong>$1,510</strong></td>
-                        <td><strong>+92%</strong></td>
-                    </tr>
-                
-            </table>
+            <div class="portfolio-chart">
+                <div class="pie-chart" id="stockPieChart">
+                    <div class="pie-center-label">
+                        $786
+                        <span>Current</span>
+                    </div>
+                </div>
+                <ul class="chart-legend" id="stockPieLegend"></ul>
+            </div>
         </div>
 
         <div class="glass-card">
