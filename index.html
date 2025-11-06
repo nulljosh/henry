@@ -653,7 +653,7 @@
 <body>
     <a href="https://heyitsmejosh.com" class="back-button">←</a>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-        <span id="themeIcon">Light</span>
+        <span id="themeIcon">☀️</span>
     </button>
 
     <script>
@@ -675,20 +675,20 @@
         function toggleTheme() {
             document.body.classList.toggle('dark');
             const isDark = document.body.classList.contains('dark');
-            document.getElementById('themeIcon').textContent = isDark ? 'Dark' : 'Light';
+            document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
         const theme = localStorage.getItem('theme');
         if (theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.body.classList.add('dark');
-            document.getElementById('themeIcon').textContent = 'Dark';
+            document.getElementById('themeIcon').textContent = '🌙';
         }
 
         matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             if (!theme) {
                 document.body.classList.toggle('dark', e.matches);
-                document.getElementById('themeIcon').textContent = e.matches ? 'Dark' : 'Light';
+                document.getElementById('themeIcon').textContent = e.matches ? '🌙' : '☀️';
             }
         });
 
