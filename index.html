@@ -499,6 +499,40 @@
             color: #f5f5f7;
         }
 
+        .market-pulse {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .market-pulse-item {
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 14px;
+            padding: 18px 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .market-pulse-item span {
+            display: block;
+            margin-top: 8px;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        body.dark .market-pulse-item {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        body.dark .market-pulse-item span {
+            color: #d1d1d6;
+        }
+
         .hidden-row {
             display: none;
         }
@@ -1244,11 +1278,20 @@
                 <span class="market-insights-toggle-icon" aria-hidden="true">⌄</span>
             </button>
             <div class="market-insights-content" id="marketInsightsContent">
-                <p class="market-copy"><strong>Top 2030 targets:</strong> NVDA (+165%), PLTR (+153%), BTC (+140%), HOOD (+130%) lead realistic upside with 12-21% annual growth.<br>
-                    <strong>Today (Nov 6):</strong> Markets mixed as tech faces AI valuation pressure. NVDA dipped below $190 ahead of Nov 19 earnings. TSLA voting on Musk's $1T pay package today. Layoffs spike as companies cut costs amid AI transition. BTC holding above $101K. Fed rate cut likely December.<br>
-                    <strong>2030 outlook:</strong> $1,510 target (+92%) assumes moderate growth — AI expansion (NVDA, GOOGL), defense tech (PLTR), fintech adoption (HOOD, V), crypto maturation (BTC), steady market returns (SPY 10% CAGR).<br>
-                    <strong>Risks:</strong> Supreme Court tariff decisions, AI bubble concerns, layoff acceleration, valuation compression, rate policy uncertainty.<br>
-                    <strong>Earnings:</strong> PLTR beat Nov 3, HOOD crushed Nov 5, NVDA reports Nov 19 (critical for AI sector momentum).</p>
+                <div class="market-pulse">
+                    <div class="market-pulse-item">
+                        AI SURGE
+                        <span>NVDA · PLTR leading into Nov 19 earnings catalyst</span>
+                    </div>
+                    <div class="market-pulse-item">
+                        CRYPTO HOLD
+                        <span>BTC clings to $100K floor · SOL steady mid-cycle</span>
+                    </div>
+                    <div class="market-pulse-item">
+                        FED WATCH
+                        <span>Rate-cut odds rising · keeping SPY on 92% 2030 glide path</span>
+                    </div>
+                </div>
             </div>
         </div>
 
