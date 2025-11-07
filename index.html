@@ -1696,17 +1696,15 @@
                     return definition;
                 });
                 const pieGradient = `conic-gradient(${segments.join(', ')})`;
-                const applyPieGradient = () => {
-                    pieChart.style.background = pieGradient;
-                };
-                applyPieGradient();
-                const monitorPieGradient = () => {
-                    const computed = getComputedStyle(pieChart).backgroundImage;
-                    if (!computed || computed === 'none') {
-                        applyPieGradient();
+                pieChart.style.setProperty('--pie-gradient', pieGradient);
+                pieChart.style.background = pieGradient;
+                const observer = new MutationObserver(() => {
+                    const currentBackground = getComputedStyle(pieChart).backgroundImage;
+                    if (currentBackground === 'none' || !currentBackground) {
+                        pieChart.style.background = pieGradient;
                     }
-                };
-                setInterval(monitorPieGradient, 3000);
+                });
+                observer.observe(pieChart, { attributes: true, attributeFilter: ['style'] });
                 pieChart.style.cursor = 'pointer';
 
                 pieChart.addEventListener('mousemove', (event) => {
