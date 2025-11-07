@@ -299,28 +299,17 @@
             overflow: visible;
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
-            --slice-highlight: transparent;
-            --slice-shift-x: 0px;
-            --slice-shift-y: 0px;
-            --slice-highlight-opacity: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4), rgba(0,0,0,0.02));
         }
 
-        .pie-chart::after {
-            content: '';
+        .pie-chart canvas {
+            width: 260px;
+            height: 260px;
             position: absolute;
-            inset: -4px;
+            top: 0;
+            left: 0;
             border-radius: 50%;
-            background: var(--slice-highlight);
-            opacity: var(--slice-highlight-opacity);
-            transform: translate(var(--slice-shift-x), var(--slice-shift-y)) scale(1.02);
-            transition: opacity 0.25s ease, transform 0.25s ease;
             pointer-events: none;
-            z-index: 0;
-        }
-
-        .pie-chart > * {
-            position: relative;
-            z-index: 1;
         }
 
         .pie-chart.slice-active {
@@ -1599,23 +1588,53 @@
             }
 
             const pieChart = document.getElementById('stockPieChart');
+            const pieCanvas = document.getElementById('stockPieCanvas');
+            const pieCtx = pieCanvas ? pieCanvas.getContext('2d') : null;
             const pieCenter = document.getElementById('stockPieCenter');
             const pieLegend = document.getElementById('stockPieLegend');
             const pieLogos = document.getElementById('stockPieLogos');
             const PIE_ACTIVE_SCALE = 1.015;
+            const PIE_RADIUS = 120;
+            const PIE_CENTER_COORD = 130;
+            if (pieCanvas && pieCtx) {
+                const scale = window.devicePixelRatio || 1;
+                pieCanvas.width = 260 * scale;
+                pieCanvas.height = 260 * scale;
+                pieCtx.scale(scale, scale);
+            }
             const legendMap = {};
             const logoMap = {};
             const tableRowMap = {};
             const sliceGeometry = {};
             let activeSymbol = null;
 
+            const renderPie = (activeSymbol = null) => {
+                if (!pieCtx || !pieCanvas) return;
+                pieCtx.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
+                pieHoldings.forEach(item => {
+                    const geometry = sliceGeometry[item.symbol];
+                    if (!geometry) return;
+                    const startAngle = (geometry.startDeg - 90) * (Math.PI / 180);
+                    const sweepAngle = geometry.sweepDeg * (Math.PI / 180);
+                    const endAngle = startAngle + sweepAngle;
+                    const isActive = activeSymbol === item.symbol;
+                    const offset = isActive ? 6 : 0;
+                    const midAngle = startAngle + sweepAngle / 2;
+                    const dx = Math.cos(midAngle) * offset;
+                    const dy = Math.sin(midAngle) * offset;
+                    pieCtx.beginPath();
+                    pieCtx.moveTo(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy);
+                    pieCtx.arc(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy, PIE_RADIUS + (isActive ? 2 : 0), startAngle, endAngle);
+                    pieCtx.closePath();
+                    pieCtx.fillStyle = item.color;
+                    pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
+                    pieCtx.shadowBlur = isActive ? 20 : 8;
+                    pieCtx.fill();
+                });
+            };
+
             const clearSliceHighlight = () => {
-                if (!pieChart) return;
-                pieChart.style.setProperty('--slice-highlight-opacity', '0');
-                pieChart.style.setProperty('--slice-shift-x', '0px');
-                pieChart.style.setProperty('--slice-shift-y', '0px');
-                pieChart.style.setProperty('--slice-highlight', 'transparent');
-                pieChart.classList.remove('slice-active');
+                renderPie();
                 if (pieLogos) {
                     pieLogos.style.transform = 'translate(0px, 0px) scale(1)';
                 }
@@ -1625,19 +1644,14 @@
                 if (!pieChart) return;
                 const geometry = sliceGeometry[item.symbol];
                 if (!geometry) return;
-                const { startDeg, sweepDeg, midAngle, color } = geometry;
-                const highlightGradient = `conic-gradient(from ${startDeg}deg, ${color} 0deg ${sweepDeg}deg, transparent ${sweepDeg}deg 360deg)`;
-                pieChart.style.setProperty('--slice-highlight', highlightGradient);
+                const { midAngle } = geometry;
                 const radians = (midAngle - 90) * (Math.PI / 180);
                 const shiftX = Math.cos(radians) * 10;
                 const shiftY = Math.sin(radians) * 10;
-                pieChart.style.setProperty('--slice-shift-x', `${shiftX}px`);
-                pieChart.style.setProperty('--slice-shift-y', `${shiftY}px`);
-                pieChart.style.setProperty('--slice-highlight-opacity', '0.9');
-                pieChart.classList.add('slice-active');
                 if (pieLogos) {
                     pieLogos.style.transform = `translate(${shiftX}px, ${shiftY}px) scale(${PIE_ACTIVE_SCALE})`;
                 }
+                renderPie(item.symbol);
             };
 
             const defaultCenter = () => {
@@ -1680,7 +1694,7 @@
             };
             if (pieChart && pieCenter && pieLegend) {
                 let startPercent = 0;
-                const segments = pieHoldings.map(item => {
+                pieHoldings.forEach(item => {
                     const share = currentTotal > 0 ? item.currentValue / currentTotal : 0;
                     const sweepPercent = share * 100;
                     const startDeg = startPercent * 3.6;
@@ -1691,23 +1705,13 @@
                         midAngle: startDeg + sweepDeg / 2,
                         color: item.color
                     };
-                    const definition = `${item.color} ${startPercent}% ${startPercent + sweepPercent}%`;
                     startPercent += sweepPercent;
-                    return definition;
                 });
-                const pieGradient = `conic-gradient(${segments.join(', ')})`;
-                pieChart.style.setProperty('--pie-gradient', pieGradient);
-                pieChart.style.background = pieGradient;
-                const observer = new MutationObserver(() => {
-                    const currentBackground = getComputedStyle(pieChart).backgroundImage;
-                    if (currentBackground === 'none' || !currentBackground) {
-                        pieChart.style.background = pieGradient;
-                    }
-                });
-                observer.observe(pieChart, { attributes: true, attributeFilter: ['style'] });
+                renderPie();
                 pieChart.style.cursor = 'pointer';
 
                 pieChart.addEventListener('mousemove', (event) => {
+                    if (!sliceGeometry || !Object.keys(sliceGeometry).length) return;
                     const rect = pieChart.getBoundingClientRect();
                     const centerX = rect.left + rect.width / 2;
                     const centerY = rect.top + rect.height / 2;
@@ -2207,6 +2211,7 @@
                 <div class="portfolio-pie-view" id="stockPieView">
                     <div class="pie-chart-wrapper">
                         <div class="pie-chart" id="stockPieChart">
+                            <canvas id="stockPieCanvas" width="260" height="260"></canvas>
                             <div class="pie-center-label" id="stockPieCenter"></div>
                         </div>
                         <div class="pie-logo-ring" id="stockPieLogos"></div>
