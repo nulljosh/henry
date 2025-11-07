@@ -626,12 +626,34 @@
         }
 
         .market-insights-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             font-size: 13px;
             font-weight: 600;
             letter-spacing: 0.4px;
             text-transform: uppercase;
             color: var(--text-secondary);
             margin-bottom: 12px;
+        }
+
+        .market-clock-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: none;
+        }
+
+        .market-clock {
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark .market-clock {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .market-pulse {
@@ -1500,11 +1522,23 @@
         }
 
         let marketCountdownTimer = null;
+        let marketClockTimer = null;
 
         function updateMarketInsights(financialSnapshot = {}) {
             const list = document.getElementById('marketPulseList');
             if (!list) return;
             const timestampLabel = document.getElementById('marketInsightsTimestamp');
+            const renderClocks = () => {
+                const pstClock = document.getElementById('pstClock');
+                const estClock = document.getElementById('estClock');
+                if (!pstClock || !estClock) return;
+                const now = new Date();
+                const pst = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+                const est = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+                pstClock.textContent = `PST — ${pst.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+                estClock.textContent = `EST — ${est.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+            };
+
             const renderTimestamp = () => {
                 if (!timestampLabel) return;
                 const now = new Date();
@@ -1526,6 +1560,13 @@
                     marketCountdownTimer = setTimeout(scheduleTick, 60000);
                 };
                 marketCountdownTimer = setTimeout(scheduleTick, 60000);
+                renderClocks();
+                if (marketClockTimer) clearTimeout(marketClockTimer);
+                const scheduleClock = () => {
+                    renderClocks();
+                    marketClockTimer = setTimeout(scheduleClock, 60000);
+                };
+                marketClockTimer = setTimeout(scheduleClock, 60000);
             }
             if (!holdingsData.length) return;
             const movers = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
@@ -2380,7 +2421,13 @@
                 <span class="market-insights-toggle-icon" aria-hidden="true">⌄</span>
             </button>
             <div class="market-insights-content" id="marketInsightsContent" aria-hidden="true">
-                <div class="market-insights-meta" id="marketInsightsTimestamp">Pre-market outlook loading…</div>
+                <div class="market-insights-meta">
+                    <div id="marketInsightsTimestamp">Pre-market outlook loading…</div>
+                    <div class="market-clock-grid" id="marketClockGrid">
+                        <div class="market-clock" id="pstClock">PST — --:--</div>
+                        <div class="market-clock" id="estClock">EST — --:--</div>
+                    </div>
+                </div>
                 <div class="market-pulse" id="marketPulseList">
                     <div class="market-pulse-item">
                         LOADING
