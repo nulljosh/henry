@@ -1645,6 +1645,75 @@
                     return definition;
                 });
                 pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
+                pieChart.style.cursor = 'pointer';
+
+                pieChart.addEventListener('mousemove', (event) => {
+                    const rect = pieChart.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const deltaX = event.clientX - centerX;
+                    const deltaY = event.clientY - centerY;
+                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    const radius = rect.width / 2;
+                    if (distance > radius || distance < radius * 0.25) {
+                        if (!activeSymbol) {
+                            clearSliceHighlight();
+                        }
+                        return;
+                    }
+                    let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                    angle = angle < -90 ? 450 + angle : angle + 90;
+                    const matched = pieHoldings.find(item => {
+                        const geom = sliceGeometry[item.symbol];
+                        if (!geom) return false;
+                        const normalized = angle % 360;
+                        const start = geom.startDeg % 360;
+                        const end = (geom.startDeg + geom.sweepDeg) % 360;
+                        if (geom.sweepDeg >= 360) return true;
+                        if (start < end) {
+                            return normalized >= start && normalized <= end;
+                        }
+                        return normalized >= start || normalized <= end;
+                    });
+                    if (matched) {
+                        activateSlice(matched.symbol);
+                    }
+                });
+
+                pieChart.addEventListener('mouseleave', () => {
+                    if (!activeSymbol) {
+                        clearSliceHighlight();
+                    } else {
+                        activateSlice(activeSymbol);
+                    }
+                });
+                pieChart.addEventListener('click', (event) => {
+                    const rect = pieChart.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const deltaX = event.clientX - centerX;
+                    const deltaY = event.clientY - centerY;
+                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    const radius = rect.width / 2;
+                    if (distance > radius || distance < radius * 0.25) return;
+                    let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                    angle = angle < -90 ? 450 + angle : angle + 90;
+                    const matched = pieHoldings.find(item => {
+                        const geom = sliceGeometry[item.symbol];
+                        if (!geom) return false;
+                        const normalized = angle % 360;
+                        const start = geom.startDeg % 360;
+                        const end = (geom.startDeg + geom.sweepDeg) % 360;
+                        if (geom.sweepDeg >= 360) return true;
+                        if (start < end) {
+                            return normalized >= start && normalized <= end;
+                        }
+                        return normalized >= start || normalized <= end;
+                    });
+                    if (matched) {
+                        toggleSlice(matched.symbol);
+                    }
+                });
                 pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
 
                 pieLegend.innerHTML = '';
