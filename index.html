@@ -431,6 +431,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            transition: transform 0.25s ease;
         }
 
         .pie-logo {
@@ -1601,6 +1602,7 @@
             const pieCenter = document.getElementById('stockPieCenter');
             const pieLegend = document.getElementById('stockPieLegend');
             const pieLogos = document.getElementById('stockPieLogos');
+            const PIE_ACTIVE_SCALE = 1.015;
             const legendMap = {};
             const logoMap = {};
             const tableRowMap = {};
@@ -1614,6 +1616,9 @@
                 pieChart.style.setProperty('--slice-shift-y', '0px');
                 pieChart.style.setProperty('--slice-highlight', 'transparent');
                 pieChart.classList.remove('slice-active');
+                if (pieLogos) {
+                    pieLogos.style.transform = 'translate(0px, 0px) scale(1)';
+                }
             };
 
             const highlightSlice = (item) => {
@@ -1630,6 +1635,9 @@
                 pieChart.style.setProperty('--slice-shift-y', `${shiftY}px`);
                 pieChart.style.setProperty('--slice-highlight-opacity', '0.9');
                 pieChart.classList.add('slice-active');
+                if (pieLogos) {
+                    pieLogos.style.transform = `translate(${shiftX}px, ${shiftY}px) scale(${PIE_ACTIVE_SCALE})`;
+                }
             };
 
             const defaultCenter = () => {
