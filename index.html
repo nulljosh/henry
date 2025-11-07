@@ -124,104 +124,25 @@
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
         }
 
-        .hero-card {
-            text-align: center;
-            padding: 48px 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-graph {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.15;
-            z-index: 0;
-            cursor: pointer;
-        }
-
-        .graph-dot {
-            transition: opacity 0.2s;
-        }
-
-        .graph-tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 10;
-        }
-
-        .graph-tooltip-date {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-bottom: 2px;
-        }
-
-        .graph-tooltip-value {
-            font-size: 14px;
-        }
-
-        .hero-title {
-            font-size: 64px;
-            margin-bottom: 16px;
+        .site-header {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-logo {
-            opacity: 0.9;
-        }
-
-        .hero-subtitle {
-            font-size: 26px;
-            font-weight: 600;
+            justify-content: flex-end;
             margin-bottom: 32px;
-            position: relative;
-            z-index: 1;
         }
 
-        .hero-pill {
-            display: inline-flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 122, 255, 0.1);
-            padding: 12px 24px;
-            border-radius: 12px;
-            position: relative;
-            z-index: 1;
+        .brand-badge {
+            text-align: right;
         }
 
-        .hero-metric {
-            text-align: center;
+        .brand-name {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
-        .hero-metric-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .hero-metric-label.target {
-            color: var(--success);
-        }
-
-        .hero-metric-value {
-            font-size: 24px;
-            font-weight: 700;
+        .brand-tagline {
+            font-size: 16px;
+            color: var(--text-secondary);
         }
 
         .portfolio-header {
@@ -533,13 +454,6 @@
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
             border: 0;
-        }
-
-        .hero-divider {
-            width: 1px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.1);
-            margin: 0 12px;
         }
 
         .market-copy {
@@ -1514,11 +1428,6 @@
             const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
             const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
 
-            const heroCurrent = document.getElementById('heroCurrentValue');
-            const heroTarget = document.getElementById('heroTargetValue');
-            if (heroCurrent) heroCurrent.textContent = formatCurrency(currentTotal);
-            if (heroTarget) heroTarget.textContent = formatCurrency(targetTotal);
-
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
             updateMarketInsights(financialSnapshot);
  
@@ -2030,52 +1939,6 @@
                 sortTable(6, 'desc');
             }
 
-            const graph = document.getElementById('heroGraph');
-            const dot = document.getElementById('graphDot');
-            const tooltip = document.getElementById('graphTooltip');
-
-            if (graph && dot && tooltip) {
-                const graphPoints = [
-                    {x:0,y:220,val:300,date:'Oct 28'}, {x:100,y:210,val:400,date:'Oct 29'}, {x:200,y:195,val:500,date:'Oct 30'},
-                    {x:300,y:185,val:600,date:'Oct 31'}, {x:400,y:165,val:716,date:'Nov 1'}, {x:500,y:150,val:900,date:'Nov 2'},
-                    {x:600,y:120,val:1200,date:'Nov 3'}, {x:700,y:95,val:1450,date:'Nov 4'}, {x:800,y:60,val:1720,date:'Nov 5'}
-                ];
-
-                const updateGraph = (clientX, clientY) => {
-                    const rect = graph.getBoundingClientRect();
-                    const x = ((clientX - rect.left) / rect.width) * 800;
-                    const y = ((clientY - rect.top) / rect.height) * 300;
-
-                    if (y > 250 || y < 40) return;
-
-                    let i = 0;
-                    while (i < graphPoints.length - 1 && graphPoints[i + 1].x < x) i++;
-                    const p1 = graphPoints[i], p2 = graphPoints[i + 1] || p1;
-                    const ratio = (x - p1.x) / (p2.x - p1.x || 1);
-                    const graphY = p1.y + (p2.y - p1.y) * ratio;
-                    const val = Math.round(p1.val + (p2.val - p1.val) * ratio);
-                    dot.setAttribute('cx', x);
-                    dot.setAttribute('cy', graphY);
-                    dot.setAttribute('opacity', '1');
-                    const nearestPoint = graphPoints[Math.min(i + (ratio > 0.5 ? 1 : 0), graphPoints.length - 1)];
-                    tooltip.innerHTML = `<div class="graph-tooltip-date">${nearestPoint.date}</div><div class="graph-tooltip-value">$${val}</div>`;
-                    tooltip.style.left = clientX - rect.left + 'px';
-                    tooltip.style.top = clientY - rect.top - 40 + 'px';
-                    tooltip.style.opacity = '1';
-                };
-
-                const hideGraph = () => {
-                    dot.setAttribute('opacity', '0');
-                    tooltip.style.opacity = '0';
-                };
-
-                graph.addEventListener('mousemove', e => updateGraph(e.clientX, e.clientY));
-                graph.addEventListener('mouseleave', hideGraph);
-                graph.addEventListener('touchstart', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
-                graph.addEventListener('touchmove', e => { e.preventDefault(); updateGraph(e.touches[0].clientX, e.touches[0].clientY); });
-                graph.addEventListener('touchend', e => { e.preventDefault(); hideGraph(); });
-            }
-
             // Payday countdown
             function updatePaydayCountdown() {
                 const now = new Date();
@@ -2134,42 +1997,10 @@
     </script>
 
     <div class="container">
-        <div class="glass-card hero-card">
-            <svg id="heroGraph" class="hero-graph" viewBox="0 0 800 300" preserveAspectRatio="none">
-                <defs>
-                    <linearGradient id="graphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#007aff" stop-opacity="0.3" />
-                        <stop offset="100%" stop-color="#007aff" stop-opacity="0" />
-                    </linearGradient>
-                </defs>
-                <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60 L800,300 L0,300 Z" fill="url(#graphGradient)"/>
-                <path d="M0,220 L100,210 L200,195 L300,185 L400,165 L500,150 L600,120 L700,95 L800,60" stroke="#007aff" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-                <circle id="graphDot" class="graph-dot" r="6" fill="#007aff" opacity="0"/>
-            </svg>
-            <div id="graphTooltip" class="graph-tooltip"></div>
-            <h1 class="hero-title">
-                Henry
-                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" class="hero-logo">
-                    <path d="M12 28C12 28 12 20 18 18C24 16 36 16 42 22C42 22 42 30 36 32C30 34 18 34 12 28Z" fill="currentColor" opacity="0.2"/>
-                    <path d="M14 22L12 16M17 20L15 14M20 18L18 12M23 17L21 11M26 17L24 11M29 18L27 12M32 20L30 14M35 22L33 16M38 24L36 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                    <circle cx="40" cy="26" r="4" fill="currentColor" opacity="0.15"/>
-                    <circle cx="38" cy="25" r="1.2" fill="currentColor"/>
-                    <circle cx="42" cy="27" r="1.8" fill="currentColor"/>
-                    <line x1="20" y1="32" x2="20" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <line x1="28" y1="32" x2="28" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </h1>
-            <h2 class="hero-subtitle">The Intelligent Portfolio Companion</h2>
-            <div class="hero-pill">
-                <div class="hero-metric">
-                    <div class="hero-metric-label">Portfolio Value</div>
-                    <div class="hero-metric-value" id="heroCurrentValue">$786</div>
-                </div>
-                <div class="hero-divider"></div>
-                <div class="hero-metric">
-                    <div class="hero-metric-label target">2030 Target</div>
-                    <div class="hero-metric-value" id="heroTargetValue">$1,510</div>
-                </div>
+        <div class="site-header">
+            <div class="brand-badge">
+                <div class="brand-name">Henry</div>
+                <div class="brand-tagline">Portfolio Companion</div>
             </div>
         </div>
 
