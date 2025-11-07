@@ -1506,6 +1506,14 @@
             const pieCenter = document.getElementById('stockPieCenter');
             const pieLegend = document.getElementById('stockPieLegend');
             const pieLogos = document.getElementById('stockPieLogos');
+            const interactionZones = new Set();
+            const registerInteractionZone = (element) => {
+                if (element) interactionZones.add(element);
+            };
+            registerInteractionZone(table);
+            registerInteractionZone(pieChart);
+            registerInteractionZone(pieLegend);
+            registerInteractionZone(pieLogos);
             const legendMap = {};
             const logoMap = {};
             const tableRowMap = {};
@@ -1735,6 +1743,13 @@
                     tr.addEventListener('mouseleave', () => resetSlice());
                     tr.addEventListener('focusin', () => activateSlice(item.symbol));
                     tr.addEventListener('focusout', () => resetSlice());
+                    tr.addEventListener('click', () => toggleSlice(item.symbol));
+                    tr.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            toggleSlice(item.symbol);
+                        }
+                    });
 
                     tbody.appendChild(tr);
                     tableRowMap[item.symbol] = tr;
@@ -1775,6 +1790,17 @@
                     setPortfolioView(view);
                 });
             });
+
+            const handleGlobalPointerDown = (event) => {
+                if (!activeSymbol) return;
+                for (const zone of interactionZones) {
+                    if (zone && zone.contains(event.target)) {
+                        return;
+                    }
+                }
+                resetSlice();
+            };
+            document.addEventListener('pointerdown', handleGlobalPointerDown);
 
             initSlideToggle({
                 toggle: document.getElementById('marketInsightsToggle'),
