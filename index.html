@@ -1506,14 +1506,6 @@
             const pieCenter = document.getElementById('stockPieCenter');
             const pieLegend = document.getElementById('stockPieLegend');
             const pieLogos = document.getElementById('stockPieLogos');
-            const interactionZones = new Set();
-            const registerInteractionZone = (element) => {
-                if (element) interactionZones.add(element);
-            };
-            registerInteractionZone(table);
-            registerInteractionZone(pieChart);
-            registerInteractionZone(pieLegend);
-            registerInteractionZone(pieLogos);
             const legendMap = {};
             const logoMap = {};
             const tableRowMap = {};
@@ -1760,7 +1752,6 @@
 
             const pieView = document.getElementById('stockPieView');
             const tableView = document.getElementById('stockTableWrapper');
-            const portfolioCard = document.getElementById('portfolioCard');
             const viewToggleButtons = document.querySelectorAll('[data-view-toggle]');
 
             function setPortfolioView(view) {
@@ -1792,28 +1783,16 @@
                 });
             });
 
-            const handleLocalDismiss = (event) => {
-                if (!activeSymbol) return;
-                let insideInteractive = false;
-                for (const zone of interactionZones) {
-                    if (zone && zone.contains(event.target)) {
-                        insideInteractive = true;
-                        break;
+            if (pieCenter) {
+                pieCenter.tabIndex = 0;
+                pieCenter.addEventListener('click', () => resetSlice());
+                pieCenter.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        resetSlice();
                     }
-                }
-                if (!insideInteractive) {
-                    resetSlice();
-                }
-            };
-
-            const attachDismiss = (element) => {
-                if (!element) return;
-                element.addEventListener('pointerdown', handleLocalDismiss);
-                element.addEventListener('touchstart', handleLocalDismiss, { passive: true });
-            };
-            attachDismiss(pieView);
-            attachDismiss(tableView);
-            attachDismiss(portfolioCard);
+                });
+            }
 
             initSlideToggle({
                 toggle: document.getElementById('marketInsightsToggle'),
