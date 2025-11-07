@@ -232,6 +232,16 @@
             margin-bottom: 20px;
         }
 
+        .quote-source {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        body.dark .quote-source {
+            color: #d1d1d6;
+        }
+
         .view-toggle {
             display: inline-flex;
             padding: 4px;
@@ -1179,24 +1189,43 @@
             BTC: 'btcusd'
         };
 
-        async function fetchYahooQuotes(symbols) {
-            if (!symbols.length) return {};
-            const query = encodeURIComponent(symbols.join(','));
-            const response = await fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${query}`, {
-                cache: 'no-store'
-            });
-            if (!response.ok) {
-                throw new Error(`Quote request failed: ${response.status}`);
+        const QUOTE_CACHE_KEY = 'henryQuoteCache';
+        const QUOTE_CACHE_TTL = 15 * 60 * 1000;
+        let quoteSourceLabel = 'loading';
+
+        const saveQuoteCache = (quotesMap, source = 'stooq') => {
+            try {
+                const payload = {
+                    timestamp: Date.now(),
+                    source,
+                    quotes: Object.fromEntries(Object.entries(quotesMap).map(([symbol, data]) => [symbol, {
+                        symbol: data.symbol,
+                        regularMarketPrice: data.regularMarketPrice,
+                        regularMarketChangePercent: data.regularMarketChangePercent,
+                        currency: data.currency
+                    }]))
+                };
+                localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(payload));
+            } catch (error) {
+                console.warn('Unable to cache quotes:', error);
             }
-            const payload = await response.json();
-            const results = payload?.quoteResponse?.result || [];
-            return results.reduce((map, quote) => {
-                if (quote?.symbol) {
-                    map[quote.symbol] = quote;
+        };
+
+        const loadQuoteCache = () => {
+            try {
+                const raw = localStorage.getItem(QUOTE_CACHE_KEY);
+                if (!raw) return null;
+                const cache = JSON.parse(raw);
+                if (!cache.timestamp || Date.now() - cache.timestamp > QUOTE_CACHE_TTL) {
+                    localStorage.removeItem(QUOTE_CACHE_KEY);
+                    return null;
                 }
-                return map;
-            }, {});
-        }
+                return cache;
+            } catch (error) {
+                console.warn('Unable to read quote cache:', error);
+                return null;
+            }
+        };
 
         const resolveStooqSymbol = (symbol) => {
             if (!symbol) return null;
@@ -1252,22 +1281,7 @@
         async function fetchQuoteMap() {
             const symbols = getQuoteSymbols();
             if (!symbols.length) return {};
-            const quoteMap = {};
-            try {
-                Object.assign(quoteMap, await fetchYahooQuotes(symbols));
-            } catch (error) {
-                console.warn('Yahoo Finance quotes unavailable, attempting fallback.', error);
-            }
-            const missingSymbols = symbols.filter(sym => !quoteMap[sym]);
-            if (missingSymbols.length) {
-                try {
-                    const fallbackQuotes = await fetchStooqQuotes(missingSymbols);
-                    Object.assign(quoteMap, fallbackQuotes);
-                } catch (error) {
-                    console.warn('Failed to fetch fallback quotes from Stooq.', error);
-                }
-            }
-            return quoteMap;
+            return fetchStooqQuotes(symbols);
         }
 
         function buildHoldings(quoteMap = {}) {
@@ -1292,12 +1306,30 @@
             });
         }
 
+        function updateQuoteStatus(sourceLabel = 'fallback') {
+            const el = document.getElementById('quoteSource');
+            if (!el) return;
+            const readable = sourceLabel.replace(/-/g, ' ');
+            el.textContent = `Quotes: ${readable}`;
+        }
+
         async function loadHoldings() {
+            const cache = loadQuoteCache();
+            if (cache && cache.quotes) {
+                quoteSourceLabel = `${cache.source} cache`;
+                updateQuoteStatus(quoteSourceLabel);
+                return buildHoldings(cache.quotes);
+            }
             try {
                 const quoteMap = await fetchQuoteMap();
+                quoteSourceLabel = 'stooq live';
+                updateQuoteStatus(quoteSourceLabel);
+                saveQuoteCache(quoteMap, 'stooq');
                 return buildHoldings(quoteMap);
             } catch (error) {
                 console.warn('Realtime quotes unavailable, using fallback data.', error);
+                quoteSourceLabel = 'fallback';
+                updateQuoteStatus(quoteSourceLabel);
                 return buildHoldings();
             }
         }
@@ -2206,6 +2238,7 @@
                     <button type="button" class="active" data-view-toggle="pie">Pie</button>
                     <button type="button" data-view-toggle="table">Table</button>
                 </div>
+                <div class="quote-source" id="quoteSource" aria-live="polite">Quotes: loading…</div>
             </div>
             <div class="portfolio-views" data-current-view="pie">
                 <div class="portfolio-pie-view" id="stockPieView">
