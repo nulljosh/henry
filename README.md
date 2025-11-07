@@ -4,10 +4,11 @@ Henry is a manually curated portfolio dashboard. Everything in `index.html` is s
 
 ## Snapshot (updated Nov 7, 2025)
 
-- Stock holdings: **$787 USD** with a **$1,509** 2030 target (+92% upside)
+- Stock holdings: **$787 USD** with a **$1,371** 2030 target (+74% upside)
 - Bitcoin position: **$20 USD** current value targeting **$48** (+140% upside)
 - Total assets (portfolio + CAD savings): **~$931 USD** toward the **$5,000** goal (19% funded)
 - Cash & savings: **$200 CAD** (~$144 USD)
+- USD cash reserve: **~$106 USD** (modeled as CASH)
 - Debt payoff goal: **$5,000** with **$4,069** remaining
 - Monthly surplus: **$453** in November, rising to **$630** once the old phone payment rolls off
 
@@ -15,10 +16,10 @@ Henry is a manually curated portfolio dashboard. Everything in `index.html` is s
 
 | Symbol | Shares | Price | Value | Target Price | Target Value | Gain |
 |--------|--------|-------|-------|--------------|--------------|------|
-| PLTR | 0.4219 | $171.91 | $73 | $450 | $190 | +162% |
-| HOOD | 0.4129 | $124.00 | $51 | $300 | $124 | +136% |
+| PLTR | 0.0582 | $171.91 | $10 | $450 | $26 | +162% |
+| HOOD | 0.0806 | $124.00 | $10 | $300 | $24 | +136% |
 | IWM | 0.0208 | $238.67 | $5 | $320 | $7 | +34% |
-| NVDA | 0.2541 | $184.69 | $47 | $500 | $127 | +171% |
+| NVDA | 0.2812 | $184.69 | $52 | $500 | $141 | +171% |
 | GOOGL | 0.1485 | $281.45 | $42 | $550 | $82 | +126% |
 | TSLA | 0.1122 | $439.14 | $49 | $800 | $90 | +83% |
 | AAPL | 0.6338 | $269.41 | $171 | $500 | $317 | +191% |
@@ -26,7 +27,8 @@ Henry is a manually curated portfolio dashboard. Everything in `index.html` is s
 | SBUX | 0.1432 | $82.17 | $12 | $130 | $19 | +58% |
 | V | 0.2570 | $336.00 | $86 | $550 | $141 | +64% |
 | BTC-USD | 0.0001927 | $101,631 | $20 | $250,000 | $48 | +140% |
-| **Total** | | | **$787** | | **$1,509** | **+92%** |
+| CASH | 1 | $105.55 | $106 | $105 | $106 | 0% |
+| **Total** | | | **$787** | | **$1,371** | **+74%** |
 
 All figures are entered manually and rounded to the nearest dollar for readability.
 
@@ -40,6 +42,7 @@ All figures are entered manually and rounded to the nearest dollar for readabili
   | Category | Amount |
   |----------|--------|
   | Wallet / Savings (CAD) | $200 |
+  | Trading Cash (USD) | $106 |
   | Income | $1,060 |
   | Food | -$300 |
   | Phone | -$130 |
@@ -61,6 +64,7 @@ All figures are entered manually and rounded to the nearest dollar for readabili
 4. Shortened section headers (Insights, Budget, Debt, Summary) and added PST/EST clocks to the Insights card.
 5. Converted the payday widget to a day/hour/min/sec/ms countdown for a playful live update.
 6. Updated the iOS mockup so it mirrors the desktop portfolio values, including the new IWM position.
+7. Reflected the PLTR/HOOD trims by shrinking those positions and adding a `CASH` holding for the USD reserve.
 
 ## Roadmap
 
