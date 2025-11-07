@@ -1452,6 +1452,32 @@
             });
         }
 
+        function getMarketSessionInfo(now = new Date()) {
+            const openHour = 6; // 6:30 AM PST
+            const openMinute = 30;
+            const closeHour = 13; // 1:00 PM PST
+            const closeMinute = 0;
+            const tz = 'America/Los_Angeles';
+            const open = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+            open.setHours(openHour, openMinute, 0, 0);
+            const close = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+            close.setHours(closeHour, closeMinute, 0, 0);
+            const beforeOpen = now < open;
+            const afterClose = now > close;
+            const status = beforeOpen ? 'PRE' : afterClose ? 'POST' : 'OPEN';
+            const target = beforeOpen ? open : afterClose ? open.setDate(open.getDate() + 1) && open : close;
+            const remainingMs = target - now;
+            const remaining = remainingMs > 0 ? {
+                hours: Math.floor(remainingMs / (1000 * 60 * 60)),
+                minutes: Math.floor((remainingMs / (1000 * 60)) % 60),
+                seconds: Math.floor((remainingMs / 1000) % 60),
+                label: beforeOpen ? 'opens' : afterClose ? 'next open' : 'closes'
+            } : null;
+            return { status, remaining };
+        }
+
+        let marketCountdownTimer = null;
+
         function updateMarketInsights(financialSnapshot = {}) {
             const list = document.getElementById('marketPulseList');
             if (!list) return;
@@ -1460,7 +1486,23 @@
             if (timestampLabel) {
                 const dateLabel = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
                 const timeLabel = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                timestampLabel.textContent = `${dateLabel} · ${timeLabel} pre-market`;
+                const session = getMarketSessionInfo(now);
+                const countdownText = session.remaining
+                    ? ` · ${session.remaining.label} in ${session.remaining.hours}h ${session.remaining.minutes}m`
+                    : '';
+                const sessionLabel = session.status === 'OPEN' ? 'market live' : session.status === 'PRE' ? 'pre-market' : 'after hours';
+                timestampLabel.textContent = `${dateLabel} · ${timeLabel} ${sessionLabel}${countdownText}`;
+                if (marketCountdownTimer) clearTimeout(marketCountdownTimer);
+                const tick = () => {
+                    const updatedSession = getMarketSessionInfo();
+                    const newCountdown = updatedSession.remaining
+                        ? ` · ${updatedSession.remaining.label} in ${updatedSession.remaining.hours}h ${updatedSession.remaining.minutes}m`
+                        : '';
+                    const newLabel = updatedSession.status === 'OPEN' ? 'market live' : updatedSession.status === 'PRE' ? 'pre-market' : 'after hours';
+                    timestampLabel.textContent = `${dateLabel} · ${timeLabel} ${newLabel}${newCountdown}`;
+                    marketCountdownTimer = setTimeout(tick, 60000);
+                };
+                marketCountdownTimer = setTimeout(tick, 60000);
             }
             if (!holdingsData.length) return;
             const movers = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
