@@ -1760,6 +1760,7 @@
 
             const pieView = document.getElementById('stockPieView');
             const tableView = document.getElementById('stockTableWrapper');
+            const portfolioCard = document.getElementById('portfolioCard');
             const viewToggleButtons = document.querySelectorAll('[data-view-toggle]');
 
             function setPortfolioView(view) {
@@ -1791,17 +1792,28 @@
                 });
             });
 
-            const handleGlobalDismiss = (event) => {
+            const handleLocalDismiss = (event) => {
                 if (!activeSymbol) return;
+                let insideInteractive = false;
                 for (const zone of interactionZones) {
                     if (zone && zone.contains(event.target)) {
-                        return;
+                        insideInteractive = true;
+                        break;
                     }
                 }
-                resetSlice();
+                if (!insideInteractive) {
+                    resetSlice();
+                }
             };
-            document.addEventListener('click', handleGlobalDismiss, { capture: true });
-            document.addEventListener('touchstart', handleGlobalDismiss, { capture: true, passive: true });
+
+            const attachDismiss = (element) => {
+                if (!element) return;
+                element.addEventListener('pointerdown', handleLocalDismiss);
+                element.addEventListener('touchstart', handleLocalDismiss, { passive: true });
+            };
+            attachDismiss(pieView);
+            attachDismiss(tableView);
+            attachDismiss(portfolioCard);
 
             initSlideToggle({
                 toggle: document.getElementById('marketInsightsToggle'),
@@ -2023,7 +2035,7 @@
             </div>
         </div>
 
-        <div class="glass-card">
+        <div class="glass-card" id="portfolioCard">
             <div class="portfolio-header">
                 <h2>Stock Portfolio</h2>
                 <div class="view-toggle" role="group" aria-label="Toggle portfolio view">
