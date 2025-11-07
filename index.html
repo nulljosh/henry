@@ -125,24 +125,32 @@
         }
 
         .site-header {
+            position: relative;
             display: flex;
             justify-content: flex-end;
             margin-bottom: 32px;
+            z-index: 10;
         }
 
         .brand-badge {
             text-align: right;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 12px 18px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         }
 
         .brand-name {
-            font-size: 38px;
+            font-size: 34px;
             font-weight: 800;
             letter-spacing: -0.5px;
         }
 
         .brand-tagline {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-secondary);
+            font-weight: 600;
         }
 
         .portfolio-header {
