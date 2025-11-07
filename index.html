@@ -1452,15 +1452,16 @@
             });
         }
 
+        const MARKET_TZ = 'America/Los_Angeles';
+
         function getMarketSessionInfo(now = new Date()) {
             const openHour = 6; // 6:30 AM PST
             const openMinute = 30;
             const closeHour = 13; // 1:00 PM PST
             const closeMinute = 0;
-            const tz = 'America/Los_Angeles';
-            const open = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+            const open = new Date(now.toLocaleString('en-US', { timeZone: MARKET_TZ }));
             open.setHours(openHour, openMinute, 0, 0);
-            const close = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+            const close = new Date(now.toLocaleString('en-US', { timeZone: MARKET_TZ }));
             close.setHours(closeHour, closeMinute, 0, 0);
             const beforeOpen = now < open;
             const afterClose = now > close;
@@ -1482,27 +1483,27 @@
             const list = document.getElementById('marketPulseList');
             if (!list) return;
             const timestampLabel = document.getElementById('marketInsightsTimestamp');
-            const now = new Date();
-            if (timestampLabel) {
-                const dateLabel = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                const timeLabel = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                const session = getMarketSessionInfo(now);
+            const renderTimestamp = () => {
+                if (!timestampLabel) return;
+                const now = new Date();
+                const pacificNow = new Date(now.toLocaleString('en-US', { timeZone: MARKET_TZ }));
+                const dateLabel = pacificNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const timeLabel = pacificNow.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                const session = getMarketSessionInfo(pacificNow);
                 const countdownText = session.remaining
                     ? ` · ${session.remaining.label} in ${session.remaining.hours}h ${session.remaining.minutes}m`
                     : '';
                 const sessionLabel = session.status === 'OPEN' ? 'market live' : session.status === 'PRE' ? 'pre-market' : 'after hours';
-                timestampLabel.textContent = `${dateLabel} · ${timeLabel} ${sessionLabel}${countdownText}`;
+                timestampLabel.textContent = `${dateLabel} · ${timeLabel} PST · ${sessionLabel}${countdownText}`;
+            };
+            if (timestampLabel) {
+                renderTimestamp();
                 if (marketCountdownTimer) clearTimeout(marketCountdownTimer);
-                const tick = () => {
-                    const updatedSession = getMarketSessionInfo();
-                    const newCountdown = updatedSession.remaining
-                        ? ` · ${updatedSession.remaining.label} in ${updatedSession.remaining.hours}h ${updatedSession.remaining.minutes}m`
-                        : '';
-                    const newLabel = updatedSession.status === 'OPEN' ? 'market live' : updatedSession.status === 'PRE' ? 'pre-market' : 'after hours';
-                    timestampLabel.textContent = `${dateLabel} · ${timeLabel} ${newLabel}${newCountdown}`;
-                    marketCountdownTimer = setTimeout(tick, 60000);
+                const scheduleTick = () => {
+                    renderTimestamp();
+                    marketCountdownTimer = setTimeout(scheduleTick, 60000);
                 };
-                marketCountdownTimer = setTimeout(tick, 60000);
+                marketCountdownTimer = setTimeout(scheduleTick, 60000);
             }
             if (!holdingsData.length) return;
             const movers = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
