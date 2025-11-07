@@ -296,7 +296,36 @@
             height: 260px;
             border-radius: 50%;
             position: relative;
+            overflow: visible;
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            --slice-highlight: transparent;
+            --slice-shift-x: 0px;
+            --slice-shift-y: 0px;
+            --slice-highlight-opacity: 0;
+        }
+
+        .pie-chart::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: var(--slice-highlight);
+            opacity: var(--slice-highlight-opacity);
+            transform: translate(var(--slice-shift-x), var(--slice-shift-y)) scale(1.02);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .pie-chart > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .pie-chart.slice-active {
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18), 0 0 0 8px rgba(0, 0, 0, 0.04);
+            transform: translate(var(--slice-shift-x), var(--slice-shift-y)) scale(1.015);
         }
 
         .pie-center-label {
@@ -425,8 +454,10 @@
         }
 
         .pie-logo svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
+            display: block;
+            pointer-events: none;
         }
 
         body.dark .pie-logo {
@@ -444,8 +475,26 @@
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--logo-ring);
         }
 
+        .pie-logo.active {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35), 0 0 0 4px var(--logo-ring);
+        }
+
         .portfolio-table-view {
             margin-top: 12px;
+        }
+
+        .card-collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding-top: 0;
+            transition: max-height 0.35s ease, opacity 0.35s ease, padding-top 0.35s ease;
+        }
+
+        .collapsible-card.open .card-collapsible-content {
+            opacity: 1;
+            padding-top: 16px;
         }
 
         .hidden {
@@ -521,7 +570,8 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .market-insights-toggle {
+        .market-insights-toggle,
+        .card-toggle {
             width: 100%;
             background: transparent;
             border: none;
@@ -535,12 +585,17 @@
             padding: 4px 0 8px;
         }
 
-        .market-insights-toggle-icon {
+        .market-insights-toggle-icon,
+        .card-toggle-icon {
             transition: transform 0.3s ease;
             font-size: 20px;
         }
 
         .market-insights-card.open .market-insights-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-card.open .card-toggle-icon {
             transform: rotate(180deg);
         }
 
@@ -568,6 +623,15 @@
         body.dark .market-insights-card .market-copy,
         body.dark .market-insights-card .market-copy strong {
             color: #f5f5f7;
+        }
+
+        .market-insights-meta {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
         }
 
         .market-pulse {
@@ -808,6 +872,14 @@
             background: #f5f5f7;
         }
 
+        tbody tr.active {
+            background: rgba(0, 122, 255, 0.08);
+        }
+
+        body.dark tbody tr.active {
+            background: rgba(10, 132, 255, 0.18);
+        }
+
         tbody tr:last-child td {
             font-weight: 600;
             background: #f5f5f7;
@@ -908,26 +980,185 @@
     </button>
 
     <script>
-        const holdingsData = [
-            { symbol: 'PLTR', logoLabel: 'PL', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="9" r="6"/><path d="M12 14.5 7.5 20h9z"/></svg>', shares: 0.4219, price: 178.04, currentValue: 75, targetPrice: 450, targetValue: 190, gainPercent: 153, dailyChangePercent: 2.4, color: '#4b5d86', url: 'https://finance.yahoo.com/quote/PLTR', earningsStatus: 'beat', earningsLabel: 'Earnings beat Nov 3' },
-            { symbol: 'HOOD', logoLabel: 'H', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C8 6.8 6 12 6 15.5 6 19.6 8.9 22 12 22s6-2.4 6-6.5C18 12 16 6.8 12 3z"/></svg>', shares: 0.4129, price: 131.64, currentValue: 54, targetPrice: 300, targetValue: 124, gainPercent: 130, dailyChangePercent: -0.8, color: '#27c998', url: 'https://finance.yahoo.com/quote/HOOD', earningsStatus: 'beat', earningsLabel: 'Earnings beat Nov 5' },
-            { symbol: 'NVDA', logoLabel: 'NV', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 14c2-4 6-7 10-7 4.4 0 6 3 6 5h-2c0-1.7-1.4-3-4-3-2.5 0-5.7 2-7 5h9v2H4v-2z"/></svg>', shares: 0.2541, price: 189.49, currentValue: 48, targetPrice: 500, targetValue: 127, gainPercent: 165, dailyChangePercent: 1.1, color: '#9dd866', url: 'https://finance.yahoo.com/quote/NVDA', earningsStatus: 'upcoming', earningsLabel: 'Earnings Nov 19' },
-            { symbol: 'GOOGL', logoLabel: 'G', logoSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c3.3 0 5.7 1.4 7.3 3.1"/><path d="M19.3 8.1c.4.7.7 1.5.7 2.4 0 3.6-2.9 6.5-6.5 6.5-3.6 0-6.5-3-6.5-6.6S9 3.7 12.6 3.7c1.6 0 3 .5 4 1.3"/><path d="M22 12h-5"/></svg>', shares: 0.1485, price: 285.60, currentValue: 42, targetPrice: 550, targetValue: 82, gainPercent: 95, dailyChangePercent: 0.6, color: '#5c8df6', url: 'https://finance.yahoo.com/quote/GOOGL', earningsStatus: 'beat', earningsLabel: 'Earnings beat Oct 29' },
-            { symbol: 'TSLA', logoLabel: 'T', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5c3-.7 6-1 8-1s5 .3 8 1l-1.3 3.5C16.7 7.8 14.7 7.5 12 7.5S7.3 7.8 5.3 8.5L4 5zm4.5 5h7L14.3 20h-4.6L8.5 10z"/></svg>', shares: 0.1122, price: 448.80, currentValue: 50, targetPrice: 800, targetValue: 90, gainPercent: 80, dailyChangePercent: -1.9, color: '#ff7676', url: 'https://finance.yahoo.com/quote/TSLA', earningsStatus: 'miss', earningsLabel: 'Earnings missed Oct 23' },
-            { symbol: 'AAPL', logoLabel: '', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 2c-1.1.1-2.5.8-3.3 1.8-.7 1-.9 2-.9 2.3 3 .2 4.8-1.9 5.2-2.3-.1-.3-.4-.9-1-1.4zm-.9 4.7c-2.3 0-3.3 1.4-4.8 1.4-1.5 0-2.7-1.4-4.7-1.4C3 6.7 0 9.1 0 13.3c0 3.9 3.3 9.7 6 9.7 1.2 0 1.8-.8 3.3-.8s2 .8 3.3.8c2.5 0 6.4-5.4 6.4-9.9 0-3.9-2.5-6.4-4.8-6.4z"/></svg>', shares: 0.6338, price: 271.63, currentValue: 172, targetPrice: 500, targetValue: 317, gainPercent: 184, dailyChangePercent: 0.4, color: '#c7d2ec', url: 'https://finance.yahoo.com/quote/AAPL', earningsStatus: 'beat', earningsLabel: 'Earnings beat Oct 30' },
-            { symbol: 'SPY', logoLabel: 'SP', logoSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="16" y2="18"/></svg>', shares: 0.3378, price: 671.99, currentValue: 227, targetPrice: 1100, targetValue: 372, gainPercent: 64, dailyChangePercent: 0.2, color: '#4f75b7', url: 'https://finance.yahoo.com/quote/SPY', earningsStatus: 'neutral', earningsLabel: 'Index fund' },
-            { symbol: 'SBUX', logoLabel: 'SB', logoSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7c-1.5 0-3 1.2-3 2.6 0 1 1.1 1.7 1.7 2.4.5.6.3 1.3.3 1.3h2s-.2-.7.3-1.3c.6-.7 1.7-1.4 1.7-2.4C15 8.2 13.5 7 12 7z"/><path d="M9 15s.5 2 3 2 3-2 3-2"/></svg>', shares: 0.1432, price: 82.71, currentValue: 12, targetPrice: 130, targetValue: 19, gainPercent: 58, dailyChangePercent: -0.3, color: '#57b58a', url: 'https://finance.yahoo.com/quote/SBUX', earningsStatus: 'neutral', earningsLabel: 'Holding steady' },
-            { symbol: 'V', logoLabel: 'V', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h4l4 12 4-12h4l-6 16h-4L4 6z"/></svg>', shares: 0.2570, price: 336.34, currentValue: 86, targetPrice: 550, targetValue: 141, gainPercent: 64, dailyChangePercent: 0.9, color: '#4667bb', url: 'https://finance.yahoo.com/quote/V', earningsStatus: 'neutral', earningsLabel: 'Holding steady' },
-            { symbol: 'BTC', logoLabel: '₿', logoSvg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2h-2V0H9v2H7v2h2v16H7v2h2v2h3v-2h2c2.8 0 5-2.2 5-5 0-1.8-1-3.3-2.5-4 .4-.9.6-1.8.6-2.8 0-2.8-2.2-5-5-5zm.5 12.5c1.1 0 2 .9 2 2s-.9 2-2 2H12v-4h2.5zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2H12v-4h2.5z"/></svg>', shares: 0.0001927, price: 101631, currentValue: 20, targetPrice: 250000, targetValue: 48, gainPercent: 140, dailyChangePercent: 3.5, color: '#ffb76b', url: 'https://www.coinbase.com/price/bitcoin', earningsStatus: 'neutral', earningsLabel: 'Crypto holding' }
+        const holdingsConfig = [
+            {
+                symbol: 'PLTR',
+                quoteSymbol: 'PLTR',
+                logoLabel: 'PL',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="6"/><path d="M11 18l5 8 5-8"/><path d="M8 12h6"/></svg>',
+                shares: 0.4219,
+                targetPrice: 450,
+                fallbackPrice: 178.04,
+                fallbackDailyChange: 2.4,
+                color: '#4b5d86',
+                url: 'https://finance.yahoo.com/quote/PLTR',
+                earningsStatus: 'beat',
+                earningsLabel: 'Earnings beat Nov 3'
+            },
+            {
+                symbol: 'HOOD',
+                quoteSymbol: 'HOOD',
+                logoLabel: 'H',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 26c0-6.5 4.5-14 12-18-1.5 6.5-3.9 12.3-7 17l-3 4"/><path d="M14 20l4-4"/></svg>',
+                shares: 0.4129,
+                targetPrice: 300,
+                fallbackPrice: 131.64,
+                fallbackDailyChange: -0.8,
+                color: '#27c998',
+                url: 'https://finance.yahoo.com/quote/HOOD',
+                earningsStatus: 'beat',
+                earningsLabel: 'Earnings beat Nov 5'
+            },
+            {
+                symbol: 'NVDA',
+                quoteSymbol: 'NVDA',
+                logoLabel: 'NV',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c4-6 10-10 16-10 5 0 8 3 8 7 0 3-1.6 5.5-4.2 7.5"/><circle cx="18" cy="16" r="4"/><path d="M8 24c3-5 7-8 12-8"/></svg>',
+                shares: 0.2541,
+                targetPrice: 500,
+                fallbackPrice: 189.49,
+                fallbackDailyChange: 1.1,
+                color: '#9dd866',
+                url: 'https://finance.yahoo.com/quote/NVDA',
+                earningsStatus: 'upcoming',
+                earningsLabel: 'Earnings Nov 19'
+            },
+            {
+                symbol: 'GOOGL',
+                quoteSymbol: 'GOOGL',
+                logoLabel: 'G',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M26 15h-8v6h8"/><path d="M26 23c-2.3 3-5.6 5-9.5 5-6.6 0-11.5-5.3-11.5-12s4.9-12 11.5-12c3.3 0 6.2 1 8.5 3"/></svg>',
+                shares: 0.1485,
+                targetPrice: 550,
+                fallbackPrice: 285.6,
+                fallbackDailyChange: 0.6,
+                color: '#5c8df6',
+                url: 'https://finance.yahoo.com/quote/GOOGL',
+                earningsStatus: 'beat',
+                earningsLabel: 'Earnings beat Oct 29'
+            },
+            {
+                symbol: 'TSLA',
+                quoteSymbol: 'TSLA',
+                logoLabel: 'T',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8c4-2 16-2 20 0"/><path d="M16 8v16"/><path d="M11 10l5 14 5-14"/></svg>',
+                shares: 0.1122,
+                targetPrice: 800,
+                fallbackPrice: 448.8,
+                fallbackDailyChange: -1.9,
+                color: '#ff7676',
+                url: 'https://finance.yahoo.com/quote/TSLA',
+                earningsStatus: 'miss',
+                earningsLabel: 'Earnings missed Oct 23'
+            },
+            {
+                symbol: 'AAPL',
+                quoteSymbol: 'AAPL',
+                logoLabel: '',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><path d="M21.8 4.5c-1.4.1-3.2 1-4.2 2.2-1 1.2-1.2 2.2-1.2 2.6 3.7.2 5.9-2.4 6.4-3-.2-.6-.5-1.4-1-1.8zM16 10.2c-2.8 0-4.1 1.8-6 1.8-1.9 0-3.4-1.8-6-1.8C2 10.2 0 12.6 0 16.9c0 5.1 4.3 12.7 8 12.7 1.6 0 2.4-1 4-1s2.4 1 4 1c4.3 0 8.9-6.5 8.9-12.3 0-4.9-3.2-7.1-6.9-7.1z" transform="translate(4 3)"/></svg>',
+                shares: 0.6338,
+                targetPrice: 500,
+                fallbackPrice: 271.63,
+                fallbackDailyChange: 0.4,
+                color: '#c7d2ec',
+                url: 'https://finance.yahoo.com/quote/AAPL',
+                earningsStatus: 'beat',
+                earningsLabel: 'Earnings beat Oct 30'
+            },
+            {
+                symbol: 'SPY',
+                quoteSymbol: 'SPY',
+                logoLabel: 'SP',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="8" y1="10" x2="24" y2="10"/><line x1="8" y1="16" x2="22" y2="16"/><line x1="8" y1="22" x2="20" y2="22"/></svg>',
+                shares: 0.3378,
+                targetPrice: 1100,
+                fallbackPrice: 671.99,
+                fallbackDailyChange: 0.2,
+                color: '#4f75b7',
+                url: 'https://finance.yahoo.com/quote/SPY',
+                earningsStatus: 'neutral',
+                earningsLabel: 'Index fund'
+            },
+            {
+                symbol: 'SBUX',
+                quoteSymbol: 'SBUX',
+                logoLabel: 'SB',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h12l-1.5 18a4.5 4.5 0 0 1-9 0L10 6z"/><path d="M8 6h16"/><path d="M13 11c1 1.2 2 2 3 2s2-.8 3-2"/></svg>',
+                shares: 0.1432,
+                targetPrice: 130,
+                fallbackPrice: 82.71,
+                fallbackDailyChange: -0.3,
+                color: '#57b58a',
+                url: 'https://finance.yahoo.com/quote/SBUX',
+                earningsStatus: 'neutral',
+                earningsLabel: 'Holding steady'
+            },
+            {
+                symbol: 'V',
+                quoteSymbol: 'V',
+                logoLabel: 'V',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l8 20 12-20"/></svg>',
+                shares: 0.257,
+                targetPrice: 550,
+                fallbackPrice: 336.34,
+                fallbackDailyChange: 0.9,
+                color: '#4667bb',
+                url: 'https://finance.yahoo.com/quote/V',
+                earningsStatus: 'neutral',
+                earningsLabel: 'Holding steady'
+            },
+            {
+                symbol: 'BTC',
+                quoteSymbol: 'BTC-USD',
+                logoLabel: '₿',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12"/><path d="M13 8h5a3.5 3.5 0 0 1 0 7H13V8z"/><path d="M13 15h5.5a3.5 3.5 0 0 1 0 7H13v-7z"/><path d="M11 6v20"/></svg>',
+                shares: 0.0001927,
+                targetPrice: 250000,
+                fallbackPrice: 101631,
+                fallbackDailyChange: 3.5,
+                color: '#ffb76b',
+                url: 'https://www.coinbase.com/price/bitcoin',
+                earningsStatus: 'neutral',
+                earningsLabel: 'Crypto holding'
+            }
         ];
 
-        const formatCurrency = (value) => `$${Math.round(value).toLocaleString('en-US')}`;
-        const formatPrice = (value) => `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        let holdingsData = [];
+
+        const FINANCIAL_CONFIG = {
+            cadSavings: 446,
+            cadToUsdRate: 0.72,
+            debtGoal: 5000,
+            monthlyPaymentCapacity: 453
+        };
+
+        const formatCurrency = (value, currency = 'USD', fractionDigits = 0) => {
+            const numericValue = Number.isFinite(value) ? value : 0;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency,
+                minimumFractionDigits: fractionDigits,
+                maximumFractionDigits: fractionDigits
+            }).format(Math.round(numericValue));
+        };
+        const formatPrice = (value, currency = 'USD') => {
+            const numericValue = Number.isFinite(value) ? value : 0;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency,
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(numericValue);
+        };
         const formatShares = (value) => {
             const fixed = value.toFixed(4);
             return fixed.replace(/\.?0+$/, '');
         };
-        const formatPercent = (value) => `${value >= 0 ? '+' : ''}${Number(value).toFixed(1)}%`;
+        const formatPercent = (value) => {
+            const numericValue = Number.isFinite(value) ? value : 0;
+            const sign = numericValue > 0 ? '+' : '';
+            return `${sign}${numericValue.toFixed(1)}%`;
+        };
         const getContrastColor = (hex) => {
             const clean = hex.replace('#', '');
             const expanded = clean.length === 3 ? clean.split('').map(ch => ch + ch).join('') : clean;
@@ -937,6 +1168,286 @@
             const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
             return luminance > 0.6 ? '#1d1d1f' : '#f5f5f7';
         };
+
+        const getQuoteSymbols = () => [...new Set(holdingsConfig.map(item => item.quoteSymbol || item.symbol))];
+        const STOOQ_SYMBOL_OVERRIDES = {
+            'BTC-USD': 'btcusd',
+            BTC: 'btcusd'
+        };
+
+        async function fetchYahooQuotes(symbols) {
+            if (!symbols.length) return {};
+            const query = encodeURIComponent(symbols.join(','));
+            const response = await fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${query}`, {
+                cache: 'no-store'
+            });
+            if (!response.ok) {
+                throw new Error(`Quote request failed: ${response.status}`);
+            }
+            const payload = await response.json();
+            const results = payload?.quoteResponse?.result || [];
+            return results.reduce((map, quote) => {
+                if (quote?.symbol) {
+                    map[quote.symbol] = quote;
+                }
+                return map;
+            }, {});
+        }
+
+        const resolveStooqSymbol = (symbol) => {
+            if (!symbol) return null;
+            if (STOOQ_SYMBOL_OVERRIDES[symbol]) {
+                return STOOQ_SYMBOL_OVERRIDES[symbol];
+            }
+            const clean = symbol.replace(/[^a-z0-9]/gi, '').toLowerCase();
+            return clean ? `${clean}.us` : null;
+        };
+
+        async function fetchStooqQuotes(symbols) {
+            const entries = symbols
+                .map(sym => {
+                    const resolved = resolveStooqSymbol(sym);
+                    return resolved ? { original: sym, resolved } : null;
+                })
+                .filter(Boolean);
+            if (!entries.length) return {};
+            const query = entries.map(entry => entry.resolved).join('+');
+            const proxyUrl = `https://r.jina.ai/https://stooq.com/q/l/?s=${query}&i=d`;
+            const response = await fetch(proxyUrl, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`Stooq request failed: ${response.status}`);
+            }
+            const text = await response.text();
+            const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+            const lookup = entries.reduce((map, entry) => {
+                map[entry.resolved.toUpperCase()] = entry.original;
+                map[entry.resolved.replace('.US', '').toUpperCase()] = entry.original;
+                return map;
+            }, {});
+            const results = {};
+            lines.forEach(line => {
+                if (!/^[A-Za-z0-9.]+,/.test(line)) return;
+                const parts = line.split(',');
+                if (parts.length < 7) return;
+                const stooqSymbol = parts[0].toUpperCase();
+                const originalSymbol = lookup[stooqSymbol] || lookup[stooqSymbol.replace('.US', '')];
+                if (!originalSymbol) return;
+                const open = parseFloat(parts[3]);
+                const close = parseFloat(parts[6]);
+                const changePercent = Number.isFinite(open) && open !== 0 ? ((close - open) / open) * 100 : null;
+                results[originalSymbol] = {
+                    symbol: originalSymbol,
+                    regularMarketPrice: Number.isFinite(close) ? close : null,
+                    regularMarketChangePercent: Number.isFinite(changePercent) ? changePercent : null,
+                    currency: 'USD'
+                };
+            });
+            return results;
+        }
+
+        async function fetchQuoteMap() {
+            const symbols = getQuoteSymbols();
+            if (!symbols.length) return {};
+            const quoteMap = {};
+            try {
+                Object.assign(quoteMap, await fetchYahooQuotes(symbols));
+            } catch (error) {
+                console.warn('Yahoo Finance quotes unavailable, attempting fallback.', error);
+            }
+            const missingSymbols = symbols.filter(sym => !quoteMap[sym]);
+            if (missingSymbols.length) {
+                try {
+                    const fallbackQuotes = await fetchStooqQuotes(missingSymbols);
+                    Object.assign(quoteMap, fallbackQuotes);
+                } catch (error) {
+                    console.warn('Failed to fetch fallback quotes from Stooq.', error);
+                }
+            }
+            return quoteMap;
+        }
+
+        function buildHoldings(quoteMap = {}) {
+            return holdingsConfig.map(item => {
+                const quote = quoteMap[item.quoteSymbol || item.symbol];
+                const price = quote?.regularMarketPrice ?? item.fallbackPrice ?? 0;
+                const dailyChangePercent = quote?.regularMarketChangePercent ?? item.fallbackDailyChange ?? 0;
+                const currency = quote?.currency || 'USD';
+                const currentValue = price * item.shares;
+                const targetValue = item.targetPrice * item.shares;
+                const gainPercent = price > 0 ? ((item.targetPrice - price) / price) * 100 : 0;
+                return {
+                    ...item,
+                    url: item.url || `https://finance.yahoo.com/quote/${item.quoteSymbol || item.symbol}`,
+                    price,
+                    currency,
+                    dailyChangePercent,
+                    currentValue,
+                    targetValue,
+                    gainPercent
+                };
+            });
+        }
+
+        async function loadHoldings() {
+            try {
+                const quoteMap = await fetchQuoteMap();
+                return buildHoldings(quoteMap);
+            } catch (error) {
+                console.warn('Realtime quotes unavailable, using fallback data.', error);
+                return buildHoldings();
+            }
+        }
+
+        const formatMonthYear = (date) => date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+        function updateFinancialSections(currentTotal, targetTotal) {
+            const cadUsdValue = FINANCIAL_CONFIG.cadSavings * FINANCIAL_CONFIG.cadToUsdRate;
+            const totalAssetsUsd = currentTotal + cadUsdValue;
+            const remainingToGoal = Math.max(FINANCIAL_CONFIG.debtGoal - totalAssetsUsd, 0);
+            const savedPercent = FINANCIAL_CONFIG.debtGoal > 0 ? (totalAssetsUsd / FINANCIAL_CONFIG.debtGoal) * 100 : 0;
+            const progressLabels = document.querySelectorAll('.progress-labels span');
+            if (progressLabels[0]) progressLabels[0].textContent = formatCurrency(0);
+            if (progressLabels[1]) {
+                const savedLabel = `${formatCurrency(totalAssetsUsd)} saved (${Math.round(Math.min(savedPercent, 100))}%)`;
+                progressLabels[1].textContent = savedLabel;
+            }
+            if (progressLabels[2]) progressLabels[2].textContent = formatCurrency(FINANCIAL_CONFIG.debtGoal);
+
+            const progressFill = document.querySelector('.progress-bar-fill');
+            if (progressFill) {
+                const clampedPercent = Math.max(0, Math.min(savedPercent, 100));
+                progressFill.style.width = `${clampedPercent.toFixed(1)}%`;
+            }
+
+            const totalAssetsCell = document.getElementById('totalAssetsCell');
+            if (totalAssetsCell) {
+                totalAssetsCell.textContent = `${formatCurrency(currentTotal)} USD + ${formatCurrency(FINANCIAL_CONFIG.cadSavings, 'CAD')} (~${formatCurrency(cadUsdValue)} USD) = ~${formatCurrency(totalAssetsUsd)} USD`;
+            }
+
+            const remainingCell = document.getElementById('remainingToGoalCell');
+            if (remainingCell) {
+                remainingCell.textContent = remainingToGoal > 0 ? formatCurrency(remainingToGoal) : 'Goal reached 🎉';
+            }
+
+            const monthsToGoal = remainingToGoal > 0 ? remainingToGoal / FINANCIAL_CONFIG.monthlyPaymentCapacity : 0;
+            const monthsCell = document.getElementById('monthsToDebtFreeCell');
+            if (monthsCell) {
+                monthsCell.textContent = monthsToGoal > 0 ? `${monthsToGoal.toFixed(1)} months` : 'Paid off';
+            }
+
+            const debtFreeDateCell = document.getElementById('debtFreeDateCell');
+            let projectedPayoffLabel = 'now';
+            if (monthsToGoal > 0) {
+                const payoffDate = new Date();
+                payoffDate.setMonth(payoffDate.getMonth() + Math.ceil(monthsToGoal));
+                projectedPayoffLabel = formatMonthYear(payoffDate);
+                if (debtFreeDateCell) {
+                    debtFreeDateCell.textContent = projectedPayoffLabel;
+                }
+            } else if (debtFreeDateCell) {
+                debtFreeDateCell.textContent = 'You did it 🎉';
+            }
+
+            const summaryTotal = document.getElementById('summaryTotalPortfolio');
+            if (summaryTotal) summaryTotal.textContent = formatCurrency(currentTotal);
+
+            const summaryTarget = document.getElementById('summaryTargetPortfolio');
+            if (summaryTarget) summaryTarget.textContent = formatCurrency(targetTotal);
+
+            const summaryGain = document.getElementById('summaryPotentialGain');
+            if (summaryGain) {
+                const gainDelta = targetTotal - currentTotal;
+                const gainPercent = currentTotal > 0 ? (gainDelta / currentTotal) * 100 : 0;
+                const sign = gainDelta >= 0 ? '+' : '-';
+                summaryGain.textContent = `${sign}${formatCurrency(Math.abs(gainDelta))} (${sign}${Math.abs(Math.round(gainPercent))}%)`;
+            }
+
+            const summaryNetWorth = document.getElementById('summaryNetWorth');
+            if (summaryNetWorth) {
+                const netWorth = totalAssetsUsd - FINANCIAL_CONFIG.debtGoal;
+                summaryNetWorth.textContent = `${formatCurrency(totalAssetsUsd)} - ${formatCurrency(FINANCIAL_CONFIG.debtGoal)} = ${formatCurrency(netWorth)}`;
+            }
+
+            return {
+                totalAssetsUsd,
+                cadUsdValue,
+                remainingToGoal,
+                monthsToGoal,
+                debtFreeLabel: projectedPayoffLabel
+            };
+        }
+
+        function initSlideToggle({ toggle, content, card, defaultOpen = false }) {
+            if (!toggle || !content) return;
+            const hostCard = card || content.closest('.glass-card');
+            const setState = (expanded) => {
+                toggle.setAttribute('aria-expanded', String(expanded));
+                content.setAttribute('aria-hidden', String(!expanded));
+                if (hostCard) {
+                    hostCard.classList.toggle('open', expanded);
+                }
+                content.style.maxHeight = expanded ? `${content.scrollHeight}px` : '0px';
+            };
+            setState(defaultOpen);
+            toggle.addEventListener('click', () => {
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                setState(!isExpanded);
+            });
+            window.addEventListener('resize', () => {
+                if (toggle.getAttribute('aria-expanded') === 'true') {
+                    content.style.maxHeight = `${content.scrollHeight}px`;
+                }
+            });
+        }
+
+        function updateMarketInsights(financialSnapshot = {}) {
+            const list = document.getElementById('marketPulseList');
+            if (!list) return;
+            const timestampLabel = document.getElementById('marketInsightsTimestamp');
+            const now = new Date();
+            if (timestampLabel) {
+                const dateLabel = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const timeLabel = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                timestampLabel.textContent = `${dateLabel} · ${timeLabel} pre-market`;
+            }
+            if (!holdingsData.length) return;
+            const movers = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
+            const topMover = movers[0];
+            const laggard = movers.length > 1 ? movers[movers.length - 1] : movers[0];
+            const upside = holdingsData.reduce((best, item) => (item.gainPercent > best.gainPercent ? item : best), holdingsData[0]);
+            const remaining = financialSnapshot.remainingToGoal ?? null;
+            const debtEta = financialSnapshot.debtFreeLabel;
+            const payoffLine = remaining !== null
+                ? remaining > 0
+                    ? `${formatCurrency(remaining)} to go · pacing ${debtEta} with ${formatCurrency(FINANCIAL_CONFIG.monthlyPaymentCapacity)}/mo`
+                    : `Goal funded · redeploy ${formatCurrency(FINANCIAL_CONFIG.monthlyPaymentCapacity)}/mo`
+                : `Keep ${formatCurrency(FINANCIAL_CONFIG.monthlyPaymentCapacity)}/mo on autopay`;
+            const upsidePercent = Math.max(Math.round(upside.gainPercent), 0);
+            const insights = [
+                {
+                    title: 'LEADER BOARD',
+                    detail: `${topMover.symbol} pacing ${formatPercent(topMover.dailyChangePercent)} into the bell${topMover.earningsLabel ? ` · ${topMover.earningsLabel}` : ''}.`
+                },
+                {
+                    title: 'LAGGARD CHECK',
+                    detail: `${laggard.symbol} easing ${formatPercent(laggard.dailyChangePercent)} — wait for a higher high before adding.`
+                },
+                {
+                    title: 'RUNWAY + CASH',
+                    detail: `${upside.symbol} still ~${upsidePercent}% below ${formatPrice(upside.targetPrice)} while ${payoffLine}.`
+                }
+            ];
+            list.innerHTML = '';
+            insights.forEach(item => {
+                const block = document.createElement('div');
+                block.className = 'market-pulse-item';
+                block.textContent = item.title;
+                const detail = document.createElement('span');
+                detail.textContent = item.detail;
+                block.appendChild(detail);
+                list.appendChild(block);
+            });
+        }
 
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -958,25 +1469,14 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            holdingsData = await loadHoldings();
             const table = document.getElementById('stockTable');
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
             const totalsRow = table ? table.querySelector('tfoot tr') : null;
             const pieHoldings = [...holdingsData].sort((a, b) => b.currentValue - a.currentValue);
             const tableHoldings = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
-            const symbolLinks = {
-                PLTR: 'https://finance.yahoo.com/quote/PLTR',
-                HOOD: 'https://finance.yahoo.com/quote/HOOD',
-                NVDA: 'https://finance.yahoo.com/quote/NVDA',
-                GOOGL: 'https://finance.yahoo.com/quote/GOOGL',
-                TSLA: 'https://finance.yahoo.com/quote/TSLA',
-                AAPL: 'https://finance.yahoo.com/quote/AAPL',
-                SPY: 'https://finance.yahoo.com/quote/SPY',
-                SBUX: 'https://finance.yahoo.com/quote/SBUX',
-                V: 'https://finance.yahoo.com/quote/V',
-                BTC: 'https://www.coinbase.com/price/bitcoin'
-            };
 
             const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
             const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
@@ -985,15 +1485,203 @@
             const heroTarget = document.getElementById('heroTargetValue');
             if (heroCurrent) heroCurrent.textContent = formatCurrency(currentTotal);
             if (heroTarget) heroTarget.textContent = formatCurrency(targetTotal);
+
+            const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
+            updateMarketInsights(financialSnapshot);
  
+            if (totalsRow) {
+                const currentCell = totalsRow.querySelector('td:nth-child(5)');
+                const targetCell = totalsRow.querySelector('td:nth-child(7)');
+                const gainCell = totalsRow.querySelector('td:nth-child(8)');
+                if (currentCell) currentCell.innerHTML = `<strong>${formatCurrency(currentTotal)}</strong>`;
+                if (targetCell) targetCell.innerHTML = `<strong>${formatCurrency(targetTotal)}</strong>`;
+                if (gainCell) {
+                    const totalGainPercent = currentTotal > 0 ? Math.round(((targetTotal - currentTotal) / currentTotal) * 100) : 0;
+                    const gainSign = totalGainPercent >= 0 ? '+' : '';
+                    gainCell.innerHTML = `<strong>${gainSign}${totalGainPercent}%</strong>`;
+                }
+            }
+
+            const pieChart = document.getElementById('stockPieChart');
+            const pieCenter = document.getElementById('stockPieCenter');
+            const pieLegend = document.getElementById('stockPieLegend');
+            const pieLogos = document.getElementById('stockPieLogos');
+            const legendMap = {};
+            const logoMap = {};
+            const tableRowMap = {};
+            const sliceGeometry = {};
+            let activeSymbol = null;
+
+            const clearSliceHighlight = () => {
+                if (!pieChart) return;
+                pieChart.style.setProperty('--slice-highlight-opacity', '0');
+                pieChart.style.setProperty('--slice-shift-x', '0px');
+                pieChart.style.setProperty('--slice-shift-y', '0px');
+                pieChart.style.setProperty('--slice-highlight', 'transparent');
+                pieChart.classList.remove('slice-active');
+            };
+
+            const highlightSlice = (item) => {
+                if (!pieChart) return;
+                const geometry = sliceGeometry[item.symbol];
+                if (!geometry) return;
+                const { startDeg, sweepDeg, midAngle, color } = geometry;
+                const highlightGradient = `conic-gradient(from ${startDeg}deg, ${color} 0deg ${sweepDeg}deg, transparent ${sweepDeg}deg 360deg)`;
+                pieChart.style.setProperty('--slice-highlight', highlightGradient);
+                const radians = (midAngle - 90) * (Math.PI / 180);
+                const shiftX = Math.cos(radians) * 10;
+                const shiftY = Math.sin(radians) * 10;
+                pieChart.style.setProperty('--slice-shift-x', `${shiftX}px`);
+                pieChart.style.setProperty('--slice-shift-y', `${shiftY}px`);
+                pieChart.style.setProperty('--slice-highlight-opacity', '0.9');
+                pieChart.classList.add('slice-active');
+            };
+
+            const defaultCenter = () => {
+                if (pieCenter) {
+                    pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
+                }
+                clearSliceHighlight();
+                Object.values(legendMap).forEach(li => li.classList.remove('active'));
+                Object.values(logoMap).forEach(logo => logo.classList.remove('active'));
+                Object.values(tableRowMap).forEach(row => row.classList.remove('active'));
+            };
+
+            const activateSlice = (symbol) => {
+                const item = holdingsData.find(entry => entry.symbol === symbol);
+                if (!item || !pieCenter) return;
+                activeSymbol = symbol;
+                pieCenter.innerHTML = `${formatCurrency(item.currentValue, item.currency)}<span>${item.symbol} • ${formatPercent(item.gainPercent)} target</span>`;
+                Object.entries(legendMap).forEach(([sym, li]) => {
+                    li.classList.toggle('active', sym === symbol);
+                });
+                Object.entries(logoMap).forEach(([sym, logo]) => {
+                    logo.classList.toggle('active', sym === symbol);
+                });
+                Object.entries(tableRowMap).forEach(([sym, row]) => {
+                    row.classList.toggle('active', sym === symbol);
+                });
+                highlightSlice(item);
+            };
+
+            const resetSlice = () => {
+                activeSymbol = null;
+                defaultCenter();
+            };
+            const toggleSlice = (symbol) => {
+                if (activeSymbol === symbol) {
+                    resetSlice();
+                } else {
+                    activateSlice(symbol);
+                }
+            };
+            if (pieChart && pieCenter && pieLegend) {
+                let startPercent = 0;
+                const segments = pieHoldings.map(item => {
+                    const share = currentTotal > 0 ? item.currentValue / currentTotal : 0;
+                    const sweepPercent = share * 100;
+                    const startDeg = startPercent * 3.6;
+                    const sweepDeg = sweepPercent * 3.6;
+                    sliceGeometry[item.symbol] = {
+                        startDeg,
+                        sweepDeg,
+                        midAngle: startDeg + sweepDeg / 2,
+                        color: item.color
+                    };
+                    const definition = `${item.color} ${startPercent}% ${startPercent + sweepPercent}%`;
+                    startPercent += sweepPercent;
+                    return definition;
+                });
+                pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
+                pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
+
+                pieLegend.innerHTML = '';
+                if (pieLogos) {
+                    pieLogos.innerHTML = '';
+                }
+                pieHoldings.forEach(item => {
+                    const li = document.createElement('li');
+                    const swatch = document.createElement('span');
+                    swatch.className = 'legend-swatch';
+                    swatch.style.background = item.color;
+
+                    const label = document.createElement('span');
+                    label.className = 'legend-label';
+                    label.textContent = item.symbol;
+
+                    const value = document.createElement('span');
+                    value.className = 'legend-value';
+                    value.textContent = formatCurrency(item.currentValue, item.currency);
+
+                    li.appendChild(swatch);
+                    li.appendChild(label);
+                    li.appendChild(value);
+                    pieLegend.appendChild(li);
+                    legendMap[item.symbol] = li;
+                    li.tabIndex = 0;
+                    li.setAttribute('role', 'button');
+                    li.setAttribute('aria-label', `${item.symbol} ${formatCurrency(item.currentValue, item.currency)}, ${formatPercent(item.gainPercent)} potential`);
+                    const enterLegend = () => activateSlice(item.symbol);
+                    const leaveLegend = () => resetSlice();
+                    li.addEventListener('mouseenter', enterLegend);
+                    li.addEventListener('mouseleave', leaveLegend);
+                    li.addEventListener('focus', enterLegend);
+                    li.addEventListener('blur', leaveLegend);
+                    li.addEventListener('click', () => toggleSlice(item.symbol));
+                });
+
+                if (pieLogos) {
+                    pieHoldings.forEach(item => {
+                        const geometry = sliceGeometry[item.symbol];
+                        const midAngle = geometry ? geometry.midAngle : 0;
+                        const radians = (midAngle - 90) * (Math.PI / 180);
+                        const radius = 110; // stay within wrapper bounds
+                        const x = 130 + Math.cos(radians) * radius;
+                        const y = 130 + Math.sin(radians) * radius;
+                        const logo = document.createElement('div');
+                        logo.className = 'pie-logo';
+                        logo.style.background = item.color;
+                        logo.style.color = getContrastColor(item.color);
+                        logo.style.left = `${x}px`;
+                        logo.style.top = `${y}px`;
+                        logo.dataset.symbol = item.symbol;
+                        logo.tabIndex = 0;
+                        logo.setAttribute('role', 'button');
+                        logo.setAttribute('aria-label', `${item.symbol} ${formatCurrency(item.currentValue, item.currency)}, ${formatPercent(item.gainPercent)} potential`);
+                        if (item.logoSvg) {
+                            logo.innerHTML = item.logoSvg;
+                        } else {
+                            const span = document.createElement('span');
+                            span.textContent = item.logoLabel || item.symbol[0];
+                            logo.appendChild(span);
+                        }
+                        pieLogos.appendChild(logo);
+                        logoMap[item.symbol] = logo;
+                        const enterLogo = () => activateSlice(item.symbol);
+                        const leaveLogo = () => resetSlice();
+                        logo.addEventListener('mouseenter', enterLogo);
+                        logo.addEventListener('mouseleave', leaveLogo);
+                        logo.addEventListener('focus', enterLogo);
+                        logo.addEventListener('blur', leaveLogo);
+                        logo.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleSlice(item.symbol);
+                        });
+                    });
+                }
+                defaultCenter();
+            }
+
             if (tbody) {
                 tbody.innerHTML = '';
                 tableHoldings.forEach(item => {
                     const tr = document.createElement('tr');
+                    tr.dataset.symbol = item.symbol;
+                    tr.tabIndex = 0;
 
                     const symbolCell = document.createElement('td');
                     const link = document.createElement('a');
-                    link.href = item.url || symbolLinks[item.symbol] || '#';
+                    link.href = item.url || '#';
                     link.target = '_blank';
                     link.rel = 'noopener';
                     link.textContent = item.symbol;
@@ -1013,17 +1701,17 @@
                     sharesCell.textContent = formatShares(item.shares);
 
                     const priceCell = document.createElement('td');
-                    priceCell.textContent = formatPrice(item.price);
+                    priceCell.textContent = formatPrice(item.price, item.currency);
 
                     const dailyCell = document.createElement('td');
-                    const dailyValue = item.dailyChangePercent;
-                    const dailySign = dailyValue >= 0 ? '+' : '';
+                    const dailyValue = Number.isFinite(item.dailyChangePercent) ? item.dailyChangePercent : 0;
+                    const dailySign = dailyValue > 0 ? '+' : '';
                     dailyCell.textContent = `${dailySign}${dailyValue.toFixed(2)}%`;
                     dailyCell.style.color = dailyValue > 0 ? '#2ecc71' : dailyValue < 0 ? '#ff3b30' : 'inherit';
                     dailyCell.style.fontWeight = '600';
 
                     const currentCell = document.createElement('td');
-                    currentCell.textContent = formatCurrency(item.currentValue);
+                    currentCell.textContent = formatCurrency(item.currentValue, item.currency);
 
                     const targetPriceCell = document.createElement('td');
                     targetPriceCell.textContent = formatPrice(item.targetPrice);
@@ -1043,163 +1731,15 @@
                     tr.appendChild(targetValueCell);
                     tr.appendChild(gainCell);
 
+                    tr.addEventListener('mouseenter', () => activateSlice(item.symbol));
+                    tr.addEventListener('mouseleave', () => resetSlice());
+                    tr.addEventListener('focusin', () => activateSlice(item.symbol));
+                    tr.addEventListener('focusout', () => resetSlice());
+
                     tbody.appendChild(tr);
-                });
-            }
-
-            if (totalsRow) {
-                const currentCell = totalsRow.querySelector('td:nth-child(5)');
-                const targetCell = totalsRow.querySelector('td:nth-child(7)');
-                const gainCell = totalsRow.querySelector('td:nth-child(8)');
-                if (currentCell) currentCell.innerHTML = `<strong>${formatCurrency(currentTotal)}</strong>`;
-                if (targetCell) targetCell.innerHTML = `<strong>${formatCurrency(targetTotal)}</strong>`;
-                if (gainCell) {
-                    const totalGainPercent = Math.round(((targetTotal - currentTotal) / currentTotal) * 100);
-                    gainCell.innerHTML = `<strong>+${totalGainPercent}%</strong>`;
-                }
-            }
-
-            const summaryTotal = document.getElementById('summaryTotalPortfolio');
-            const summaryTarget = document.getElementById('summaryTargetPortfolio');
-            const summaryGain = document.getElementById('summaryPotentialGain');
-            if (summaryTotal) summaryTotal.textContent = formatCurrency(867);
-            if (summaryTarget) summaryTarget.textContent = formatCurrency(2098);
-            if (summaryGain) {
-                const netGain = 2098 - 867;
-                const netGainPercent = Math.round((netGain / 867) * 100);
-                summaryGain.textContent = `+${formatCurrency(netGain)} (+${netGainPercent}%)`;
-            }
-
-            const pieChart = document.getElementById('stockPieChart');
-            const pieCenter = document.getElementById('stockPieCenter');
-            const pieLegend = document.getElementById('stockPieLegend');
-            const pieLogos = document.getElementById('stockPieLogos');
-            const legendMap = {};
-            const logoMap = {};
-            let activeSymbol = null;
-
-            const defaultCenter = () => {
-                if (pieCenter) {
-                    pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
-                }
-                if (pieChart) {
-                    pieChart.style.boxShadow = '0 10px 24px rgba(0, 0, 0, 0.08)';
-                }
-                Object.values(legendMap).forEach(li => li.classList.remove('active'));
-            };
-
-            const activateSlice = (symbol) => {
-                const item = holdingsData.find(entry => entry.symbol === symbol);
-                if (!item || !pieCenter) return;
-                activeSymbol = symbol;
-                pieCenter.innerHTML = `${formatCurrency(item.currentValue)}<span>${item.symbol} • ${formatPercent(item.gainPercent)} target</span>`;
-                if (pieChart) {
-                    pieChart.style.boxShadow = '0 18px 40px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(0, 0, 0, 0.05)';
-                }
-                Object.entries(legendMap).forEach(([sym, li]) => {
-                    li.classList.toggle('active', sym === symbol);
-                });
-            };
-
-            const resetSlice = () => {
-                activeSymbol = null;
-                defaultCenter();
-            };
-            const toggleSlice = (symbol) => {
-                if (activeSymbol === symbol) {
-                    resetSlice();
-                } else {
-                    activateSlice(symbol);
-                }
-            };
-            if (pieChart && pieCenter && pieLegend) {
-                let start = 0;
-                const segments = pieHoldings.map(item => {
-                    const sweep = (item.currentValue / currentTotal) * 100;
-                    const definition = `${item.color} ${start}% ${start + sweep}%`;
-                    start += sweep;
-                    return definition;
-                });
-                pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
-                pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
-
-                pieLegend.innerHTML = '';
-                if (pieLogos) {
-                    pieLogos.innerHTML = '';
-                }
-                let angleAccumulator = 0;
-                pieHoldings.forEach(item => {
-                    const li = document.createElement('li');
-                    const swatch = document.createElement('span');
-                    swatch.className = 'legend-swatch';
-                    swatch.style.background = item.color;
-
-                    const label = document.createElement('span');
-                    label.className = 'legend-label';
-                    label.textContent = item.symbol;
-
-                    const value = document.createElement('span');
-                    value.className = 'legend-value';
-                    value.textContent = formatCurrency(item.currentValue);
-
-                    li.appendChild(swatch);
-                    li.appendChild(label);
-                    li.appendChild(value);
-                    pieLegend.appendChild(li);
-                    legendMap[item.symbol] = li;
-                    li.tabIndex = 0;
-                    li.setAttribute('role', 'button');
-                    li.setAttribute('aria-label', `${item.symbol} ${formatCurrency(item.currentValue)}, ${formatPercent(item.gainPercent)} potential`);
-                    const enterLegend = () => activateSlice(item.symbol);
-                    const leaveLegend = () => resetSlice();
-                    li.addEventListener('mouseenter', enterLegend);
-                    li.addEventListener('mouseleave', leaveLegend);
-                    li.addEventListener('focus', enterLegend);
-                    li.addEventListener('blur', leaveLegend);
-                    li.addEventListener('click', () => toggleSlice(item.symbol));
+                    tableRowMap[item.symbol] = tr;
                 });
 
-                if (pieLogos) {
-                    angleAccumulator = 0;
-                    pieHoldings.forEach(item => {
-                        const sweep = (item.currentValue / currentTotal) * 360;
-                        const midAngle = angleAccumulator + sweep / 2;
-                        const radians = (midAngle - 90) * (Math.PI / 180);
-                        const radius = 110; // stay within wrapper bounds
-                        const x = 130 + Math.cos(radians) * radius;
-                        const y = 130 + Math.sin(radians) * radius;
-                        const logo = document.createElement('div');
-                        logo.className = 'pie-logo';
-                        logo.style.background = item.color;
-                        logo.style.color = getContrastColor(item.color);
-                        logo.style.left = `${x}px`;
-                        logo.style.top = `${y}px`;
-                        logo.dataset.symbol = item.symbol;
-                        logo.tabIndex = 0;
-                        logo.setAttribute('role', 'button');
-                        logo.setAttribute('aria-label', `${item.symbol} ${formatCurrency(item.currentValue)}, ${formatPercent(item.gainPercent)} potential`);
-                        if (item.logoSvg) {
-                            logo.innerHTML = item.logoSvg;
-                        } else {
-                            const span = document.createElement('span');
-                            span.textContent = item.logoLabel || item.symbol[0];
-                            logo.appendChild(span);
-                        }
-                        pieLogos.appendChild(logo);
-                        logoMap[item.symbol] = logo;
-                const enterLogo = () => activateSlice(item.symbol);
-                const leaveLogo = () => resetSlice();
-                logo.addEventListener('mouseenter', enterLogo);
-                logo.addEventListener('mouseleave', leaveLogo);
-                logo.addEventListener('focus', enterLogo);
-                logo.addEventListener('blur', leaveLogo);
-                logo.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    toggleSlice(item.symbol);
-                });
-                angleAccumulator += sweep;
-                    });
-                }
                 defaultCenter();
             }
 
@@ -1223,9 +1763,7 @@
                     btn.setAttribute('aria-pressed', String(isActive));
                 });
 
-                if (view === 'pie') {
-                    resetSlice();
-                }
+                resetSlice();
             }
 
             setPortfolioView('pie');
@@ -1238,36 +1776,30 @@
                 });
             });
 
-            const insightsCard = document.getElementById('marketInsightsCard');
-            const insightsToggle = document.getElementById('marketInsightsToggle');
-            const insightsContent = document.getElementById('marketInsightsContent');
-            if (insightsCard) {
-                insightsCard.classList.remove('open');
-            }
-            if (insightsContent) {
-                insightsContent.style.maxHeight = '0px';
-                insightsContent.setAttribute('aria-hidden', 'true');
-            }
-            if (insightsToggle && insightsContent && insightsCard) {
-                insightsToggle.addEventListener('click', () => {
-                    const expanded = insightsToggle.getAttribute('aria-expanded') === 'true';
-                    insightsToggle.setAttribute('aria-expanded', String(!expanded));
-                    insightsCard.classList.toggle('open', !expanded);
-                    if (!expanded) {
-                        insightsContent.style.maxHeight = `${insightsContent.scrollHeight}px`;
-                        insightsContent.setAttribute('aria-hidden', 'false');
-                    } else {
-                        insightsContent.style.maxHeight = '0px';
-                        insightsContent.setAttribute('aria-hidden', 'true');
-                    }
-                });
-
-                window.addEventListener('resize', () => {
-                    if (insightsCard.classList.contains('open')) {
-                        insightsContent.style.maxHeight = `${insightsContent.scrollHeight}px`;
-                    }
-                });
-            }
+            initSlideToggle({
+                toggle: document.getElementById('marketInsightsToggle'),
+                content: document.getElementById('marketInsightsContent'),
+                card: document.getElementById('marketInsightsCard'),
+                defaultOpen: false
+            });
+            initSlideToggle({
+                toggle: document.getElementById('budgetToggle'),
+                content: document.getElementById('budgetContent'),
+                card: document.getElementById('budgetCard'),
+                defaultOpen: false
+            });
+            initSlideToggle({
+                toggle: document.getElementById('debtToggle'),
+                content: document.getElementById('debtContent'),
+                card: document.getElementById('debtCard'),
+                defaultOpen: false
+            });
+            initSlideToggle({
+                toggle: document.getElementById('summaryToggle'),
+                content: document.getElementById('summaryContent'),
+                card: document.getElementById('summaryCard'),
+                defaultOpen: false
+            });
 
             headers.forEach((header, index) => {
                 header.classList.add('sortable');
@@ -1610,152 +2142,160 @@
                 <span>Market Insights</span>
                 <span class="market-insights-toggle-icon" aria-hidden="true">⌄</span>
             </button>
-            <div class="market-insights-content" id="marketInsightsContent">
-                <div class="market-pulse">
+            <div class="market-insights-content" id="marketInsightsContent" aria-hidden="true">
+                <div class="market-insights-meta" id="marketInsightsTimestamp">Pre-market outlook loading…</div>
+                <div class="market-pulse" id="marketPulseList">
                     <div class="market-pulse-item">
-                        AI SURGE
-                        <span>NVDA · PLTR leading into Nov 19 earnings catalyst</span>
-                    </div>
-                    <div class="market-pulse-item">
-                        CRYPTO HOLD
-                        <span>BTC clings to $100K floor · SOL steady mid-cycle</span>
-                    </div>
-                    <div class="market-pulse-item">
-                        FED WATCH
-                        <span>Rate-cut odds rising · keeping SPY on 92% 2030 glide path</span>
+                        LOADING
+                        <span>Fetching live quotes for a fresh read...</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="glass-card">
-            <h2>Budget Breakdown</h2>
-            <div class="payday-highlight">
-                <div class="payday-title">Next Payday</div>
-                <div id="paydayCountdown" class="payday-amount">Loading...</div>
-                <div id="paydayDateLabel" class="payday-date"></div>
-                <div class="payday-note">$1,060 monthly / ~$530 to invest</div>
+        <div class="glass-card collapsible-card" id="budgetCard" data-collapsible>
+            <button class="card-toggle" type="button" id="budgetToggle" aria-expanded="false" aria-controls="budgetContent">
+                <span>Budget Breakdown</span>
+                <span class="card-toggle-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="card-collapsible-content" id="budgetContent" aria-hidden="true">
+                <div class="payday-highlight">
+                    <div class="payday-title">Next Payday</div>
+                    <div id="paydayCountdown" class="payday-amount">Loading...</div>
+                    <div id="paydayDateLabel" class="payday-date"></div>
+                    <div class="payday-note">$1,060 monthly / ~$530 to invest</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wallet / Savings (CAD)</td>
+                            <td>$320</td>
+                        </tr>
+                        <tr>
+                            <td>Income</td>
+                            <td>$1,060</td>
+                        </tr>
+                        <tr>
+                            <td>Food</td>
+                            <td>-$300</td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td>-$130</td>
+                        </tr>
+                        <tr>
+                            <td>Old phone (1 payment left)</td>
+                            <td>-$177</td>
+                        </tr>
+                        <!-- <tr class="future-expense">
+                            <td>Apple Watch (starts Nov)</td>
+                            <td>-$33</td>
+                        </tr> -->
+                    </tbody>
+                </table>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Wallet / Savings (CAD)</td>
-                        <td>$320</td>
-                    </tr>
-                    <tr>
-                        <td>Income</td>
-                        <td>$1,060</td>
-                    </tr>
-                    <tr>
-                        <td>Food</td>
-                        <td>-$300</td>
-                    </tr>
-                    <tr>
-                        <td>Phone</td>
-                        <td>-$130</td>
-                    </tr>
-                    <tr>
-                        <td>Old phone (1 payment left)</td>
-                        <td>-$177</td>
-                    </tr>
-                    <!-- <tr class="future-expense">
-                        <td>Apple Watch (starts Nov)</td>
-                        <td>-$33</td>
-                    </tr> -->
-                </tbody>
-            </table>
         </div>
 
-        <div class="glass-card">
-            <h2>Debt Payoff Progress</h2>
-            <div class="progress-summary">
-                <div class="progress-labels">
-                    <span>$0</span>
-                    <span>$1,188 saved (24%)</span>
-                    <span>$5,000</span>
+        <div class="glass-card collapsible-card" id="debtCard" data-collapsible>
+            <button class="card-toggle" type="button" id="debtToggle" aria-expanded="false" aria-controls="debtContent">
+                <span>Debt Payoff Progress</span>
+                <span class="card-toggle-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="card-collapsible-content" id="debtContent" aria-hidden="true">
+                <div class="progress-summary">
+                    <div class="progress-labels">
+                        <span>$0</span>
+                        <span>$1,188 saved (24%)</span>
+                        <span>$5,000</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill"></div>
+                    </div>
                 </div>
-                <div class="progress-bar-track">
-                    <div class="progress-bar-fill"></div>
-                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Total Assets (Portfolio + Savings)</td>
+                            <td id="totalAssetsCell">$867 USD + $446 CAD (~$321 USD) = ~$1,188 USD</td>
+                        </tr>
+                        <tr>
+                            <td>Debt Payoff Goal</td>
+                            <td>$5,000</td>
+                        </tr>
+                        <tr>
+                            <td>Remaining to Goal</td>
+                            <td id="remainingToGoalCell">$3,812</td>
+                        </tr>
+                        <tr class="hidden-row">
+                            <td>Current Debt</td>
+                            <td>$4,000</td>
+                        </tr>
+                        <tr>
+                            <td>Monthly Payment Capacity</td>
+                            <td>$453</td>
+                        </tr>
+                        <tr>
+                            <td>iPhone Sale (when sold)</td>
+                            <td>+$200</td>
+                        </tr>
+                        <tr>
+                            <td>Months Until Debt-Free</td>
+                            <td id="monthsToDebtFreeCell">8.4 months</td>
+                        </tr>
+                        <tr>
+                            <td>Debt-Free Date</td>
+                            <td id="debtFreeDateCell">July 2026</td>
+                        </tr>
+                        <tr>
+                            <td>M5 MacBook Pro (16" M5 Pro)</td>
+                            <td>Target: August 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Total Assets (Portfolio + Savings)</td>
-                        <td id="totalAssetsCell">$867 USD + $446 CAD (~$321 USD) = ~$1,188 USD</td>
-                    </tr>
-                    <tr>
-                        <td>Debt Payoff Goal</td>
-                        <td>$5,000</td>
-                    </tr>
-                    <tr>
-                        <td>Remaining to Goal</td>
-                        <td id="remainingToGoalCell">$3,812</td>
-                    </tr>
-                    <tr class="hidden-row">
-                        <td>Current Debt</td>
-                        <td>$4,000</td>
-                    </tr>
-                    <tr>
-                        <td>Monthly Payment Capacity</td>
-                        <td>$453</td>
-                    </tr>
-                    <tr>
-                        <td>iPhone Sale (when sold)</td>
-                        <td>+$200</td>
-                    </tr>
-                    <tr>
-                        <td>Months Until Debt-Free</td>
-                        <td id="monthsToDebtFreeCell">8.4 months</td>
-                    </tr>
-                    <tr>
-                        <td>Debt-Free Date</td>
-                        <td id="debtFreeDateCell">July 2026</td>
-                    </tr>
-                    <tr>
-                        <td>M5 MacBook Pro (16" M5 Pro)</td>
-                        <td>Target: August 2026</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
 
-        <div class="glass-card">
-            <h2>Summary</h2>
-            <table>
-                <tbody>
-                    <tr>
-                        <td><strong>Total Portfolio Value</strong></td>
-                        <td id="summaryTotalPortfolio">$867</td>
-                    </tr>
-                    <tr>
-                        <td><strong>2030 Target</strong></td>
-                        <td id="summaryTargetPortfolio">$2,098</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Potential Gain</strong></td>
-                        <td id="summaryPotentialGain">+$1,231 (+142%)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Net Worth</strong></td>
-                        <td id="summaryNetWorth">$1,188 - $5,000 = -$3,812</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Monthly Surplus (Nov)</strong></td>
-                        <td>$1,060 - $607 = $453</td>
-                    </tr>
-                    <tr class="future-expense">
-                        <td><strong>Monthly Surplus (Dec+)</strong></td>
-                        <td>$1,060 - $430 = $630</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="glass-card collapsible-card" id="summaryCard" data-collapsible>
+            <button class="card-toggle" type="button" id="summaryToggle" aria-expanded="false" aria-controls="summaryContent">
+                <span>Summary</span>
+                <span class="card-toggle-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="card-collapsible-content" id="summaryContent" aria-hidden="true">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Total Portfolio Value</strong></td>
+                            <td id="summaryTotalPortfolio">$867</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2030 Target</strong></td>
+                            <td id="summaryTargetPortfolio">$2,098</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Potential Gain</strong></td>
+                            <td id="summaryPotentialGain">+$1,231 (+142%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Worth</strong></td>
+                            <td id="summaryNetWorth">$1,188 - $5,000 = -$3,812</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Monthly Surplus (Nov)</strong></td>
+                            <td>$1,060 - $607 = $453</td>
+                        </tr>
+                        <tr class="future-expense">
+                            <td><strong>Monthly Surplus (Dec+)</strong></td>
+                            <td>$1,060 - $430 = $630</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
