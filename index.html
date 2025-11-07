@@ -1687,7 +1687,18 @@
                     startPercent += sweepPercent;
                     return definition;
                 });
-                pieChart.style.background = `conic-gradient(${segments.join(', ')})`;
+                const pieGradient = `conic-gradient(${segments.join(', ')})`;
+                const applyPieGradient = () => {
+                    pieChart.style.background = pieGradient;
+                };
+                applyPieGradient();
+                const monitorPieGradient = () => {
+                    const computed = getComputedStyle(pieChart).backgroundImage;
+                    if (!computed || computed === 'none') {
+                        applyPieGradient();
+                    }
+                };
+                setInterval(monitorPieGradient, 3000);
                 pieChart.style.cursor = 'pointer';
 
                 pieChart.addEventListener('mousemove', (event) => {
