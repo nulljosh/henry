@@ -1662,18 +1662,31 @@
 
             const pieChart = document.getElementById('stockPieChart');
             const pieCanvas = document.getElementById('stockPieCanvas');
-            const pieCtx = pieCanvas ? pieCanvas.getContext('2d') : null;
+            let pieCtx = pieCanvas ? pieCanvas.getContext('2d') : null;
             const pieCenter = document.getElementById('stockPieCenter');
             const pieLegend = document.getElementById('stockPieLegend');
             const pieLogos = document.getElementById('stockPieLogos');
             const PIE_ACTIVE_SCALE = 1.015;
             const PIE_RADIUS = 120;
             const PIE_CENTER_COORD = 130;
-            if (pieCanvas && pieCtx) {
+
+            const resizePieCanvas = () => {
+                if (!pieCanvas) return;
+                const rect = pieChart.getBoundingClientRect();
+                const size = Math.min(rect.width, rect.height);
+                pieCanvas.width = size;
+                pieCanvas.height = size;
                 const scale = window.devicePixelRatio || 1;
-                pieCanvas.width = 260 * scale;
-                pieCanvas.height = 260 * scale;
+                pieCanvas.style.width = `${size}px`;
+                pieCanvas.style.height = `${size}px`;
+                pieCanvas.width = size * scale;
+                pieCanvas.height = size * scale;
+                pieCtx = pieCanvas.getContext('2d');
                 pieCtx.scale(scale, scale);
+            };
+            if (pieCanvas) {
+                resizePieCanvas();
+                window.addEventListener('resize', resizePieCanvas);
             }
             const legendMap = {};
             const logoMap = {};
@@ -1695,8 +1708,8 @@
                     const midAngle = startAngle + sweepAngle / 2;
                     const dx = Math.cos(midAngle) * offset;
                     const dy = Math.sin(midAngle) * offset;
-                    pieCtx.beginPath();
-                    pieCtx.moveTo(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy);
+                pieCtx.beginPath();
+                pieCtx.moveTo(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy);
                     pieCtx.arc(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy, PIE_RADIUS + (isActive ? 2 : 0), startAngle, endAngle);
                     pieCtx.closePath();
                     pieCtx.fillStyle = item.color;
