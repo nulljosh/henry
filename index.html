@@ -1791,7 +1791,7 @@
                 });
             });
 
-            const handleGlobalPointerDown = (event) => {
+            const handleGlobalDismiss = (event) => {
                 if (!activeSymbol) return;
                 for (const zone of interactionZones) {
                     if (zone && zone.contains(event.target)) {
@@ -1800,7 +1800,8 @@
                 }
                 resetSlice();
             };
-            document.addEventListener('pointerdown', handleGlobalPointerDown);
+            document.addEventListener('click', handleGlobalDismiss, { capture: true });
+            document.addEventListener('touchstart', handleGlobalDismiss, { capture: true, passive: true });
 
             initSlideToggle({
                 toggle: document.getElementById('marketInsightsToggle'),
