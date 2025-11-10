@@ -1489,8 +1489,8 @@
                 const maxScroll = 400; // Max scroll distance for full effect
                 const scrollProgress = Math.min(scrollY / maxScroll, 1);
 
-                // Expand side padding dramatically: 20px -> 120px
-                const sidePadding = 20 + (scrollProgress * 100);
+                // DECREASE side padding to push to corners: 20px -> 8px
+                const sidePadding = 20 - (scrollProgress * 12);
 
                 // Shrink brand badge as we scroll
                 const badgeScale = 1 - (scrollProgress * 0.3);
