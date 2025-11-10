@@ -29,10 +29,8 @@
         }
 
         .back-button, .theme-toggle {
-            position: fixed;
-            top: 20px;
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -44,18 +42,16 @@
             color: white;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 9999;
+            flex-shrink: 0;
         }
 
         .back-button {
-            left: 20px;
             text-decoration: none;
-            font-size: 24px;
+            font-size: 20px;
         }
 
         .theme-toggle {
-            right: 20px;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             border: none;
         }
@@ -127,38 +123,42 @@
         .site-header {
             position: relative;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             margin: 20px 0 32px;
-            padding: 0 80px;
+            gap: 12px;
             z-index: 10;
         }
 
         .brand-badge {
-            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.85);
-            border-radius: 16px;
-            padding: 12px 18px;
+            border-radius: 12px;
+            padding: 8px 14px;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         body.dark .brand-badge {
             background: rgba(44, 44, 46, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
         }
 
         .brand-name {
-            font-size: 34px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1;
         }
 
         .brand-tagline {
-            font-size: 15px;
+            font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 600;
+            font-weight: 500;
+            line-height: 1;
         }
 
         .portfolio-header {
@@ -890,24 +890,26 @@
             }
 
             .back-button, .theme-toggle {
-                top: 12px;
+                width: 36px;
+                height: 36px;
             }
 
             .site-header {
                 margin: 12px 0 24px;
-                padding: 0 70px;
+                gap: 8px;
             }
 
             .brand-badge {
-                padding: 10px 16px;
+                padding: 6px 12px;
+                gap: 6px;
             }
 
             .brand-name {
-                font-size: 28px;
+                font-size: 16px;
             }
 
             .brand-tagline {
-                font-size: 13px;
+                font-size: 11px;
             }
 
             .portfolio-pie-view {
@@ -943,11 +945,6 @@
     </style>
 </head>
 <body>
-    <a href="https://heyitsmejosh.com" class="back-button">←</a>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-        <span id="themeIcon">☀️</span>
-    </button>
-
     <script>
         const holdingsConfig = [
             {
@@ -2045,10 +2042,16 @@
 
     <div class="container">
         <div class="site-header">
+            <a href="https://heyitsmejosh.com" class="back-button">←</a>
             <div class="brand-badge">
-                <div class="brand-name">Henry</div>
-                <div class="brand-tagline">Portfolio Companion</div>
+                <div>
+                    <div class="brand-name">Henry</div>
+                    <div class="brand-tagline">Portfolio Companion</div>
+                </div>
             </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <span id="themeIcon">☀️</span>
+            </button>
         </div>
 
         <div class="glass-card" id="portfolioCard">
