@@ -1479,34 +1479,36 @@
         }
 
         // Scroll-based header expansion
-        const siteHeader = document.querySelector('.site-header');
-        let ticking = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            const siteHeader = document.querySelector('.site-header');
+            let ticking = false;
 
-        function updateHeaderSpacing() {
-            const scrollY = window.scrollY;
-            const maxScroll = 300; // Max scroll distance for full effect
-            const scrollProgress = Math.min(scrollY / maxScroll, 1);
+            function updateHeaderSpacing() {
+                const scrollY = window.scrollY;
+                const maxScroll = 300; // Max scroll distance for full effect
+                const scrollProgress = Math.min(scrollY / maxScroll, 1);
 
-            // Start at 20px, expand to 40px at sides
-            const sidePadding = 20 + (scrollProgress * 20);
+                // Start at 20px, expand to 40px at sides
+                const sidePadding = 20 + (scrollProgress * 20);
 
-            if (siteHeader) {
-                siteHeader.style.paddingLeft = `${sidePadding}px`;
-                siteHeader.style.paddingRight = `${sidePadding}px`;
+                if (siteHeader) {
+                    siteHeader.style.paddingLeft = `${sidePadding}px`;
+                    siteHeader.style.paddingRight = `${sidePadding}px`;
+                }
+
+                ticking = false;
             }
 
-            ticking = false;
-        }
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateHeaderSpacing);
+                    ticking = true;
+                }
+            });
 
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(updateHeaderSpacing);
-                ticking = true;
-            }
+            // Initialize on load
+            updateHeaderSpacing();
         });
-
-        // Initialize on load
-        updateHeaderSpacing();
 
         const theme = localStorage.getItem('theme');
         if (theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)) {
