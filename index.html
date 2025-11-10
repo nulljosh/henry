@@ -512,7 +512,6 @@
             background: #ffffff;
             color: #1d1d1f;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: background 0.3s ease, color 0.3s ease;
         }
 
         body.dark .market-insights-card {
@@ -555,7 +554,7 @@
             max-height: 0;
             opacity: 0;
             padding-top: 0;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
+            transition: max-height 0.3s ease, opacity 0.2s ease, padding-top 0.3s ease;
         }
 
         .market-insights-card.open .market-insights-content {
@@ -565,10 +564,12 @@
 
         .market-insights-card .market-copy {
             color: #1d1d1f;
+            transition: none;
         }
 
         .market-insights-card .market-copy strong {
             color: #1d1d1f;
+            transition: none;
         }
 
         body.dark .market-insights-card .market-copy,
