@@ -127,6 +127,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding-top: 100px;
         }
 
         .glass-card {
@@ -139,13 +140,17 @@
         }
 
         .site-header {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0 32px;
+            padding: 20px;
             gap: 12px;
-            z-index: 10;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
         .brand-badge {
