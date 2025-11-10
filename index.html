@@ -165,6 +165,7 @@
             height: 44px;
             border: 1px solid rgba(0, 0, 0, 0.08);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease, opacity 0.1s ease;
         }
 
         body.dark .brand-badge {
@@ -1481,19 +1482,29 @@
         // Scroll-based header expansion
         document.addEventListener('DOMContentLoaded', () => {
             const siteHeader = document.querySelector('.site-header');
+            const brandBadge = document.querySelector('.brand-badge');
             let ticking = false;
 
             function updateHeaderSpacing() {
                 const scrollY = window.scrollY;
-                const maxScroll = 300; // Max scroll distance for full effect
+                const maxScroll = 400; // Max scroll distance for full effect
                 const scrollProgress = Math.min(scrollY / maxScroll, 1);
 
-                // Start at 20px, expand to 40px at sides
-                const sidePadding = 20 + (scrollProgress * 20);
+                // Expand side padding dramatically: 20px -> 120px
+                const sidePadding = 20 + (scrollProgress * 100);
+
+                // Shrink brand badge as we scroll
+                const badgeScale = 1 - (scrollProgress * 0.3);
+                const badgeOpacity = 1 - (scrollProgress * 0.5);
 
                 if (siteHeader) {
                     siteHeader.style.paddingLeft = `${sidePadding}px`;
                     siteHeader.style.paddingRight = `${sidePadding}px`;
+                }
+
+                if (brandBadge) {
+                    brandBadge.style.transform = `scale(${badgeScale})`;
+                    brandBadge.style.opacity = badgeOpacity;
                 }
 
                 ticking = false;
