@@ -921,17 +921,18 @@
             }
 
             .back-button, .theme-toggle {
-                width: 36px;
-                height: 36px;
+                width: 40px;
+                height: 40px;
             }
 
             .site-header {
-                margin: 12px 0 24px;
+                padding: 12px;
                 gap: 8px;
             }
 
             .brand-badge {
-                padding: 6px 12px;
+                padding: 0 10px;
+                height: 40px;
                 gap: 6px;
             }
 
@@ -1489,12 +1490,19 @@
                 const maxScroll = 400; // Max scroll distance for full effect
                 const scrollProgress = Math.min(scrollY / maxScroll, 1);
 
-                // DECREASE side padding to push to corners: 20px -> 8px
-                const sidePadding = 20 - (scrollProgress * 12);
+                // Mobile-first: adjust based on screen size
+                const isMobile = window.innerWidth <= 768;
+                const startPadding = isMobile ? 12 : 20;
+                const minPadding = isMobile ? 8 : 8;
 
-                // Shrink brand badge as we scroll
-                const badgeScale = 1 - (scrollProgress * 0.3);
-                const badgeOpacity = 1 - (scrollProgress * 0.5);
+                // DECREASE side padding to push to corners
+                const sidePadding = startPadding - (scrollProgress * (startPadding - minPadding));
+
+                // Shrink brand badge as we scroll (less aggressive on mobile)
+                const scaleAmount = isMobile ? 0.2 : 0.3;
+                const opacityAmount = isMobile ? 0.3 : 0.5;
+                const badgeScale = 1 - (scrollProgress * scaleAmount);
+                const badgeOpacity = 1 - (scrollProgress * opacityAmount);
 
                 if (siteHeader) {
                     siteHeader.style.paddingLeft = `${sidePadding}px`;
