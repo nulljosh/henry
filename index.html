@@ -1421,15 +1421,15 @@
             const insights = [
                 {
                     title: 'LEADER BOARD',
-                    detail: `${topMover.symbol} pacing ${formatPercent(topMover.dailyChangePercent)} into the bell${topMover.earningsLabel ? ` · ${topMover.earningsLabel}` : ''}.`
+                    detail: `${topMover.symbol} closed ${formatPercent(topMover.dailyChangePercent)}${topMover.earningsLabel ? ` · ${topMover.earningsLabel}` : ''} — strong momentum.`
                 },
                 {
                     title: 'LAGGARD CHECK',
-                    detail: `${laggard.symbol} easing ${formatPercent(laggard.dailyChangePercent)} — wait for a higher high before adding.`
+                    detail: `${laggard.symbol} down ${formatPercent(laggard.dailyChangePercent)} today — watch for reversal signal before adding.`
                 },
                 {
                     title: 'RUNWAY + CASH',
-                    detail: `${upside.symbol} still ~${upsidePercent}% below ${formatPrice(upside.targetPrice)} while ${payoffLine}.`
+                    detail: `${upside.symbol} has ~${upsidePercent}% upside to ${formatPrice(upside.targetPrice)} target while ${payoffLine}.`
                 }
             ];
             list.innerHTML = '';
