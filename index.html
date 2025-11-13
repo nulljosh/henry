@@ -1492,7 +1492,15 @@
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
-            holdingsData = await loadHoldings();
+            try {
+                holdingsData = await loadHoldings();
+            } catch (error) {
+                console.error('Failed to load holdings:', error);
+                holdingsData = buildHoldings();
+            }
+            if (!holdingsData || holdingsData.length === 0) {
+                holdingsData = buildHoldings();
+            }
             const table = document.getElementById('stockTable');
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
@@ -1563,28 +1571,40 @@
             };
 
             const renderPie = (activeSymbol = null) => {
-                if (!pieCtx || !pieCanvas) return;
-                pieCtx.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
-                pieHoldings.forEach(item => {
-                    const geometry = sliceGeometry[item.symbol];
-                    if (!geometry) return;
-                    const startAngle = (geometry.startDeg - 90) * (Math.PI / 180);
-                    const sweepAngle = geometry.sweepDeg * (Math.PI / 180);
-                    const endAngle = startAngle + sweepAngle;
-                    const isActive = activeSymbol === item.symbol;
-                    const offset = isActive ? 6 : 0;
-                    const midAngle = startAngle + sweepAngle / 2;
-                    const dx = Math.cos(midAngle) * offset;
-                    const dy = Math.sin(midAngle) * offset;
-                pieCtx.beginPath();
-                pieCtx.moveTo(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy);
-                    pieCtx.arc(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy, PIE_RADIUS + (isActive ? 2 : 0), startAngle, endAngle);
-                    pieCtx.closePath();
-                    pieCtx.fillStyle = item.color;
-                    pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
-                    pieCtx.shadowBlur = isActive ? 20 : 8;
-                    pieCtx.fill();
-                });
+                if (!pieCtx || !pieCanvas) {
+                    console.warn('Canvas context not available for pie chart');
+                    return;
+                }
+                try {
+                    pieCtx.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
+                } catch (e) {
+                    console.error('Failed to clear canvas:', e);
+                    return;
+                }
+                try {
+                    pieHoldings.forEach(item => {
+                        const geometry = sliceGeometry[item.symbol];
+                        if (!geometry) return;
+                        const startAngle = (geometry.startDeg - 90) * (Math.PI / 180);
+                        const sweepAngle = geometry.sweepDeg * (Math.PI / 180);
+                        const endAngle = startAngle + sweepAngle;
+                        const isActive = activeSymbol === item.symbol;
+                        const offset = isActive ? 6 : 0;
+                        const midAngle = startAngle + sweepAngle / 2;
+                        const dx = Math.cos(midAngle) * offset;
+                        const dy = Math.sin(midAngle) * offset;
+                        pieCtx.beginPath();
+                        pieCtx.moveTo(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy);
+                        pieCtx.arc(PIE_CENTER_COORD + dx, PIE_CENTER_COORD + dy, PIE_RADIUS + (isActive ? 2 : 0), startAngle, endAngle);
+                        pieCtx.closePath();
+                        pieCtx.fillStyle = item.color;
+                        pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
+                        pieCtx.shadowBlur = isActive ? 20 : 8;
+                        pieCtx.fill();
+                    });
+                } catch (e) {
+                    console.error('Failed to render pie slices:', e);
+                }
             };
 
             const clearSliceHighlight = () => {
