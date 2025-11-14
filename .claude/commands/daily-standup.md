@@ -2,43 +2,32 @@
 description: Generate daily standup summary of tasks and progress
 ---
 
-Generate a daily standup report:
+Generate a daily standup report.
 
-1. **Yesterday's Progress:**
-   - Check recent git commits across all ~/Documents/Code repos
-   - List what was accomplished (features, fixes, updates)
-   - Show commit messages from last 24 hours
+No emojis. No AI-speak. No m-dashes. Be direct and concise.
 
-2. **Today's Focus:**
-   - Check for any TODO comments in recent files
-   - Look for in-progress branches
-   - Identify next logical tasks based on recent work
-
-3. **Blockers:**
-   - Check for error logs, failed tests, broken builds
-   - Identify any dependencies or issues
-
-4. **Portfolio Check:**
-   - Quick summary of portfolio performance vs yesterday
-   - Any earnings or major events today
+1. Yesterday's Progress: Check git commits across all repos, list what was accomplished (features, fixes, updates)
+2. Today's Focus: Check TODO comments, in-progress branches, identify next tasks
+3. Blockers: Check for error logs, failed tests, broken builds, dependencies
+4. Portfolio Check: Summary of performance vs yesterday, any earnings or major events
 
 Format as:
 ```
-📊 Daily Standup - [Date]
+Daily Standup - [Date]
 
-✅ Yesterday:
+Yesterday:
 - Shipped X
 - Fixed Y
 - Updated Z
 
-🎯 Today:
+Today:
 - Work on A
 - Review B
 - Deploy C
 
-🚧 Blockers: None / [List issues]
+Blockers: None / [List issues]
 
-💰 Portfolio: +X% ($Y) - [Brief note]
+Portfolio: +X% ($Y) [Brief note]
 ```
 
-Keep it concise and actionable!
+Keep it factual and straightforward.
