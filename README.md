@@ -1,85 +1,39 @@
-# Henry
+# Finn the Fox
 
-Henry is a manually curated portfolio dashboard. Everything in `index.html` is static for now—update the figures by editing the markup directly.
-
-## Snapshot (updated Nov 7, 2025)
-
-- Stock holdings: **$787 USD** with a **$1,371** 2030 target (+74% upside)
-- Bitcoin position: **$20 USD** current value targeting **$48** (+140% upside)
-- Total assets (portfolio + CAD savings): **~$931 USD** toward the **$5,000** goal (19% funded)
-- Cash & savings: **$200 CAD** (~$144 USD)
-- USD cash reserve: **~$106 USD** (modeled as CASH)
-- Debt payoff goal: **$5,000** with **$4,069** remaining
-- Monthly surplus: **$453** in November, rising to **$630** once the old phone payment rolls off
-
-## Stock Portfolio
-
-| Symbol | Shares | Price | Value | Target Price | Target Value | Gain |
-|--------|--------|-------|-------|--------------|--------------|------|
-| PLTR | 0.0171 | $175.70 | $3 | $450 | $8 | +156% |
-| HOOD | 0.0934 | $124.94 | $12 | $300 | $28 | +136% |
-| IWM | 0.0208 | $238.74 | $5 | $320 | $7 | +34% |
-| NVDA | 0.2702 | $184.42 | $50 | $500 | $135 | +176% |
-| GOOGL | 0.1485 | $281.45 | $42 | $550 | $82 | +126% |
-| TSLA | 0.1422 | $433.44 | $62 | $800 | $114 | +83% |
-| AAPL | 0.6538 | $268.51 | $176 | $500 | $327 | +186% |
-| SPY | 0.3378 | $666.57 | $225 | $1,100 | $372 | +64% |
-| SBUX | 0.1432 | $82.24 | $12 | $130 | $19 | +58% |
-| V | 0.2570 | $336.64 | $86 | $550 | $141 | +64% |
-| BTC-USD | 0.0001927 | $101,631 | $20 | $250,000 | $48 | +140% |
-| CASH | — | — | $106 | — | $106 | 0% |
-| **Total** | | | **$787** | | **$1,371** | **+74%** |
-
-All figures are entered manually and rounded to the nearest dollar for readability.
-
-## Other Balances & Goals
-
-- Savings: $787 USD portfolio + $200 CAD (~$144 USD) = ~$931 USD toward the $5,000 goal
-- Debt-free date: projected **July 2026** with the current $453/month surplus
-- Planned MacBook upgrade: **August 2026**
-- Budget snapshot:
-
-  | Category | Amount |
-  |----------|--------|
-  | Wallet / Savings (CAD) | $200 |
-  | Trading Cash (USD) | $106 |
-  | Income | $1,060 |
-  | Food | -$300 |
-  | Phone | -$130 |
-  | Old phone (1 payment left) | -$177 |
+A manually curated portfolio dashboard built with vanilla HTML/CSS/JavaScript. No frameworks, no build tools, just one `index.html` file.
 
 ## Features
 
-- Manual-first data: edit `holdingsConfig` once and the entire UI (hero, table, pie, debt tracker) updates.
-- Responsive “liquid glass” layout with light/dark toggle + an iOS mockup (`ios-index.html`) that mirrors the desktop data.
-- Canvas-powered pie chart with hover/tap pop-outs, synced legend/table highlights, and a fallback table view.
-- Insights drawer with PST/EST dual clocks, live open/close countdown, and stacked leader/laggard/runway cards on mobile.
-- Millisecond payday countdown, collapsible Budget/Debt/Summary cards, and colorful earnings badges.
+- **Manual data entry** - Update holdings in `holdingsConfig` and everything syncs
+- **Keyboard shortcuts** - B (Budget), D (Debt), S (Summary), I/M (Insights)
+- **Canvas pie chart** - Interactive stock allocation visualization
+- **Dark mode** - Toggle with the sun/moon button
+- **Responsive design** - Works on mobile and desktop
+- **Live countdowns** - Market hours and payday tracking
+- **Debt tracking** - Progress toward $5,000 goal with projections
 
-## Recent Work
-
-1. Replaced all third-party quote calls with manual data and removed the quote status badge.
-2. Rebuilt the pie with a responsive canvas so slices never disappear when toggling views or resizing.
-3. Synced CAD savings + debt math with the latest Wealthsimple screenshots (wallet $200 CAD, assets ~$931 USD).
-4. Shortened section headers (Insights, Budget, Debt, Summary) and added PST/EST clocks to the Insights card.
-5. Converted the payday widget to a day/hour/min/sec/ms countdown for a playful live update.
-6. Updated the iOS mockup so it mirrors the desktop portfolio values, including the new IWM position.
-7. Reflected the PLTR/HOOD trims by shrinking those positions and adding a `CASH` holding for the USD reserve.
-
-## Roadmap
-
-- Move inline CSS/JS into dedicated modules for easier maintenance.
-- Stand up a `test/beta/api` branch to experiment with live pricing without touching `main`.
-- Introduce a JSON data file to eliminate duplicate manual edits.
-
-## Usage
+## Quick Start
 
 ```sh
-git clone https://github.com/nulljosh/henry.git
-cd henry
+git clone https://github.com/nulljosh/finn.git
+cd finn
 open index.html
 ```
 
+## Keyboard Shortcuts
+
+- **B** - Toggle Budget section
+- **D** - Toggle Debt section
+- **S** - Toggle Summary section
+- **I** or **M** - Toggle Market Insights
+
+## Tech Stack
+
+- Pure vanilla JavaScript (no dependencies)
+- Canvas API for pie chart
+- localStorage for theme persistence
+- CSS Grid and Flexbox for layout
+
 ## License
 
-MIT License
+MIT
