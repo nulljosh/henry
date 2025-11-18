@@ -1295,9 +1295,14 @@
 
             setState(defaultOpen);
 
-            toggle.addEventListener('click', () => {
+            const handleToggle = () => {
                 const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
                 setState(!isExpanded);
+            };
+            toggle.addEventListener('click', handleToggle);
+            toggle.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                handleToggle();
             });
 
             window.addEventListener('resize', () => {
@@ -1843,7 +1848,12 @@
                     li.addEventListener('mouseleave', leaveLegend);
                     li.addEventListener('focus', enterLegend);
                     li.addEventListener('blur', leaveLegend);
-                    li.addEventListener('click', () => toggleSlice(item.symbol));
+                    const handleLegendToggle = () => toggleSlice(item.symbol);
+                    li.addEventListener('click', handleLegendToggle);
+                    li.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        handleLegendToggle();
+                    });
                 });
 
                 if (pieLogos) {
