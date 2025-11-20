@@ -1,42 +1,31 @@
 ---
-description: Daily portfolio update - fetches latest stock prices, updates holdings from screenshots, and commits changes
+description: Fast portfolio update - batched price fetches, auto-update from screenshots
 ---
 
-Perform the daily portfolio update routine for index.html.
+Perform optimized daily portfolio update for index.html:
 
-No emojis. No AI-speak. No m-dashes. Be direct and concise.
+**Speed optimizations:**
+- Batch all stock price searches in parallel (single message, multiple WebSearch calls)
+- Use find -delete for screenshot cleanup
+- No emojis, minimal output
 
-1. Fetch Current Stock Prices:
-   - Use WebSearch to get current prices for HOOD, NVDA, AAPL, SPY, TSLA, PLTR
-   - Update both fallbackPrice in JavaScript portfolioData AND table values in index.html
-   - Market closes at 4 PM EST
+**Steps:**
+1. Fetch prices for HOOD, NVDA, AAPL, SPY, TSLA, PLTR, GOOGL (parallel)
+2. Update fallbackPrice in JavaScript + table values
+3. Check Downloads for screenshots (*.png, *.HEIC from last 24h)
+4. Read screenshots, update portfolio data (shares, cash, budget)
+5. Open in Safari: `open -a Safari /Users/joshua/Documents/Code/finn/index.html`
+6. Confirm with user
+7. Git commit + push with message:
+   ```
+   Update portfolio prices and holdings - [date]
+   - Updated stock prices
+   - Updated holdings from screenshots
+   - Updated cash balance
+   ```
+8. Delete screenshots: `find /Users/joshua/Downloads -name "Screenshot*.png" -mtime -1 -delete`
 
-2. Wait for Screenshots:
-   - Check /Users/joshua/Downloads/ for screenshots
-   - If no screenshots found, wait 15 seconds and check again
-   - Look for account balance screenshots (Wealthsimple)
-
-3. Update Portfolio from Screenshots:
-   - Read all screenshot files in Downloads
-   - Update cash values, share counts for each holding
-   - Set shares to 0 for sold stocks
-   - Update budget/debt sections if screenshots show changes
-
-4. Open in Safari:
-   - Run: open -a Safari /Users/joshua/Documents/Code/henry/index.html
-   - Allow user to review changes
-
-5. Confirm and Commit:
-   - Ask user to confirm changes look good
-   - Create git commit with message:
-     Update portfolio prices and holdings - [date]
-     - Updated stock prices
-     - Updated holdings from screenshots
-     - Updated cash balance
-   - Push to remote
-
-6. Cleanup:
-   - Delete all screenshots from /Users/joshua/Downloads/
-   - Confirm completion
-
-Important: Verify mobile functionality works. Double-check share counts match screenshots exactly. Update both JavaScript data AND table HTML values.
+**Important:**
+- Verify share counts match screenshots exactly
+- Update both JavaScript portfolioData AND HTML table
+- Market insights auto-update from portfolio data
