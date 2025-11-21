@@ -137,6 +137,11 @@
             padding: 32px;
             margin-bottom: 24px;
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
 
         .site-header {
@@ -764,6 +769,24 @@
             100% { transform: scale(1); }
         }
 
+        /* Skeleton loading animation */
+        @keyframes skeleton-pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-pulse 1.5s ease-in-out infinite;
+            border-radius: 4px;
+            color: transparent !important;
+        }
+        body.dark .skeleton {
+            background: linear-gradient(90deg, #2c2c2e 25%, #3a3a3c 50%, #2c2c2e 75%);
+        }
+        .skeleton * { visibility: hidden; }
+
         .site-footer {
             text-align: center;
             margin-top: 40px;
@@ -852,6 +875,9 @@
             font-size: 15px;
         }
 
+        tbody tr {
+            transition: background 0.15s ease, transform 0.15s ease;
+        }
         tbody tr:hover {
             background: #f5f5f7;
         }
@@ -999,6 +1025,43 @@
             }
         }
 
+        /* Pull to refresh */
+        .pull-indicator {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(-60px);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        body.dark .pull-indicator {
+            background: rgba(44, 44, 46, 0.95);
+        }
+        .pull-indicator.visible {
+            transform: translateX(-50%) translateY(20px);
+        }
+        .pull-indicator.refreshing {
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: translateX(-50%) translateY(20px) rotate(0deg); }
+            to { transform: translateX(-50%) translateY(20px) rotate(360deg); }
+        }
+        .pull-indicator svg {
+            width: 20px;
+            height: 20px;
+            fill: #007aff;
+        }
+
     </style>
 </head>
 <body>
@@ -1138,7 +1201,7 @@
             cadSavings: 574.93,
             cadToUsdRate: 0.72,
             debtGoal: 4700,  // RBC VISA - in collections, negotiating ~15% settlement
-            monthlyPaymentCapacity: 423
+            monthlyPaymentCapacity: 476
         };
 
         const formatCurrency = (value, currency = 'USD', fractionDigits = 0) => {
@@ -1168,6 +1231,56 @@
             const sign = numericValue > 0 ? '+' : '';
             return `${sign}${numericValue.toFixed(1)}%`;
         };
+
+        // Animated counter - counts from 0 to target value
+        const animateValue = (element, endValue, duration = 800, currency = 'USD', suffix = '') => {
+            if (!element) return;
+            element.classList.remove('skeleton');
+            const startValue = 0;
+            const startTime = performance.now();
+            const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutQuart(progress);
+                const currentValue = startValue + (endValue - startValue) * easedProgress;
+                element.textContent = formatCurrency(currentValue, currency) + suffix;
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            requestAnimationFrame(animate);
+        };
+
+        // Animate innerHTML with suffix (for elements with child spans)
+        const animateValueHTML = (element, endValue, duration = 800, currency = 'USD', suffixHTML = '') => {
+            if (!element) return;
+            const startValue = 0;
+            const startTime = performance.now();
+            const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutQuart(progress);
+                const currentValue = startValue + (endValue - startValue) * easedProgress;
+                element.innerHTML = formatCurrency(currentValue, currency) + suffixHTML;
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            requestAnimationFrame(animate);
+        };
+
+        // Haptic feedback helper (global)
+        const haptic = (style = 'light') => {
+            if (navigator.vibrate) {
+                const patterns = { light: 10, medium: 20, heavy: 30 };
+                navigator.vibrate(patterns[style] || 10);
+            }
+        };
+
         const getContrastColor = (hex) => {
             const clean = hex.replace('#', '');
             const expanded = clean.length === 3 ? clean.split('').map(ch => ch + ch).join('') : clean;
@@ -1255,10 +1368,10 @@
             }
 
             const summaryTotal = document.getElementById('summaryTotalPortfolio');
-            if (summaryTotal) summaryTotal.textContent = formatCurrency(currentTotal);
+            if (summaryTotal) animateValue(summaryTotal, currentTotal, 1000);
 
             const summaryTarget = document.getElementById('summaryTargetPortfolio');
-            if (summaryTarget) summaryTarget.textContent = formatCurrency(targetTotal);
+            if (summaryTarget) animateValue(summaryTarget, targetTotal, 1000);
 
             const summaryGain = document.getElementById('summaryPotentialGain');
             if (summaryGain) {
@@ -1514,6 +1627,55 @@
 
             // Initialize on load
             updateHeaderSpacing();
+
+            // Pull to refresh (mobile)
+            const pullIndicator = document.getElementById('pullIndicator');
+            let touchStartY = 0;
+            let isPulling = false;
+            const PULL_THRESHOLD = 80;
+
+            document.addEventListener('touchstart', (e) => {
+                if (window.scrollY === 0) {
+                    touchStartY = e.touches[0].clientY;
+                    isPulling = true;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isPulling || window.scrollY > 0) return;
+                const touchY = e.touches[0].clientY;
+                const pullDistance = touchY - touchStartY;
+
+                if (pullDistance > 0 && pullDistance < PULL_THRESHOLD * 2) {
+                    if (pullIndicator) {
+                        pullIndicator.classList.add('visible');
+                        pullIndicator.style.transform = `translateX(-50%) translateY(${Math.min(pullDistance * 0.5, 40)}px)`;
+                    }
+                    if (pullDistance > PULL_THRESHOLD * 0.5) {
+                        haptic('light');
+                    }
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', () => {
+                if (!isPulling) return;
+                isPulling = false;
+
+                if (pullIndicator && pullIndicator.classList.contains('visible')) {
+                    const transform = pullIndicator.style.transform;
+                    const match = transform.match(/translateY\((\d+)px\)/);
+                    const currentY = match ? parseInt(match[1]) : 0;
+
+                    if (currentY >= 35) {
+                        haptic('medium');
+                        pullIndicator.classList.add('refreshing');
+                        setTimeout(() => location.reload(), 500);
+                    } else {
+                        pullIndicator.classList.remove('visible');
+                        pullIndicator.style.transform = '';
+                    }
+                }
+            }, { passive: true });
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1578,12 +1740,13 @@
             const PIE_RADIUS = 120;
             const PIE_CENTER_COORD = 130;
 
+            let pieLogicalSize = 0;
             const resizePieCanvas = () => {
-                if (!pieCanvas) return;
+                if (!pieCanvas) return false;
                 const rect = pieChart.getBoundingClientRect();
                 const size = Math.min(rect.width, rect.height);
-                pieCanvas.width = size;
-                pieCanvas.height = size;
+                if (size <= 0) return false;
+                pieLogicalSize = size;
                 const scale = window.devicePixelRatio || 1;
                 pieCanvas.style.width = `${size}px`;
                 pieCanvas.style.height = `${size}px`;
@@ -1591,6 +1754,7 @@
                 pieCanvas.height = size * scale;
                 pieCtx = pieCanvas.getContext('2d');
                 pieCtx.scale(scale, scale);
+                return true;
             };
             if (pieCanvas) {
                 resizePieCanvas();
@@ -1602,53 +1766,55 @@
             const sliceGeometry = {};
             let activeSymbol = null;
 
-            const schedulePieRender = () => {
+            const schedulePieRender = (retryCount = 0) => {
                 if (pieRenderFrame) cancelAnimationFrame(pieRenderFrame);
                 pieRenderFrame = requestAnimationFrame(() => {
-                    resizePieCanvas();
+                    const resized = resizePieCanvas();
+                    if (!resized && retryCount < 10) {
+                        setTimeout(() => schedulePieRender(retryCount + 1), 50);
+                        return;
+                    }
                     renderPie(activeSymbol);
                 });
             };
 
             const renderPie = (activeSymbol = null) => {
-                if (!pieCtx || !pieCanvas) {
-                    console.warn('Canvas context not available for pie chart');
+                if (!pieCtx || !pieCanvas || pieLogicalSize <= 0) {
+                    console.warn('Canvas not ready for pie chart');
                     return;
                 }
-                try {
-                    pieCtx.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
-                } catch (e) {
-                    console.error('Failed to clear canvas:', e);
-                    return;
-                }
-                try {
-                    const rect = pieChart.getBoundingClientRect();
-                    const size = Math.min(rect.width, rect.height);
-                    const centerCoord = size / 2;
-                    const radius = (size * 0.92) / 2;
-                    pieHoldings.forEach(item => {
-                        const geometry = sliceGeometry[item.symbol];
-                        if (!geometry) return;
-                        const startAngle = (geometry.startDeg - 90) * (Math.PI / 180);
-                        const sweepAngle = geometry.sweepDeg * (Math.PI / 180);
-                        const endAngle = startAngle + sweepAngle;
-                        const isActive = activeSymbol === item.symbol;
-                        const offset = isActive ? 6 : 0;
-                        const midAngle = startAngle + sweepAngle / 2;
-                        const dx = Math.cos(midAngle) * offset;
-                        const dy = Math.sin(midAngle) * offset;
-                        pieCtx.beginPath();
-                        pieCtx.moveTo(centerCoord + dx, centerCoord + dy);
-                        pieCtx.arc(centerCoord + dx, centerCoord + dy, radius + (isActive ? 2 : 0), startAngle, endAngle);
-                        pieCtx.closePath();
-                        pieCtx.fillStyle = item.color;
-                        pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
-                        pieCtx.shadowBlur = isActive ? 20 : 8;
-                        pieCtx.fill();
-                    });
-                } catch (e) {
-                    console.error('Failed to render pie slices:', e);
-                }
+                const size = pieLogicalSize;
+                const centerCoord = size / 2;
+                const radius = (size * 0.92) / 2;
+
+                pieCtx.save();
+                pieCtx.clearRect(0, 0, size, size);
+
+                pieHoldings.forEach(item => {
+                    const geometry = sliceGeometry[item.symbol];
+                    if (!geometry) return;
+                    const startAngle = (geometry.startDeg - 90) * (Math.PI / 180);
+                    const sweepAngle = geometry.sweepDeg * (Math.PI / 180);
+                    const endAngle = startAngle + sweepAngle;
+                    const isActive = activeSymbol === item.symbol;
+                    const offset = isActive ? 6 : 0;
+                    const midAngle = startAngle + sweepAngle / 2;
+                    const dx = Math.cos(midAngle) * offset;
+                    const dy = Math.sin(midAngle) * offset;
+
+                    pieCtx.save();
+                    pieCtx.beginPath();
+                    pieCtx.moveTo(centerCoord + dx, centerCoord + dy);
+                    pieCtx.arc(centerCoord + dx, centerCoord + dy, radius + (isActive ? 2 : 0), startAngle, endAngle);
+                    pieCtx.closePath();
+                    pieCtx.fillStyle = item.color;
+                    pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
+                    pieCtx.shadowBlur = isActive ? 20 : 8;
+                    pieCtx.fill();
+                    pieCtx.restore();
+                });
+
+                pieCtx.restore();
             };
 
             const clearSliceHighlight = () => {
@@ -1685,6 +1851,7 @@
             const activateSlice = (symbol) => {
                 const item = holdingsData.find(entry => entry.symbol === symbol);
                 if (!item || !pieCenter) return;
+                if (activeSymbol !== symbol) haptic('light');
                 activeSymbol = symbol;
                 pieCenter.innerHTML = `${formatCurrency(item.currentValue, item.currency)}<span>${item.symbol} • ${formatPercent(item.gainPercent)} target</span>`;
                 Object.entries(legendMap).forEach(([sym, li]) => {
@@ -1726,6 +1893,8 @@
                     startPercent += sweepPercent;
                 });
                 schedulePieRender();
+                // Backup render after full page load to fix race conditions
+                window.addEventListener('load', () => schedulePieRender());
                 pieChart.style.cursor = 'pointer';
 
                 pieChart.addEventListener('mousemove', (event) => {
@@ -1844,7 +2013,7 @@
                         toggleSlice(matched.symbol);
                     }
                 });
-                pieCenter.innerHTML = `${formatCurrency(currentTotal)}<span>Current</span>`;
+                animateValueHTML(pieCenter, currentTotal, 1000, 'USD', '<span>Current</span>');
 
                 pieLegend.innerHTML = '';
                 if (pieLogos) {
@@ -2223,6 +2392,11 @@
 
     </script>
 
+    <!-- Pull to refresh indicator -->
+    <div class="pull-indicator" id="pullIndicator">
+        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+    </div>
+
     <div class="container">
         <div class="site-header">
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -2442,7 +2616,7 @@
                         </tr>
                         <tr>
                             <td>Income</td>
-                            <td>$1,060</td>
+                            <td>$1,113</td>
                         </tr>
                         <tr>
                             <td>Food</td>
@@ -2479,7 +2653,7 @@
                     <div class="progress-labels">
                         <span>$0</span>
                         <span>$931 saved (19%)</span>
-                        <span>$5,000</span>
+                        <span>$4,700</span>
                     </div>
                     <div class="progress-bar-track">
                         <div class="progress-bar-fill"></div>
@@ -2493,7 +2667,7 @@
                         </tr>
                         <tr>
                             <td>Debt Payoff Goal</td>
-                            <td>$5,000</td>
+                            <td>$4,700</td>
                         </tr>
                         <tr>
                             <td>Remaining to Goal</td>
@@ -2505,7 +2679,7 @@
                         </tr>
                         <tr>
                             <td>Monthly Payment Capacity</td>
-                            <td>$423</td>
+                            <td>$476</td>
                         </tr>
                         <tr>
                             <td>Months Until Debt-Free</td>
@@ -2538,11 +2712,11 @@
                     <tbody>
                         <tr>
                             <td><strong>Total Portfolio Value</strong></td>
-                            <td id="summaryTotalPortfolio">$787</td>
+                            <td id="summaryTotalPortfolio" class="skeleton">$0</td>
                         </tr>
                         <tr>
                             <td><strong>2030 Target</strong></td>
-                            <td id="summaryTargetPortfolio">$1,371</td>
+                            <td id="summaryTargetPortfolio" class="skeleton">$0</td>
                         </tr>
                         <tr>
                             <td><strong>Potential Gain</strong></td>
@@ -2550,15 +2724,15 @@
                         </tr>
                         <tr>
                             <td><strong>Net Worth</strong></td>
-                            <td id="summaryNetWorth">$931 - $5,000 = -$4,069</td>
+                            <td id="summaryNetWorth">$931 - $4,700 = -$4,069</td>
                         </tr>
                         <tr>
                             <td><strong>Monthly Surplus (Nov)</strong></td>
-                            <td>$1,060 - $637 = $423</td>
+                            <td>$1,113 - $637 = $476</td>
                         </tr>
                         <tr class="future-expense">
                             <td><strong>Monthly Surplus (Dec+)</strong></td>
-                            <td>$1,060 - $460 = $600</td>
+                            <td>$1,113 - $460 = $653</td>
                         </tr>
                     </tbody>
                 </table>
