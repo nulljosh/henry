@@ -1547,18 +1547,23 @@
                     : `Goal funded · redeploy ${formatCurrency(FINANCIAL_CONFIG.monthlyPaymentCapacity)}/mo`
                 : `Keep ${formatCurrency(FINANCIAL_CONFIG.monthlyPaymentCapacity)}/mo on autopay`;
             const upsidePercent = Math.max(Math.round(upside.gainPercent), 0);
+            const downsidePercent = Math.min(Math.round(laggard.dailyChangePercent), 0);
+            const portfolioDailyChange = holdingsData.reduce((sum, h) => sum + (h.currentValue * h.dailyChangePercent / 100), 0);
+            const portfolioDailyPercent = holdingsData.reduce((sum, h) => sum + h.currentValue, 0) > 0
+                ? (portfolioDailyChange / holdingsData.reduce((sum, h) => sum + h.currentValue, 0)) * 100
+                : 0;
             const insights = [
                 {
-                    title: 'LEADER BOARD',
-                    detail: `${topMover.symbol} closed ${formatPercent(topMover.dailyChangePercent)}${topMover.earningsLabel ? ` · ${topMover.earningsLabel}` : ''} — strong momentum.`
+                    title: 'TODAY',
+                    detail: `Portfolio ${portfolioDailyPercent >= 0 ? '+' : ''}${portfolioDailyPercent.toFixed(2)}% · ${topMover.symbol} led at ${formatPercent(topMover.dailyChangePercent)}${topMover.earningsLabel ? ` (${topMover.earningsLabel})` : ''}`
                 },
                 {
-                    title: 'LAGGARD CHECK',
-                    detail: `${laggard.symbol} down ${formatPercent(laggard.dailyChangePercent)} today — watch for reversal signal before adding.`
+                    title: 'SPREAD',
+                    detail: `${topMover.symbol} ${formatPercent(topMover.dailyChangePercent)} to ${laggard.symbol} ${formatPercent(laggard.dailyChangePercent)} · ${Math.abs(topMover.dailyChangePercent - laggard.dailyChangePercent).toFixed(1)}pp range`
                 },
                 {
-                    title: 'RUNWAY + CASH',
-                    detail: `${upside.symbol} has ~${upsidePercent}% upside to ${formatPrice(upside.targetPrice)} target while ${payoffLine}.`
+                    title: 'TARGETS',
+                    detail: `${upside.symbol} ${upsidePercent}% to target · ${payoffLine}`
                 }
             ];
             list.innerHTML = '';
@@ -2596,7 +2601,7 @@
                     <div class="payday-title">Next Payday</div>
                     <div id="paydayCountdown" class="payday-amount">Loading...</div>
                     <div id="paydayDateLabel" class="payday-date"></div>
-                    <div class="payday-note">$1,060 monthly / ~$500 to invest</div>
+                    <div class="payday-note">$1,113 monthly / ~$476 to invest</div>
                 </div>
                 <table>
                     <thead>
@@ -2612,7 +2617,7 @@
                         </tr>
                         <tr>
                             <td>Trading Cash (CAD)</td>
-                            <td>$0.60</td>
+                            <td>$29.48</td>
                         </tr>
                         <tr>
                             <td>Income</td>
