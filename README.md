@@ -10,7 +10,10 @@ A manually curated portfolio dashboard built with vanilla HTML/CSS/JavaScript. N
 - **Dark mode** - Toggle with the sun/moon button
 - **Responsive design** - Works on mobile and desktop
 - **Live countdowns** - Market hours and payday tracking
-- **Debt tracking** - Progress toward $5,000 goal with projections
+- **Debt tracking** - Progress toward $4,700 goal with projections
+- **Animated counters** - Portfolio values count up on load
+- **Pull to refresh** - Swipe down on mobile to reload
+- **Haptic feedback** - Vibration on pie chart interactions (mobile)
 
 ## Quick Start
 
