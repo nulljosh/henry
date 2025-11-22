@@ -769,29 +769,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Flipboard digit animation */
-        .flip-container {
-            display: inline-flex;
-            overflow: hidden;
-        }
-        .flip-digit {
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-            height: 1.2em;
-            line-height: 1.2em;
-        }
-        .flip-digit-inner {
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .flip-digit span {
-            display: block;
-            height: 1.2em;
-            line-height: 1.2em;
-        }
-
         /* Skeleton loading animation */
         @keyframes skeleton-pulse {
             0% { opacity: 1; }
@@ -1255,126 +1232,62 @@
             return `${sign}${numericValue.toFixed(1)}%`;
         };
 
-        // Flipboard-style animated counter - digits flip vertically
+        // Flipboard-style counter - digits scramble then settle
         const animateValue = (element, endValue, duration = 800, currency = 'USD', suffix = '') => {
             if (!element) return;
             element.classList.remove('skeleton');
             const targetStr = formatCurrency(endValue, currency) + suffix;
-
-            // Create flip container with each character as a flip digit
-            element.innerHTML = '';
             const chars = targetStr.split('');
-            const digitElements = [];
+            const startTime = performance.now();
 
-            chars.forEach((char, i) => {
-                if (/\d/.test(char)) {
-                    const digit = document.createElement('span');
-                    digit.className = 'flip-digit';
-                    const inner = document.createElement('span');
-                    inner.className = 'flip-digit-inner';
-                    // Stack digits 0-9 plus target
-                    for (let n = 0; n <= 9; n++) {
-                        const span = document.createElement('span');
-                        span.textContent = n;
-                        inner.appendChild(span);
-                    }
-                    digit.appendChild(inner);
-                    element.appendChild(digit);
-                    digitElements.push({ el: inner, target: parseInt(char), index: i });
-                } else {
-                    const span = document.createElement('span');
-                    span.textContent = char;
-                    span.style.display = 'inline-block';
-                    element.appendChild(span);
+            const scramble = (progress) => {
+                const result = chars.map((char, i) => {
+                    if (!/\d/.test(char)) return char;
+                    // Each digit settles at different times (cascade effect)
+                    const settlePoint = 0.3 + (i * 0.05);
+                    if (progress >= settlePoint) return char;
+                    return Math.floor(Math.random() * 10);
+                }).join('');
+                return result;
+            };
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                element.textContent = progress < 1 ? scramble(progress) : targetStr;
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
                 }
-            });
-
-            // Animate each digit with staggered timing
-            digitElements.forEach((d, i) => {
-                const delay = i * 50;
-                const flipDuration = duration - delay;
-                const steps = d.target + Math.floor(Math.random() * 3); // Overshoot slightly
-                let step = 0;
-                const stepTime = flipDuration / Math.max(steps, 1);
-
-                const flip = () => {
-                    if (step <= steps) {
-                        const showDigit = step % 10;
-                        d.el.style.transform = `translateY(-${showDigit * 1.2}em)`;
-                        step++;
-                        if (step <= steps) {
-                            setTimeout(flip, stepTime);
-                        } else {
-                            // Settle on target
-                            d.el.style.transform = `translateY(-${d.target * 1.2}em)`;
-                        }
-                    }
-                };
-                setTimeout(flip, delay);
-            });
+            };
+            requestAnimationFrame(animate);
         };
 
         // Flipboard animate with HTML suffix
         const animateValueHTML = (element, endValue, duration = 800, currency = 'USD', suffixHTML = '') => {
             if (!element) return;
             const targetStr = formatCurrency(endValue, currency);
-
-            element.innerHTML = '';
-            const container = document.createElement('span');
-            container.className = 'flip-container';
             const chars = targetStr.split('');
-            const digitElements = [];
+            const startTime = performance.now();
 
-            chars.forEach((char, i) => {
-                if (/\d/.test(char)) {
-                    const digit = document.createElement('span');
-                    digit.className = 'flip-digit';
-                    const inner = document.createElement('span');
-                    inner.className = 'flip-digit-inner';
-                    for (let n = 0; n <= 9; n++) {
-                        const span = document.createElement('span');
-                        span.textContent = n;
-                        inner.appendChild(span);
-                    }
-                    digit.appendChild(inner);
-                    container.appendChild(digit);
-                    digitElements.push({ el: inner, target: parseInt(char), index: i });
-                } else {
-                    const span = document.createElement('span');
-                    span.textContent = char;
-                    span.style.display = 'inline-block';
-                    container.appendChild(span);
+            const scramble = (progress) => {
+                const result = chars.map((char, i) => {
+                    if (!/\d/.test(char)) return char;
+                    const settlePoint = 0.3 + (i * 0.05);
+                    if (progress >= settlePoint) return char;
+                    return Math.floor(Math.random() * 10);
+                }).join('');
+                return result;
+            };
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                element.innerHTML = (progress < 1 ? scramble(progress) : targetStr) + suffixHTML;
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
                 }
-            });
-
-            element.appendChild(container);
-            // Add suffix HTML after container
-            const suffixSpan = document.createElement('span');
-            suffixSpan.innerHTML = suffixHTML;
-            element.appendChild(suffixSpan);
-
-            // Animate digits
-            digitElements.forEach((d, i) => {
-                const delay = i * 50;
-                const flipDuration = duration - delay;
-                const steps = d.target + Math.floor(Math.random() * 3);
-                let step = 0;
-                const stepTime = flipDuration / Math.max(steps, 1);
-
-                const flip = () => {
-                    if (step <= steps) {
-                        const showDigit = step % 10;
-                        d.el.style.transform = `translateY(-${showDigit * 1.2}em)`;
-                        step++;
-                        if (step <= steps) {
-                            setTimeout(flip, stepTime);
-                        } else {
-                            d.el.style.transform = `translateY(-${d.target * 1.2}em)`;
-                        }
-                    }
-                };
-                setTimeout(flip, delay);
-            });
+            };
+            requestAnimationFrame(animate);
         };
 
         // Haptic feedback helper (global)
