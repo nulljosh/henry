@@ -6,8 +6,8 @@ Compare these stocks: PLTR, NVDA, TSLA, AAPL, GOOGL, SPY
 
 No emojis. No AI-speak. No m-dashes. Be direct and concise.
 
-1. Fetch current data for all stocks (price, market cap, P/E, YTD performance)
-2. Create a comparison table with key metrics
+1. Fetch current data for all stocks (price, market cap, P/E)
+2. Create a comparison table with key metrics including % change: 1 week, 1 month, 1 year
 3. Write a brief 1-2 sentence summary for each stock
 4. Rank them best to worst buy with bullet points and brief reasoning
 
