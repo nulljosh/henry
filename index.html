@@ -787,6 +787,28 @@
         }
         .skeleton * { visibility: hidden; }
 
+        /* Dynamic value indicator - subtle dot */
+        .dynamic-value::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 6px;
+            opacity: 0.7;
+            animation: dynamic-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dynamic-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 0.8; transform: scale(1); }
+        }
+
+        body.dark .dynamic-value::before {
+            background: #0a84ff;
+        }
+
         .site-footer {
             text-align: center;
             margin-top: 40px;
@@ -2323,6 +2345,10 @@
             }
 
             // Payday countdown
+            const BUDGET_CONFIG = {
+                vacationFund: 502.59  // CAD - update from screenshot
+            };
+
             function updatePaydayCountdown() {
                 const now = new Date();
                 const paydays = [
@@ -2340,8 +2366,10 @@
                 if (!nextPayday) {
                     const el = document.getElementById('paydayCountdown');
                     const dateLabel = document.getElementById('paydayDateLabel');
+                    const dailyEl = document.getElementById('dailyAllowance');
                     if (el) el.textContent = 'No upcoming payday';
                     if (dateLabel) dateLabel.textContent = '';
+                    if (dailyEl) dailyEl.textContent = '--';
                     return;
                 }
                 const diff = Math.max(nextPayday - now, 0);
@@ -2367,6 +2395,17 @@
                     const formattedDate = nextPayday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     const weekday = nextPayday.toLocaleDateString('en-US', { weekday: 'short' });
                     dateLabel.textContent = `${formattedDate} · ${weekday}`;
+                }
+                // Daily allowance = vacation fund / days remaining (including partial day)
+                const daysRemaining = diff / dayMs;
+                const dailyAllowance = daysRemaining > 0 ? BUDGET_CONFIG.vacationFund / daysRemaining : 0;
+                const dailyEl = document.getElementById('dailyAllowance');
+                if (dailyEl) {
+                    dailyEl.textContent = `$${dailyAllowance.toFixed(2)}/day`;
+                }
+                const vacationEl = document.getElementById('vacationFund');
+                if (vacationEl) {
+                    vacationEl.textContent = `$${BUDGET_CONFIG.vacationFund.toFixed(2)}`;
                 }
             }
             if (document.readyState === 'loading') {
@@ -2629,12 +2668,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Wallet / Savings (CAD)</td>
-                            <td>$1,018.09</td>
+                            <td>Vacation Fund (CAD)</td>
+                            <td class="dynamic-value" id="vacationFund">$502.59</td>
                         </tr>
                         <tr>
-                            <td>Trading Cash (CAD)</td>
-                            <td>$29.48</td>
+                            <td>Daily Allowance</td>
+                            <td class="dynamic-value" id="dailyAllowance">--</td>
                         </tr>
                         <tr>
                             <td>Income</td>
