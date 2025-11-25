@@ -1331,25 +1331,27 @@
         };
 
         function buildHoldings(quoteMap = {}) {
-            return holdingsConfig.map(item => {
-                const quote = quoteMap[item.quoteSymbol || item.symbol];
-                const price = quote?.regularMarketPrice ?? item.fallbackPrice ?? 0;
-                const dailyChangePercent = quote?.regularMarketChangePercent ?? item.fallbackDailyChange ?? 0;
-                const currency = quote?.currency || 'USD';
-                const currentValue = price * item.shares;
-                const targetValue = item.targetPrice * item.shares;
-                const gainPercent = price > 0 ? ((item.targetPrice - price) / price) * 100 : 0;
-                return {
-                    ...item,
-                    url: item.url || `https://finance.yahoo.com/quote/${item.quoteSymbol || item.symbol}`,
-                    price,
-                    currency,
-                    dailyChangePercent,
-                    currentValue,
-                    targetValue,
-                    gainPercent
-                };
-            });
+            return holdingsConfig
+                .filter(item => item.shares > 0)
+                .map(item => {
+                    const quote = quoteMap[item.quoteSymbol || item.symbol];
+                    const price = quote?.regularMarketPrice ?? item.fallbackPrice ?? 0;
+                    const dailyChangePercent = quote?.regularMarketChangePercent ?? item.fallbackDailyChange ?? 0;
+                    const currency = quote?.currency || 'USD';
+                    const currentValue = price * item.shares;
+                    const targetValue = item.targetPrice * item.shares;
+                    const gainPercent = price > 0 ? ((item.targetPrice - price) / price) * 100 : 0;
+                    return {
+                        ...item,
+                        url: item.url || `https://finance.yahoo.com/quote/${item.quoteSymbol || item.symbol}`,
+                        price,
+                        currency,
+                        dailyChangePercent,
+                        currentValue,
+                        targetValue,
+                        gainPercent
+                    };
+                });
         }
 
         async function loadHoldings() {
