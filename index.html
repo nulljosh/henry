@@ -1136,7 +1136,7 @@
                 quoteSymbol: 'TSLA',
                 logoLabel: 'T',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="11" font-weight="bold" font-family="Arial, sans-serif" letter-spacing="-0.5">TSLA</text></svg>',
-                shares: 0.1838,
+                shares: 0,
                 targetPrice: 800,
                 fallbackPrice: 399.17,
                 fallbackDailyChange: +2.08,
@@ -1424,6 +1424,45 @@
             if (summaryNetWorth) {
                 const netWorth = totalAssetsUsd - FINANCIAL_CONFIG.debtGoal;
                 summaryNetWorth.textContent = `${formatCurrency(totalAssetsUsd)} - ${formatCurrency(FINANCIAL_CONFIG.debtGoal)} = ${formatCurrency(netWorth)}`;
+            }
+
+            // Calculate portfolio milestones
+            const milestonesTable = document.getElementById('milestonesTable');
+            if (milestonesTable) {
+                const currentPortfolio = totalAssetsUsd;
+                const monthlyInvestment = 476; // Current monthly capacity
+                const annualReturn = 0.15; // 15% conservative estimate
+                const milestones = [2000, 5000, 10000, 50000, 100000];
+
+                let html = '';
+                for (const milestone of milestones) {
+                    if (currentPortfolio >= milestone) {
+                        html += `<tr><td><strong>$${(milestone/1000).toFixed(0)}K</strong></td><td style="color: #4ade80;">Achieved!</td></tr>`;
+                    } else {
+                        // Calculate months to milestone with compound growth
+                        const futureValue = milestone;
+                        const presentValue = currentPortfolio;
+                        const payment = monthlyInvestment;
+                        const monthlyRate = annualReturn / 12;
+
+                        // FV = PV(1+r)^n + PMT * [((1+r)^n - 1) / r]
+                        // Solve for n using approximation
+                        let n = 0;
+                        let value = presentValue;
+                        while (value < futureValue && n < 600) { // max 50 years
+                            value = value * (1 + monthlyRate) + payment;
+                            n++;
+                        }
+
+                        const monthsNeeded = n;
+                        const targetDate = new Date();
+                        targetDate.setMonth(targetDate.getMonth() + monthsNeeded);
+                        const dateStr = targetDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+                        html += `<tr><td><strong>$${(milestone/1000).toFixed(0)}K</strong></td><td>${dateStr} (${monthsNeeded}mo)</td></tr>`;
+                    }
+                }
+                milestonesTable.innerHTML = html;
             }
 
             return {
@@ -2794,6 +2833,15 @@
                         <tr class="future-expense">
                             <td><strong>Monthly Surplus (Dec+)</strong></td>
                             <td>$1,113 - $460 = $653</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Portfolio Milestones</h3>
+                <table>
+                    <tbody id="milestonesTable">
+                        <tr>
+                            <td colspan="2" class="skeleton">Calculating milestones...</td>
                         </tr>
                     </tbody>
                 </table>
