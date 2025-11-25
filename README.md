@@ -5,15 +5,17 @@ A manually curated portfolio dashboard built with vanilla HTML/CSS/JavaScript. N
 ## Features
 
 - **Manual data entry** - Update holdings in `holdingsConfig` and everything syncs
+- **Portfolio milestones** - Track progress to $2K, $5K, $10K, $50K, $100K targets
 - **Keyboard shortcuts** - B (Budget), D (Debt), S (Summary), I/M (Insights)
 - **Canvas pie chart** - Interactive stock allocation visualization
 - **Dark mode** - Toggle with the sun/moon button
 - **Responsive design** - Works on mobile and desktop
 - **Live countdowns** - Market hours and payday tracking
-- **Debt tracking** - Progress toward $4,700 goal with projections
+- **Debt tracking** - Progress toward $5,500 debt goal with projections
 - **Animated counters** - Portfolio values count up on load
 - **Pull to refresh** - Swipe down on mobile to reload
 - **Haptic feedback** - Vibration on pie chart interactions (mobile)
+- **Sortable table** - Click headers to sort by ticker, value, daily %, or target gain
 
 ## Quick Start
 
