@@ -1355,6 +1355,17 @@
         }
 
         async function loadHoldings() {
+            try {
+                // Try to fetch live prices from API
+                const response = await fetch('/api/stocks');
+                if (response.ok) {
+                    const data = await response.json();
+                    return buildHoldings(data.quotes);
+                }
+            } catch (error) {
+                console.log('Using fallback prices:', error);
+            }
+            // Fallback to static prices if API fails
             return buildHoldings();
         }
 

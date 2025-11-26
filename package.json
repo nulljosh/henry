@@ -1,0 +1,14 @@
+{
+  "name": "finn-portfolio",
+  "version": "1.0.0",
+  "description": "Personal stock portfolio tracker",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site, no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
