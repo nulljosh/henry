@@ -1982,7 +1982,7 @@
                     const isActive = activeSymbol === item.symbol;
                     // Smaller slices get larger offset when active for better visibility
                     const slicePercent = geometry.sweepDeg / 360 * 100;
-                    const baseOffset = slicePercent < 8 ? 12 : 6; // Double offset for small slices
+                    const baseOffset = slicePercent < 15 ? 24 : 6; // 4x offset for small slices
                     const offset = isActive ? baseOffset : 0;
                     const midAngle = startAngle + sweepAngle / 2;
                     const dx = Math.cos(midAngle) * offset;
@@ -1992,12 +1992,12 @@
                     pieCtx.beginPath();
                     pieCtx.moveTo(centerCoord + dx, centerCoord + dy);
                     // Increase radius expansion for small slices
-                    const radiusExpansion = isActive ? (slicePercent < 8 ? 4 : 2) : 0;
+                    const radiusExpansion = isActive ? (slicePercent < 15 ? 10 : 2) : 0;
                     pieCtx.arc(centerCoord + dx, centerCoord + dy, radius + radiusExpansion, startAngle, endAngle);
                     pieCtx.closePath();
                     pieCtx.fillStyle = item.color;
                     pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
-                    pieCtx.shadowBlur = isActive ? (slicePercent < 8 ? 24 : 20) : 8;
+                    pieCtx.shadowBlur = isActive ? (slicePercent < 15 ? 35 : 20) : 8;
                     pieCtx.fill();
                     pieCtx.restore();
                 });
