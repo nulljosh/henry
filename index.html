@@ -1980,7 +1980,10 @@
                     const sweepAngle = geometry.sweepDeg * (Math.PI / 180);
                     const endAngle = startAngle + sweepAngle;
                     const isActive = activeSymbol === item.symbol;
-                    const offset = isActive ? 6 : 0;
+                    // Smaller slices get larger offset when active for better visibility
+                    const slicePercent = geometry.sweepDeg / 360 * 100;
+                    const baseOffset = slicePercent < 8 ? 12 : 6; // Double offset for small slices
+                    const offset = isActive ? baseOffset : 0;
                     const midAngle = startAngle + sweepAngle / 2;
                     const dx = Math.cos(midAngle) * offset;
                     const dy = Math.sin(midAngle) * offset;
@@ -1988,11 +1991,13 @@
                     pieCtx.save();
                     pieCtx.beginPath();
                     pieCtx.moveTo(centerCoord + dx, centerCoord + dy);
-                    pieCtx.arc(centerCoord + dx, centerCoord + dy, radius + (isActive ? 2 : 0), startAngle, endAngle);
+                    // Increase radius expansion for small slices
+                    const radiusExpansion = isActive ? (slicePercent < 8 ? 4 : 2) : 0;
+                    pieCtx.arc(centerCoord + dx, centerCoord + dy, radius + radiusExpansion, startAngle, endAngle);
                     pieCtx.closePath();
                     pieCtx.fillStyle = item.color;
                     pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
-                    pieCtx.shadowBlur = isActive ? 20 : 8;
+                    pieCtx.shadowBlur = isActive ? (slicePercent < 8 ? 24 : 20) : 8;
                     pieCtx.fill();
                     pieCtx.restore();
                 });
@@ -2077,7 +2082,11 @@
                 });
                 schedulePieRender();
                 // Backup render after full page load to fix race conditions
-                window.addEventListener('load', () => schedulePieRender());
+                window.addEventListener('load', () => {
+                    schedulePieRender();
+                    // Additional delayed render to ensure colors are fully loaded
+                    setTimeout(() => schedulePieRender(), 100);
+                });
                 pieChart.style.cursor = 'pointer';
 
                 pieChart.addEventListener('mousemove', (event) => {
