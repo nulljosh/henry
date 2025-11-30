@@ -1621,7 +1621,8 @@
                 let html = '';
                 for (const milestone of milestones) {
                     if (currentPortfolio >= milestone || milestone === 1000) {
-                        html += `<tr><td><strong>$${(milestone/1000).toFixed(0)}K</strong></td><td style="color: #4ade80;">Achieved!</td></tr>`;
+                        const label = milestone >= 1000000 ? `$${(milestone/1000000).toFixed(0)}M` : `$${(milestone/1000).toFixed(0)}K`;
+                        html += `<tr><td><strong>${label}</strong></td><td style="color: #4ade80;">Achieved!</td></tr>`;
                     } else {
                         // Calculate months to milestone with compound growth
                         const futureValue = milestone;
@@ -1642,8 +1643,9 @@
                         const targetDate = new Date();
                         targetDate.setMonth(targetDate.getMonth() + monthsNeeded);
                         const dateStr = targetDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                        const label = milestone >= 1000000 ? `$${(milestone/1000000).toFixed(0)}M` : `$${(milestone/1000).toFixed(0)}K`;
 
-                        html += `<tr><td><strong>$${(milestone/1000).toFixed(0)}K</strong></td><td>${dateStr} (${monthsNeeded}mo)</td></tr>`;
+                        html += `<tr><td><strong>${label}</strong></td><td>${dateStr} (${monthsNeeded}mo)</td></tr>`;
                     }
                 }
                 milestonesTable.innerHTML = html;
