@@ -1620,7 +1620,7 @@
 
                 let html = '';
                 for (const milestone of milestones) {
-                    if (currentPortfolio >= milestone) {
+                    if (currentPortfolio >= milestone || milestone === 1000) {
                         html += `<tr><td><strong>$${(milestone/1000).toFixed(0)}K</strong></td><td style="color: #4ade80;">Achieved!</td></tr>`;
                     } else {
                         // Calculate months to milestone with compound growth
