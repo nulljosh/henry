@@ -2021,7 +2021,11 @@
                 pieCanvas.style.height = `${size}px`;
                 pieCanvas.width = size * scale;
                 pieCanvas.height = size * scale;
-                pieCtx = pieCanvas.getContext('2d');
+                if (!pieCtx) {
+                    pieCtx = pieCanvas.getContext('2d');
+                }
+                // Reset transform before scaling to prevent compounding
+                pieCtx.setTransform(1, 0, 0, 1, 0, 0);
                 pieCtx.scale(scale, scale);
                 return true;
             };
@@ -2309,7 +2313,8 @@
 
                     const value = document.createElement('span');
                     value.className = 'legend-value';
-                    value.textContent = formatCurrency(item.currentValue, item.currency);
+                    const percentage = ((item.currentValue / currentTotal) * 100).toFixed(1);
+                    value.textContent = `${formatCurrency(item.currentValue, item.currency)} (${percentage}%)`;
 
                     li.appendChild(swatch);
                     li.appendChild(label);
