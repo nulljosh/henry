@@ -1815,6 +1815,64 @@
             });
         }
 
+        function generateBudgetCalendar() {
+            const calendarContainer = document.getElementById('budgetCalendar');
+            if (!calendarContainer) return;
+
+            const monthlySurplus = FINANCIAL_CONFIG.monthlyPaymentCapacity;
+            const currentAssets = 931; // From debt card
+
+            // Budget items with priority (RBC Visa first, then biggest to smallest)
+            const budgetItems = [
+                { name: 'RBC Credit Card', cost: 5500, priority: 1 },
+                { name: 'Dog', cost: 5000, priority: 2 },
+                { name: 'Gold Chain', cost: 2500, priority: 3 },
+                { name: 'MacBook Pro M5 Pro', cost: 4200, priority: 4 },
+                { name: 'Final iPhone Bill', cost: 617, priority: 5 },
+                { name: 'GBA + Pokemon Sapphire', cost: 320, priority: 6 },
+                { name: 'Keyboard Mat + Keyboard', cost: 120, priority: 7 },
+                { name: 'Door Lock', cost: 85, priority: 8 },
+                { name: 'Drain Snake Chemical', cost: 15, priority: 9 }
+            ];
+
+            let cumulativeSavings = currentAssets;
+            const timeline = [];
+            const today = new Date();
+
+            budgetItems.forEach(item => {
+                if (cumulativeSavings >= item.cost) {
+                    timeline.push({ ...item, availableDate: new Date(today), monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else {
+                    const remaining = item.cost - cumulativeSavings;
+                    const monthsNeeded = Math.ceil(remaining / monthlySurplus);
+                    const availableDate = new Date(today);
+                    availableDate.setMonth(availableDate.getMonth() + monthsNeeded);
+                    timeline.push({ ...item, availableDate, monthsAway: monthsNeeded });
+                    cumulativeSavings += (monthsNeeded * monthlySurplus) - remaining;
+                }
+            });
+
+            calendarContainer.innerHTML = timeline.map((item, index) => {
+                const monthLabel = item.monthsAway === 0 ? 'Now' :
+                    item.monthsAway === 1 ? '1 month' : `${item.monthsAway} months`;
+                const dateLabel = item.availableDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">${item.name}</div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">$${item.cost.toLocaleString()} · ${monthLabel}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600; color: ${item.monthsAway === 0 ? '#00C805' : '#888'};">${dateLabel}</div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">Priority ${item.priority}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function toggleTheme() {
             document.body.classList.toggle('dark');
             const isDark = document.body.classList.contains('dark');
@@ -1957,7 +2015,8 @@
 
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
             updateMarketInsights(financialSnapshot);
- 
+            generateBudgetCalendar();
+
             if (totalsRow) {
                 const currentCell = totalsRow.querySelector('td:nth-child(5)');
                 const targetCell = totalsRow.querySelector('td:nth-child(7)');
@@ -2586,7 +2645,7 @@
 
             // Payday countdown
             const BUDGET_CONFIG = {
-                vacationFund: 68  // CAD - update from screenshot
+                vacationFund: 38.75  // CAD - update from screenshot
             };
 
             function updatePaydayCountdown() {
@@ -2948,8 +3007,8 @@
                             <td>-$300</td>
                         </tr>
                         <tr>
-                            <td>Phone</td>
-                            <td>-$130</td>
+                            <td>Phone + Apple Watch<br><span style="font-size: 0.85em; color: #888; font-weight: 400;">$380 Dec ($330 + $50 watch), then $180/mo</span></td>
+                            <td>-$380</td>
                         </tr>
                         <tr>
                             <td>Old phone (1 payment left)<br><span style="font-size: 0.85em; color: #888; font-weight: 400;">$177 Dec bill + $500 device payoff</span></td>
@@ -2997,6 +3056,14 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Budget Timeline</h3>
+                <div style="font-size: 12px; color: #888; margin-bottom: 16px;">
+                    When you can afford each item (RBC Visa first, then biggest to smallest)
+                </div>
+                <div id="budgetCalendar" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
             </div>
         </div>
 
