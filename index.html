@@ -2031,12 +2031,8 @@
             // PWD toggle
             const pwdToggle = document.getElementById('pwdToggle');
             if (pwdToggle) {
-                pwdToggle.addEventListener('click', () => {
-                    isPWDMode = !isPWDMode;
-                    pwdToggle.textContent = isPWDMode ? 'Current Income' : 'PWD +40%';
-                    pwdToggle.style.background = isPWDMode ? 'rgba(0, 122, 255, 0.1)' : 'rgba(0, 200, 5, 0.1)';
-                    pwdToggle.style.color = isPWDMode ? '#007AFF' : '#00C805';
-                    pwdToggle.style.borderColor = isPWDMode ? 'rgba(0, 122, 255, 0.3)' : 'rgba(0, 200, 5, 0.3)';
+                pwdToggle.addEventListener('change', () => {
+                    isPWDMode = pwdToggle.checked;
                     document.getElementById('incomeValue').textContent = isPWDMode ? '$1,558' : '$1,113';
                     generateBudgetCalendar(isPWDMode);
                 });
@@ -3026,9 +3022,10 @@
                         <tr>
                             <td>
                                 Income
-                                <button id="pwdToggle" style="margin-left: 12px; padding: 4px 8px; font-size: 10px; font-weight: 600; background: rgba(0, 200, 5, 0.1); color: #00C805; border: 1px solid rgba(0, 200, 5, 0.3); border-radius: 4px; cursor: pointer;">
-                                    PWD +40%
-                                </button>
+                                <label style="margin-left: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; color: #888;">
+                                    <input type="checkbox" id="pwdToggle" style="cursor: pointer; width: 14px; height: 14px;">
+                                    <span style="font-weight: 600; color: #00C805;">PWD +40%</span>
+                                </label>
                             </td>
                             <td id="incomeValue">$1,113</td>
                         </tr>
