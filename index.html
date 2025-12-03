@@ -1816,6 +1816,7 @@
         }
 
         let isPWDMode = false;
+        let scrollListenersInitialized = false;
 
         function generateBudgetCalendar(usePWD = false) {
             const monthsContainer = document.getElementById('calendarMonths');
@@ -1833,125 +1834,132 @@
                 desc.textContent = usePWD ? `PWD income: $${monthlySurplus}/month surplus` : `Current income: $476/month surplus`;
             }
 
+            // Sorted by priority: cheap items first, then expensive
             const budgetItems = [
-                { name: 'RBC Visa', cost: 5500, priority: 1, color: '#ff4444' },
-                { name: 'Dog', cost: 5000, priority: 2, color: '#ff9500' },
-                { name: 'Gold Chain', cost: 2500, priority: 3, color: '#ffd700' },
-                { name: 'MacBook', cost: 4200, priority: 4, color: '#007AFF' },
+                { name: 'Drain Snake', cost: 15, priority: 1, color: '#8e8e93' },
+                { name: 'Door Lock', cost: 85, priority: 2, color: '#32ade6' },
+                { name: 'Keyboard', cost: 120, priority: 3, color: '#34c759' },
+                { name: 'GBA', cost: 320, priority: 4, color: '#00C805' },
                 { name: 'iPhone Bill', cost: 617, priority: 5, color: '#5856d6' },
-                { name: 'GBA', cost: 320, priority: 6, color: '#00C805' },
-                { name: 'Keyboard', cost: 120, priority: 7, color: '#34c759' },
-                { name: 'Door Lock', cost: 85, priority: 8, color: '#32ade6' },
-                { name: 'Drain Snake', cost: 15, priority: 9, color: '#8e8e93' }
+                { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
+                { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
+                { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
+                { name: 'RBC Visa', cost: 5500, priority: 9, color: '#ff4444' }
             ];
 
-            let cumulativeSavings = currentAssets;
             const timeline = [];
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Sequential timeline: buy items in priority order, one at a time
+            let cumulativeSavings = currentAssets;
+            let currentDate = new Date(today);
 
             budgetItems.forEach(item => {
                 if (cumulativeSavings >= item.cost) {
-                    timeline.push({ ...item, availableDate: new Date(today), monthsAway: 0 });
+                    // Can afford it now
+                    timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else {
+                    // Need to save for it
                     const remaining = item.cost - cumulativeSavings;
                     const monthsNeeded = Math.ceil(remaining / monthlySurplus);
-                    const availableDate = new Date(today);
-                    availableDate.setMonth(availableDate.getMonth() + monthsNeeded);
-                    timeline.push({ ...item, availableDate, monthsAway: monthsNeeded });
-                    cumulativeSavings += (monthsNeeded * monthlySurplus) - remaining;
+                    currentDate.setMonth(currentDate.getMonth() + monthsNeeded);
+                    timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: monthsNeeded });
+                    cumulativeSavings = (monthsNeeded * monthlySurplus) - remaining;
                 }
             });
 
-            // Generate months from Dec 2025 to Oct 2026 (or last item date + 1 month)
-            const lastItemDate = timeline[timeline.length - 1].availableDate;
-            const endDate = new Date(lastItemDate);
-            endDate.setMonth(endDate.getMonth() + 1);
-
+            // Generate 12 months starting from today
             const months = [];
-            const current = new Date(today.getFullYear(), today.getMonth(), 1);
-            while (current <= endDate) {
-                months.push(new Date(current));
-                current.setMonth(current.getMonth() + 1);
+            for (let i = 0; i < 12; i++) {
+                const monthDate = new Date(today.getFullYear(), today.getMonth() + i, 1);
+                months.push(monthDate);
             }
 
-            // Render calendar months
-            monthsContainer.innerHTML = months.map((monthStart, idx) => {
+            // Build calendar HTML
+            let calendarHTML = '';
+            months.forEach(monthStart => {
                 const monthName = monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
                 const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
                 const firstDay = monthStart.getDay();
 
                 let daysHTML = '';
+
+                // Empty cells for days before month starts
                 for (let i = 0; i < firstDay; i++) {
-                    daysHTML += '<div style="aspect-ratio: 1;"></div>';
+                    daysHTML += '<div></div>';
                 }
 
+                // Actual days
                 for (let day = 1; day <= daysInMonth; day++) {
                     const date = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
-                    const dateStr = date.toDateString();
-                    const itemsOnThisDay = timeline.filter(t => t.availableDate.toDateString() === dateStr);
+                    date.setHours(0, 0, 0, 0);
 
-                    const bgColor = itemsOnThisDay.length > 0 ? itemsOnThisDay[0].color : 'transparent';
-                    const isToday = date.toDateString() === today.toDateString();
-                    const itemLabel = itemsOnThisDay.length > 0 ? itemsOnThisDay[0].name : '';
+                    // Find items available on this day
+                    const itemsToday = timeline.filter(t => {
+                        const tDate = new Date(t.availableDate);
+                        tDate.setHours(0, 0, 0, 0);
+                        return tDate.getTime() === date.getTime();
+                    });
 
-                    daysHTML += `
-                        <div style="aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: ${itemsOnThisDay.length > 0 ? '11px' : '14px'}; font-weight: ${isToday ? '700' : '500'}; background: ${bgColor}; border-radius: 6px; color: ${bgColor !== 'transparent' ? '#fff' : 'var(--text-secondary)'}; position: relative; cursor: ${itemsOnThisDay.length > 0 ? 'pointer' : 'default'}; min-height: 36px; transition: transform 0.15s; padding: 4px;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-                            <div style="font-size: 13px; font-weight: 600;">${day}</div>
-                            ${itemLabel ? `<div style="font-size: 8px; font-weight: 700; text-transform: uppercase; margin-top: 2px; line-height: 1; text-align: center;">${itemLabel}</div>` : ''}
-                        </div>
-                    `;
+                    const isToday = date.getTime() === today.getTime();
+                    const bgColor = itemsToday.length > 0 ? itemsToday[0].color : (isToday ? 'rgba(0,200,5,0.2)' : 'transparent');
+                    const textColor = itemsToday.length > 0 ? '#fff' : (isToday ? '#00C805' : '#888');
+
+                    // Show all items or count if multiple
+                    let itemLabel = '';
+                    if (itemsToday.length === 1) {
+                        itemLabel = itemsToday[0].name;
+                    } else if (itemsToday.length > 1) {
+                        itemLabel = itemsToday.map(item => item.name).join(', ');
+                    }
+
+                    daysHTML += `<div style="background:${bgColor};color:${textColor};padding:8px;border-radius:6px;text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:${isToday ? '700' : '500'}">
+                        <div style="font-size:14px">${day}</div>
+                        ${itemLabel ? `<div style="font-size:7px;font-weight:700;margin-top:3px;text-transform:uppercase;line-height:1.2">${itemLabel}</div>` : ''}
+                    </div>`;
                 }
 
-                return `
-                    <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); height: fit-content;">
-                        <div style="font-weight: 700; font-size: 16px; color: var(--text-primary); margin-bottom: 14px; text-align: center;">${monthName}</div>
-                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; font-size: 11px; color: #888; margin-bottom: 10px; text-align: center; font-weight: 600;">
+                calendarHTML += `
+                    <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:20px;min-width:280px">
+                        <div style="font-weight:700;font-size:16px;text-align:center;margin-bottom:12px;color:#fff">${monthName}</div>
+                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:10px;color:#666;margin-bottom:8px;text-align:center">
                             <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
                             ${daysHTML}
                         </div>
                     </div>
                 `;
-            }).join('');
+            });
 
-            // Render compact legend with just color reference
-            legendContainer.innerHTML = `
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                    ${timeline.map(item => `
-                        <div style="display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; background: ${item.color}15; border: 1px solid ${item.color}40; border-radius: 6px;">
-                            <div style="width: 10px; height: 10px; background: ${item.color}; border-radius: 2px;"></div>
-                            <span style="color: var(--text-primary); font-size: 11px; font-weight: 600;">${item.name}</span>
-                            <span style="color: var(--text-secondary); font-size: 10px;">$${item.cost.toLocaleString()}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+            monthsContainer.innerHTML = calendarHTML;
 
-            // Scroll buttons
-            const scrollStartBtn = document.getElementById('scrollStart');
-            const scrollEndBtn = document.getElementById('scrollEnd');
-            const calendar = document.getElementById('budgetCalendar');
+            // Legend
+            legendContainer.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${timeline.map(item =>
+                `<div style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:${item.color}15;border:1px solid ${item.color}40;border-radius:6px">
+                    <div style="width:10px;height:10px;background:${item.color};border-radius:2px"></div>
+                    <span style="font-size:11px;font-weight:600;color:#fff">${item.name}</span>
+                    <span style="font-size:10px;color:#888">$${item.cost.toLocaleString()}</span>
+                </div>`
+            ).join('')}</div>`;
 
-            if (scrollStartBtn && calendar) {
-                scrollStartBtn.addEventListener('click', () => {
-                    calendar.scrollTo({ left: 0, behavior: 'smooth' });
-                });
-            }
+            // Scroll buttons (attach once)
+            if (!scrollListenersInitialized) {
+                const calendar = document.getElementById('budgetCalendar');
+                const startBtn = document.getElementById('scrollStart');
+                const endBtn = document.getElementById('scrollEnd');
 
-            if (scrollEndBtn && calendar) {
-                scrollEndBtn.addEventListener('click', () => {
-                    calendar.scrollTo({ left: calendar.scrollWidth, behavior: 'smooth' });
-                });
-            }
-
-            // Auto-scroll to last month on load
-            setTimeout(() => {
-                if (calendar) {
-                    calendar.scrollLeft = calendar.scrollWidth;
+                if (startBtn && calendar) {
+                    startBtn.onclick = () => calendar.scrollTo({ left: 0, behavior: 'smooth' });
                 }
-            }, 100);
+                if (endBtn && calendar) {
+                    endBtn.onclick = () => calendar.scrollTo({ left: calendar.scrollWidth, behavior: 'smooth' });
+                }
+
+                scrollListenersInitialized = true;
+            }
         }
 
         function toggleTheme() {
@@ -2664,7 +2672,7 @@
                 toggle: document.getElementById('budgetToggle'),
                 content: document.getElementById('budgetContent'),
                 card: document.getElementById('budgetCard'),
-                defaultOpen: false
+                defaultOpen: true
             });
             initSlideToggle({
                 toggle: document.getElementById('debtToggle'),
