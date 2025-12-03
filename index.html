@@ -1854,6 +1854,7 @@
 
         let isPWDMode = false;
         let scrollListenersInitialized = false;
+        let currentMonthIndex = 0;
 
         function generateBudgetCalendar(usePWD = false) {
             const monthsContainer = document.getElementById('calendarMonths');
@@ -1874,27 +1875,67 @@
             // Sorted by priority: cheap items first, then expensive
             const budgetItems = [
                 { name: 'Drain Snake', cost: 15, priority: 1, color: '#8e8e93' },
-                { name: 'Door Lock', cost: 85, priority: 2, color: '#32ade6' },
-                { name: 'Keyboard', cost: 120, priority: 3, color: '#34c759' },
-                { name: 'GBA', cost: 320, priority: 4, color: '#00C805' },
-                { name: 'iPhone Bill', cost: 617, priority: 5, color: '#5856d6' },
-                { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
-                { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
-                { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
-                { name: 'RBC Visa', cost: 5500, priority: 9, color: '#ff4444' }
+                { name: 'Keyboard', cost: 120, priority: 2, color: '#34c759' },
+                { name: 'Door Lock', cost: 85, priority: 3, color: '#32ade6' },
+                { name: 'Phone Bill', cost: 330, priority: 4, color: '#ff6b6b' },
+                { name: 'GBA', cost: 320, priority: 5, color: '#00C805' },
+                { name: 'Final iPhone Bill', cost: 617, priority: 6, color: '#5856d6' },
+                { name: 'Gold Chain', cost: 2500, priority: 7, color: '#ffd700' },
+                { name: 'MacBook', cost: 4200, priority: 8, color: '#007AFF' },
+                { name: 'Dog', cost: 5000, priority: 9, color: '#ff9500' },
+                { name: 'RBC Visa', cost: 5500, priority: 10, color: '#ff4444' }
             ];
 
             const timeline = [];
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Sequential timeline: buy items in priority order, one at a time
+            // Sequential timeline with manual dates for quick purchases
             let cumulativeSavings = currentAssets;
             let currentDate = new Date(today);
 
             budgetItems.forEach(item => {
-                if (cumulativeSavings >= item.cost) {
-                    // Can afford it now
+                let availableDate;
+
+                // Manual dates for items buying soon (spread across next 2 weeks)
+                if (item.name === 'Drain Snake') {
+                    // Dec 4 (Wed)
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 1);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Keyboard') {
+                    // Dec 11 (Wed) - next week
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 8);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Door Lock') {
+                    // Dec 9 (Mon)
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 6);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Phone Bill') {
+                    // Dec 10 (Tue)
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 7);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'GBA') {
+                    // Dec 12 (Thu)
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 9);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Final iPhone Bill') {
+                    // Dec 17 (Tue)
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 14);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (cumulativeSavings >= item.cost) {
+                    // Can afford it with current savings
                     timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else {
@@ -1914,62 +1955,60 @@
                 months.push(monthDate);
             }
 
-            // Build calendar HTML
-            let calendarHTML = '';
-            months.forEach(monthStart => {
-                const monthName = monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-                const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
-                const firstDay = monthStart.getDay();
+            // Build calendar HTML for current month only
+            const monthStart = months[currentMonthIndex];
+            const monthName = monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+            const firstDay = monthStart.getDay();
 
-                let daysHTML = '';
+            let daysHTML = '';
 
-                // Empty cells for days before month starts
-                for (let i = 0; i < firstDay; i++) {
-                    daysHTML += '<div></div>';
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                daysHTML += '<div></div>';
+            }
+
+            // Actual days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
+                date.setHours(0, 0, 0, 0);
+
+                // Find items available on this day
+                const itemsToday = timeline.filter(t => {
+                    const tDate = new Date(t.availableDate);
+                    tDate.setHours(0, 0, 0, 0);
+                    return tDate.getTime() === date.getTime();
+                });
+
+                const isToday = date.getTime() === today.getTime();
+                const bgColor = itemsToday.length > 0 ? itemsToday[0].color : (isToday ? 'rgba(0,200,5,0.2)' : 'transparent');
+                const textColor = itemsToday.length > 0 ? '#fff' : (isToday ? '#00C805' : '#888');
+
+                // Show all items or count if multiple
+                let itemLabel = '';
+                if (itemsToday.length === 1) {
+                    itemLabel = itemsToday[0].name;
+                } else if (itemsToday.length > 1) {
+                    itemLabel = itemsToday.map(item => item.name).join(', ');
                 }
 
-                // Actual days
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
-                    date.setHours(0, 0, 0, 0);
+                daysHTML += `<div style="background:${bgColor};color:${textColor};padding:12px;border-radius:8px;text-align:center;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:${isToday ? '700' : '500'}">
+                    <div style="font-size:18px">${day}</div>
+                    ${itemLabel ? `<div style="font-size:9px;font-weight:700;margin-top:4px;text-transform:uppercase;line-height:1.3">${itemLabel}</div>` : ''}
+                </div>`;
+            }
 
-                    // Find items available on this day
-                    const itemsToday = timeline.filter(t => {
-                        const tDate = new Date(t.availableDate);
-                        tDate.setHours(0, 0, 0, 0);
-                        return tDate.getTime() === date.getTime();
-                    });
-
-                    const isToday = date.getTime() === today.getTime();
-                    const bgColor = itemsToday.length > 0 ? itemsToday[0].color : (isToday ? 'rgba(0,200,5,0.2)' : 'transparent');
-                    const textColor = itemsToday.length > 0 ? '#fff' : (isToday ? '#00C805' : '#888');
-
-                    // Show all items or count if multiple
-                    let itemLabel = '';
-                    if (itemsToday.length === 1) {
-                        itemLabel = itemsToday[0].name;
-                    } else if (itemsToday.length > 1) {
-                        itemLabel = itemsToday.map(item => item.name).join(', ');
-                    }
-
-                    daysHTML += `<div style="background:${bgColor};color:${textColor};padding:8px;border-radius:6px;text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:${isToday ? '700' : '500'}">
-                        <div style="font-size:14px">${day}</div>
-                        ${itemLabel ? `<div style="font-size:7px;font-weight:700;margin-top:3px;text-transform:uppercase;line-height:1.2">${itemLabel}</div>` : ''}
-                    </div>`;
-                }
-
-                calendarHTML += `
-                    <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:20px;min-width:280px">
-                        <div style="font-weight:700;font-size:16px;text-align:center;margin-bottom:12px;color:#fff">${monthName}</div>
-                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:10px;color:#666;margin-bottom:8px;text-align:center">
-                            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
-                            ${daysHTML}
-                        </div>
+            const calendarHTML = `
+                <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:24px;width:100%">
+                    <div style="font-weight:700;font-size:20px;text-align:center;margin-bottom:16px;color:#fff">${monthName}</div>
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-size:12px;color:#666;margin-bottom:12px;text-align:center">
+                        <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
                     </div>
-                `;
-            });
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+                        ${daysHTML}
+                    </div>
+                </div>
+            `;
 
             monthsContainer.innerHTML = calendarHTML;
 
@@ -1982,17 +2021,26 @@
                 </div>`
             ).join('')}</div>`;
 
-            // Scroll buttons (attach once)
+            // Month navigation buttons (attach once)
             if (!scrollListenersInitialized) {
-                const calendar = document.getElementById('budgetCalendar');
-                const startBtn = document.getElementById('scrollStart');
-                const endBtn = document.getElementById('scrollEnd');
+                const prevBtn = document.getElementById('scrollStart');
+                const nextBtn = document.getElementById('scrollEnd');
 
-                if (startBtn && calendar) {
-                    startBtn.onclick = () => calendar.scrollTo({ left: 0, behavior: 'smooth' });
+                if (prevBtn) {
+                    prevBtn.onclick = () => {
+                        if (currentMonthIndex > 0) {
+                            currentMonthIndex--;
+                            generateBudgetCalendar(isPWDMode);
+                        }
+                    };
                 }
-                if (endBtn && calendar) {
-                    endBtn.onclick = () => calendar.scrollTo({ left: calendar.scrollWidth, behavior: 'smooth' });
+                if (nextBtn) {
+                    nextBtn.onclick = () => {
+                        if (currentMonthIndex < 11) {
+                            currentMonthIndex++;
+                            generateBudgetCalendar(isPWDMode);
+                        }
+                    };
                 }
 
                 scrollListenersInitialized = true;
