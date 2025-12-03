@@ -2975,6 +2975,24 @@
             }
             setInterval(updatePaydayCountdown, 100);
 
+            // Tab Navigation System
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            function switchTab(tabName) {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+                const activeContent = document.querySelector(`[data-tab-content="${tabName}"]`);
+                if (activeTab) activeTab.classList.add('active');
+                if (activeContent) activeContent.classList.add('active');
+                localStorage.setItem('activeTab', tabName);
+            }
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+            const savedTab = localStorage.getItem('activeTab') || 'portfolio';
+            switchTab(savedTab);
+
             // Keyboard shortcuts for dropdowns
             document.addEventListener('keydown', (e) => {
                 // Ignore if typing in input/textarea or if modifier keys are pressed
