@@ -1853,72 +1853,150 @@
         }
 
         let isPWDMode = false;
+        let scrollListenersInitialized = false;
 
         function generateBudgetCalendar(usePWD = false) {
-            const calendarContainer = document.getElementById('budgetCalendar');
-            if (!calendarContainer) return;
+            const monthsContainer = document.getElementById('calendarMonths');
+            const legendContainer = document.getElementById('calendarLegend');
+            if (!monthsContainer || !legendContainer) return;
 
             const baseIncome = 1113;
             const pwdIncome = Math.round(baseIncome * 1.4);
-            const expenses = 637; // baseIncome - current surplus
+            const expenses = 637;
             const monthlySurplus = usePWD ? (pwdIncome - expenses) : FINANCIAL_CONFIG.monthlyPaymentCapacity;
-            const currentAssets = 931; // From debt card
+            const currentAssets = 931;
 
-            // Update description
             const desc = document.getElementById('timelineDescription');
             if (desc) {
                 desc.textContent = usePWD ? `PWD income: $${monthlySurplus}/month surplus` : `Current income: $476/month surplus`;
             }
 
-            // Budget items with priority (RBC Visa first, then biggest to smallest)
+            // Sorted by priority: cheap items first, then expensive
             const budgetItems = [
-                { name: 'RBC Credit Card', cost: 5500, priority: 1 },
-                { name: 'Dog', cost: 5000, priority: 2 },
-                { name: 'Gold Chain', cost: 2500, priority: 3 },
-                { name: 'MacBook Pro M5 Pro', cost: 4200, priority: 4 },
-                { name: 'Final iPhone Bill', cost: 617, priority: 5 },
-                { name: 'GBA + Pokemon Sapphire', cost: 320, priority: 6 },
-                { name: 'Keyboard Mat + Keyboard', cost: 120, priority: 7 },
-                { name: 'Door Lock', cost: 85, priority: 8 },
-                { name: 'Drain Snake Chemical', cost: 15, priority: 9 }
+                { name: 'Drain Snake', cost: 15, priority: 1, color: '#8e8e93' },
+                { name: 'Door Lock', cost: 85, priority: 2, color: '#32ade6' },
+                { name: 'Keyboard', cost: 120, priority: 3, color: '#34c759' },
+                { name: 'GBA', cost: 320, priority: 4, color: '#00C805' },
+                { name: 'iPhone Bill', cost: 617, priority: 5, color: '#5856d6' },
+                { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
+                { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
+                { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
+                { name: 'RBC Visa', cost: 5500, priority: 9, color: '#ff4444' }
             ];
 
-            let cumulativeSavings = currentAssets;
             const timeline = [];
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Sequential timeline: buy items in priority order, one at a time
+            let cumulativeSavings = currentAssets;
+            let currentDate = new Date(today);
 
             budgetItems.forEach(item => {
                 if (cumulativeSavings >= item.cost) {
-                    timeline.push({ ...item, availableDate: new Date(today), monthsAway: 0 });
+                    // Can afford it now
+                    timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else {
+                    // Need to save for it
                     const remaining = item.cost - cumulativeSavings;
                     const monthsNeeded = Math.ceil(remaining / monthlySurplus);
-                    const availableDate = new Date(today);
-                    availableDate.setMonth(availableDate.getMonth() + monthsNeeded);
-                    timeline.push({ ...item, availableDate, monthsAway: monthsNeeded });
-                    cumulativeSavings += (monthsNeeded * monthlySurplus) - remaining;
+                    currentDate.setMonth(currentDate.getMonth() + monthsNeeded);
+                    timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: monthsNeeded });
+                    cumulativeSavings = (monthsNeeded * monthlySurplus) - remaining;
                 }
             });
 
-            calendarContainer.innerHTML = timeline.map((item, index) => {
-                const monthLabel = item.monthsAway === 0 ? 'Now' :
-                    item.monthsAway === 1 ? '1 month' : `${item.monthsAway} months`;
-                const dateLabel = item.availableDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            // Generate 12 months starting from today
+            const months = [];
+            for (let i = 0; i < 12; i++) {
+                const monthDate = new Date(today.getFullYear(), today.getMonth() + i, 1);
+                months.push(monthDate);
+            }
 
-                return `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <div>
-                            <div style="font-weight: 600; color: var(--text-primary);">${item.name}</div>
-                            <div style="font-size: 12px; color: #888; margin-top: 4px;">$${item.cost.toLocaleString()} · ${monthLabel}</div>
+            // Build calendar HTML
+            let calendarHTML = '';
+            months.forEach(monthStart => {
+                const monthName = monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+                const firstDay = monthStart.getDay();
+
+                let daysHTML = '';
+
+                // Empty cells for days before month starts
+                for (let i = 0; i < firstDay; i++) {
+                    daysHTML += '<div></div>';
+                }
+
+                // Actual days
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
+                    date.setHours(0, 0, 0, 0);
+
+                    // Find items available on this day
+                    const itemsToday = timeline.filter(t => {
+                        const tDate = new Date(t.availableDate);
+                        tDate.setHours(0, 0, 0, 0);
+                        return tDate.getTime() === date.getTime();
+                    });
+
+                    const isToday = date.getTime() === today.getTime();
+                    const bgColor = itemsToday.length > 0 ? itemsToday[0].color : (isToday ? 'rgba(0,200,5,0.2)' : 'transparent');
+                    const textColor = itemsToday.length > 0 ? '#fff' : (isToday ? '#00C805' : '#888');
+
+                    // Show all items or count if multiple
+                    let itemLabel = '';
+                    if (itemsToday.length === 1) {
+                        itemLabel = itemsToday[0].name;
+                    } else if (itemsToday.length > 1) {
+                        itemLabel = itemsToday.map(item => item.name).join(', ');
+                    }
+
+                    daysHTML += `<div style="background:${bgColor};color:${textColor};padding:8px;border-radius:6px;text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:${isToday ? '700' : '500'}">
+                        <div style="font-size:14px">${day}</div>
+                        ${itemLabel ? `<div style="font-size:7px;font-weight:700;margin-top:3px;text-transform:uppercase;line-height:1.2">${itemLabel}</div>` : ''}
+                    </div>`;
+                }
+
+                calendarHTML += `
+                    <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:20px;min-width:280px">
+                        <div style="font-weight:700;font-size:16px;text-align:center;margin-bottom:12px;color:#fff">${monthName}</div>
+                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:10px;color:#666;margin-bottom:8px;text-align:center">
+                            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-weight: 600; color: ${item.monthsAway === 0 ? '#00C805' : '#888'};">${dateLabel}</div>
-                            <div style="font-size: 12px; color: #888; margin-top: 4px;">Priority ${item.priority}</div>
+                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+                            ${daysHTML}
                         </div>
                     </div>
                 `;
-            }).join('');
+            });
+
+            monthsContainer.innerHTML = calendarHTML;
+
+            // Legend
+            legendContainer.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${timeline.map(item =>
+                `<div style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:${item.color}15;border:1px solid ${item.color}40;border-radius:6px">
+                    <div style="width:10px;height:10px;background:${item.color};border-radius:2px"></div>
+                    <span style="font-size:11px;font-weight:600;color:#fff">${item.name}</span>
+                    <span style="font-size:10px;color:#888">$${item.cost.toLocaleString()}</span>
+                </div>`
+            ).join('')}</div>`;
+
+            // Scroll buttons (attach once)
+            if (!scrollListenersInitialized) {
+                const calendar = document.getElementById('budgetCalendar');
+                const startBtn = document.getElementById('scrollStart');
+                const endBtn = document.getElementById('scrollEnd');
+
+                if (startBtn && calendar) {
+                    startBtn.onclick = () => calendar.scrollTo({ left: 0, behavior: 'smooth' });
+                }
+                if (endBtn && calendar) {
+                    endBtn.onclick = () => calendar.scrollTo({ left: calendar.scrollWidth, behavior: 'smooth' });
+                }
+
+                scrollListenersInitialized = true;
+            }
         }
 
         function toggleTheme() {
@@ -2631,7 +2709,7 @@
                 toggle: document.getElementById('budgetToggle'),
                 content: document.getElementById('budgetContent'),
                 card: document.getElementById('budgetCard'),
-                defaultOpen: false
+                defaultOpen: true
             });
             initSlideToggle({
                 toggle: document.getElementById('debtToggle'),
@@ -3121,12 +3199,23 @@
                     </tbody>
                 </table>
 
-                <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Budget Timeline</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; margin-bottom: 12px;">
+                    <h3 style="font-size: 14px; color: rgba(255,255,255,0.7); margin: 0;">Budget Calendar</h3>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="scrollStart" style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-primary); cursor: pointer; font-size: 12px;">← Start</button>
+                        <button id="scrollEnd" style="padding: 6px 12px; background: rgba(0, 200, 5, 0.2); border: 1px solid rgba(0, 200, 5, 0.4); border-radius: 6px; color: #00C805; cursor: pointer; font-size: 12px; font-weight: 600;">End →</button>
+                    </div>
+                </div>
                 <div style="font-size: 12px; color: #888; margin-bottom: 16px;">
                     <span id="timelineDescription">Current income: $476/month surplus</span>
                 </div>
-                <div id="budgetCalendar" style="display: flex; flex-direction: column; gap: 12px;">
-                    <!-- Calendar will be generated by JavaScript -->
+                <div id="budgetCalendar" style="overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 12px 0; width: 100%; scroll-behavior: smooth;">
+                    <div id="calendarMonths" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(320px, 1fr); gap: 24px; padding-bottom: 16px;">
+                        <!-- Interactive calendar months will be generated by JavaScript -->
+                    </div>
+                </div>
+                <div id="calendarLegend" style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 11px;">
+                    <!-- Legend will be generated by JavaScript -->
                 </div>
             </div>
         </div>
