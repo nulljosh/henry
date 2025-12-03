@@ -804,6 +804,16 @@
             50% { opacity: 0.4; }
             100% { opacity: 1; }
         }
+
+        /* Calendar slide animation */
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
         .skeleton {
             background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
             background-size: 200% 100%;
@@ -2010,7 +2020,11 @@
                 </div>
             `;
 
+            // Add slide animation (use global variable to track direction)
+            const slideDirection = window.calendarDirection || 'right';
+            monthsContainer.style.animation = slideDirection === 'right' ? 'slideInRight 0.3s ease-out' : 'slideInLeft 0.3s ease-out';
             monthsContainer.innerHTML = calendarHTML;
+            setTimeout(() => monthsContainer.style.animation = '', 300);
 
             // Legend
             legendContainer.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${timeline.map(item =>
@@ -2021,14 +2035,16 @@
                 </div>`
             ).join('')}</div>`;
 
-            // Month navigation buttons (attach once)
+            // Month navigation buttons and scroll gestures (attach once)
             if (!scrollListenersInitialized) {
                 const prevBtn = document.getElementById('scrollStart');
                 const nextBtn = document.getElementById('scrollEnd');
+                const calendarContainer = document.getElementById('budgetCalendar');
 
                 if (prevBtn) {
                     prevBtn.onclick = () => {
                         if (currentMonthIndex > 0) {
+                            window.calendarDirection = 'left';
                             currentMonthIndex--;
                             generateBudgetCalendar(isPWDMode);
                         }
@@ -2037,10 +2053,33 @@
                 if (nextBtn) {
                     nextBtn.onclick = () => {
                         if (currentMonthIndex < 11) {
+                            window.calendarDirection = 'right';
                             currentMonthIndex++;
                             generateBudgetCalendar(isPWDMode);
                         }
                     };
+                }
+
+                // Horizontal scroll/swipe support
+                if (calendarContainer) {
+                    let scrollTimeout;
+                    calendarContainer.addEventListener('wheel', (e) => {
+                        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                            e.preventDefault();
+                            clearTimeout(scrollTimeout);
+                            scrollTimeout = setTimeout(() => {
+                                if (e.deltaX > 20 && currentMonthIndex < 11) {
+                                    window.calendarDirection = 'right';
+                                    currentMonthIndex++;
+                                    generateBudgetCalendar(isPWDMode);
+                                } else if (e.deltaX < -20 && currentMonthIndex > 0) {
+                                    window.calendarDirection = 'left';
+                                    currentMonthIndex--;
+                                    generateBudgetCalendar(isPWDMode);
+                                }
+                            }, 100);
+                        }
+                    }, { passive: false });
                 }
 
                 scrollListenersInitialized = true;
@@ -3248,10 +3287,10 @@
                 </table>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; margin-bottom: 12px;">
-                    <h3 style="font-size: 14px; color: rgba(255,255,255,0.7); margin: 0;">Budget Calendar</h3>
+                    <h3 style="font-size: 14px; color: rgba(255,255,255,0.7); margin: 0;">Calendar</h3>
                     <div style="display: flex; gap: 8px;">
-                        <button id="scrollStart" style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-primary); cursor: pointer; font-size: 12px;">← Start</button>
-                        <button id="scrollEnd" style="padding: 6px 12px; background: rgba(0, 200, 5, 0.2); border: 1px solid rgba(0, 200, 5, 0.4); border-radius: 6px; color: #00C805; cursor: pointer; font-size: 12px; font-weight: 600;">End →</button>
+                        <button id="scrollStart" style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-primary); cursor: pointer; font-size: 12px;">← Previous</button>
+                        <button id="scrollEnd" style="padding: 6px 12px; background: rgba(0, 200, 5, 0.2); border: 1px solid rgba(0, 200, 5, 0.4); border-radius: 6px; color: #00C805; cursor: pointer; font-size: 12px; font-weight: 600;">Next →</button>
                     </div>
                 </div>
                 <div style="font-size: 12px; color: #888; margin-bottom: 16px;">
