@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="2.1.0">
     <title>Finn - Portfolio Tracker</title>
     <style>
         * {
@@ -2060,6 +2061,11 @@
                 const centerCoord = size / 2;
                 const radius = (size * 0.92) / 2;
 
+                // Mobile/dark mode detection (once per render, not per slice)
+                const isMobile = size < 300;
+                const minSlicePercent = isMobile ? 8 : 5;
+                const isDark = document.body.classList.contains('dark');
+
                 pieCtx.save();
                 pieCtx.clearRect(0, 0, size, size);
 
@@ -2090,27 +2096,26 @@
                     pieCtx.shadowBlur = isActive ? (slicePercent < 15 ? 35 : 20) : 8;
                     pieCtx.fill();
 
-                    // Draw percentage on slice if big enough (mobile-first)
-                    const isMobile = size < 300;
-                    const minSlicePercent = isMobile ? 8 : 5;
+                    // Draw percentage label on slice (mobile-first, dark mode support)
                     if (slicePercent >= minSlicePercent) {
-                        const labelRadius = radius * 0.7;
+                        const labelRadius = radius * 0.7; // 70% from center
                         const labelX = centerCoord + dx + Math.cos(midAngle) * labelRadius;
                         const labelY = centerCoord + dy + Math.sin(midAngle) * labelRadius;
 
-                        // Responsive font size based on canvas size
+                        // Responsive font: 11-16px scaled by canvas size
                         const fontSize = Math.max(11, Math.min(16, size * 0.055));
                         pieCtx.shadowBlur = 0;
                         pieCtx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, sans-serif`;
                         pieCtx.textAlign = 'center';
                         pieCtx.textBaseline = 'middle';
 
-                        // Text stroke for better visibility on all backgrounds
-                        pieCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-                        pieCtx.lineWidth = 3;
+                        // Stroke for contrast (thinner on mobile for cleaner look)
+                        pieCtx.strokeStyle = isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.3)';
+                        pieCtx.lineWidth = isMobile ? 2 : 2.5;
                         pieCtx.strokeText(`${slicePercent.toFixed(1)}%`, labelX, labelY);
 
-                        pieCtx.fillStyle = 'rgba(255, 255, 255, 0.98)';
+                        // Fill color adapts to theme
+                        pieCtx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.98)';
                         pieCtx.fillText(`${slicePercent.toFixed(1)}%`, labelX, labelY);
                     }
 
@@ -2951,6 +2956,10 @@
                         <tr style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(5, 150, 105, 0.1));">
                             <td>Christmas Gifts 🎄 (CAD)<br><span style="font-size: 0.85em; color: #888; font-weight: 400;">4 family ($20-30) + 3 grandparents ($10)</span></td>
                             <td class="dynamic-value" id="christmasFund">$100.00<br><span style="font-size: 0.85em; color: #888;">~$110-150 needed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Apple AirPods  (CAD)<br><span style="font-size: 0.85em; color: #888; font-weight: 400;">Financeable: $20/month</span></td>
+                            <td class="dynamic-value" id="airpodsFund">$0.00<br><span style="font-size: 0.85em; color: #888;">~$330 w/ tax</span></td>
                         </tr>
                         <tr>
                             <td>Daily Allowance</td>
