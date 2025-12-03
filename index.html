@@ -1169,6 +1169,43 @@
             fill: #0074D9;
         }
 
+        #pwdToggle {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 200, 5, 0.4);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        #pwdToggle:checked {
+            background: #00C805;
+            border-color: #00C805;
+        }
+
+        #pwdToggle:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        #pwdToggle:hover {
+            border-color: #00C805;
+            box-shadow: 0 0 0 3px rgba(0, 200, 5, 0.1);
+        }
+
+        body.dark #pwdToggle {
+            border-color: rgba(0, 200, 5, 0.5);
+        }
+
     </style>
 </head>
 <body>
