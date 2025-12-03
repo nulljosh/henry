@@ -2089,6 +2089,31 @@
                     pieCtx.shadowColor = 'rgba(0,0,0,0.08)';
                     pieCtx.shadowBlur = isActive ? (slicePercent < 15 ? 35 : 20) : 8;
                     pieCtx.fill();
+
+                    // Draw percentage on slice if big enough (mobile-first)
+                    const isMobile = size < 300;
+                    const minSlicePercent = isMobile ? 8 : 5;
+                    if (slicePercent >= minSlicePercent) {
+                        const labelRadius = radius * 0.7;
+                        const labelX = centerCoord + dx + Math.cos(midAngle) * labelRadius;
+                        const labelY = centerCoord + dy + Math.sin(midAngle) * labelRadius;
+
+                        // Responsive font size based on canvas size
+                        const fontSize = Math.max(11, Math.min(16, size * 0.055));
+                        pieCtx.shadowBlur = 0;
+                        pieCtx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, sans-serif`;
+                        pieCtx.textAlign = 'center';
+                        pieCtx.textBaseline = 'middle';
+
+                        // Text stroke for better visibility on all backgrounds
+                        pieCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                        pieCtx.lineWidth = 3;
+                        pieCtx.strokeText(`${slicePercent.toFixed(1)}%`, labelX, labelY);
+
+                        pieCtx.fillStyle = 'rgba(255, 255, 255, 0.98)';
+                        pieCtx.fillText(`${slicePercent.toFixed(1)}%`, labelX, labelY);
+                    }
+
                     pieCtx.restore();
                 });
 
@@ -2313,8 +2338,7 @@
 
                     const value = document.createElement('span');
                     value.className = 'legend-value';
-                    const percentage = ((item.currentValue / currentTotal) * 100).toFixed(1);
-                    value.textContent = `${formatCurrency(item.currentValue, item.currency)} (${percentage}%)`;
+                    value.textContent = formatCurrency(item.currentValue, item.currency);
 
                     li.appendChild(swatch);
                     li.appendChild(label);
