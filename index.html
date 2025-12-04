@@ -2333,7 +2333,7 @@
             const tbody = table ? table.querySelector('tbody') : null;
             const totalsRow = table ? table.querySelector('tfoot tr') : null;
             const pieHoldings = [...holdingsData].sort((a, b) => b.currentValue - a.currentValue);
-            const tableHoldings = [...holdingsData].sort((a, b) => b.dailyChangePercent - a.dailyChangePercent);
+            const tableHoldings = [...holdingsData].sort((a, b) => b.gainPercent - a.gainPercent);
 
             const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
             const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
