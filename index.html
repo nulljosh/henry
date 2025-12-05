@@ -71,14 +71,14 @@
 
         body.dark .back-button,
         body.dark .theme-toggle {
-            background: rgba(44, 44, 46, 0.95);
+            background: rgba(28, 28, 30, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
         }
 
         body.dark .back-button:hover,
         body.dark .theme-toggle:hover {
-            background: rgba(58, 58, 60, 1);
+            background: rgba(44, 44, 46, 1);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
         }
 
@@ -90,7 +90,7 @@
         }
 
         body.dark .glass-card {
-            background: #2c2c2e;
+            background: #1c1c1e;
             border-color: rgba(255, 255, 255, 0.1);
         }
 
@@ -190,7 +190,7 @@
         }
 
         body.dark .brand-badge {
-            background: rgba(44, 44, 46, 0.95);
+            background: rgba(28, 28, 30, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -334,7 +334,7 @@
         }
 
         body.dark .pie-center-label {
-            background: rgba(44, 44, 46, 0.92);
+            background: rgba(28, 28, 30, 0.92);
             color: #f5f5f7;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
@@ -3069,7 +3069,7 @@
             const savedTab = localStorage.getItem('activeTab') || 'portfolio';
             switchTab(savedTab);
 
-            // Keyboard shortcuts for dropdowns
+            // Keyboard shortcuts for tabs
             document.addEventListener('keydown', (e) => {
                 // Ignore if typing in input/textarea or if modifier keys are pressed
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.metaKey || e.altKey) {
@@ -3077,30 +3077,29 @@
                 }
 
                 const key = e.key.toLowerCase();
-                let toggleId = null;
+                let tabName = null;
 
                 switch(key) {
+                    case 'p':
+                        tabName = 'portfolio';
+                        break;
                     case 'b':
-                        toggleId = 'budgetToggle';
+                        tabName = 'budget';
                         break;
                     case 'd':
-                        toggleId = 'debtToggle';
+                        tabName = 'debt';
                         break;
                     case 's':
-                        toggleId = 'summaryToggle';
+                        tabName = 'summary';
                         break;
                     case 'i':
-                    case 'm':
-                        toggleId = 'marketInsightsToggle';
+                        tabName = 'insights';
                         break;
                 }
 
-                if (toggleId) {
+                if (tabName) {
                     e.preventDefault();
-                    const toggle = document.getElementById(toggleId);
-                    if (toggle) {
-                        toggle.click();
-                    }
+                    switchTab(tabName);
                 }
             });
         });

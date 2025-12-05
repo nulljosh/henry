@@ -18,7 +18,7 @@ Perform optimized daily portfolio update for index.html:
    - TODAY: Portfolio daily %, top mover
    - SPREAD: Best to worst performer range
    - TARGETS: Highest upside to target + debt runway
-6. Open in Safari: `open -a Safari /Users/joshua/Documents/Code/finn/index.html`
+6. Open in Chrome: `open -a "Google Chrome" /Users/joshua/Documents/Code/finn/index.html`
 7. Confirm with user
 8. Git commit + push with message:
    ```
