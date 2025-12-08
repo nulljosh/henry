@@ -3052,6 +3052,9 @@
                     case 'b':
                         tabName = 'budget';
                         break;
+                    case 'c':
+                        tabName = 'calendar';
+                        break;
                     case 'd':
                         tabName = 'debt';
                         break;
@@ -3099,6 +3102,7 @@
         <div class="tab-navigation">
             <button class="tab-btn active" data-tab="portfolio">Portfolio</button>
             <button class="tab-btn" data-tab="budget">Budget</button>
+            <button class="tab-btn" data-tab="calendar">Calendar</button>
             <button class="tab-btn" data-tab="debt">Debt</button>
             <button class="tab-btn" data-tab="summary">Summary</button>
             <button class="tab-btn" data-tab="insights">Insights</button>
@@ -3390,15 +3394,18 @@
                     </tbody>
                 </table>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; margin-bottom: 12px;">
-                    <h3 style="font-size: 14px; color: rgba(255,255,255,0.7); margin: 0;">Calendar</h3>
+        </div>
+
+        <div class="glass-card tab-content" id="calendarCard" data-tab-content="calendar">
+            <h2 style="margin-bottom: 20px;">Calendar</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-size: 12px; color: #888;">
+                        <span id="timelineDescription">Current income: $476/month surplus</span>
+                    </div>
                     <div style="display: flex; gap: 8px;">
                         <button id="scrollStart" style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-primary); cursor: pointer; font-size: 12px;">← Previous</button>
                         <button id="scrollEnd" style="padding: 6px 12px; background: rgba(0, 200, 5, 0.2); border: 1px solid rgba(0, 200, 5, 0.4); border-radius: 6px; color: #00C805; cursor: pointer; font-size: 12px; font-weight: 600;">Next →</button>
                     </div>
-                </div>
-                <div style="font-size: 12px; color: #888; margin-bottom: 16px;">
-                    <span id="timelineDescription">Current income: $476/month surplus</span>
                 </div>
                 <div id="budgetCalendar" style="overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 12px 0; width: 100%; scroll-behavior: smooth;">
                     <div id="calendarMonths" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(320px, 1fr); gap: 24px; padding-bottom: 16px;">
@@ -3457,7 +3464,7 @@
                 </table>
             </div>
             <div style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 12px; color: #888;">
-                See Budget Timeline for future purchases (MacBook, Apple Watch, etc.)
+                See Calendar tab for purchase timeline (MacBook, Apple Watch, etc.)
             </div>
         </div>
 
