@@ -1971,16 +1971,15 @@
 
             // Sorted by priority: cheap items first, then expensive
             const budgetItems = [
-                { name: 'Drain Snake', cost: 15, priority: 1, color: '#8e8e93' },
-                { name: 'Keyboard', cost: 120, priority: 2, color: '#34c759' },
-                { name: 'Door Lock', cost: 85, priority: 3, color: '#32ade6' },
-                { name: 'iPhone 17 + Watch', cost: 330, priority: 4, color: '#ff6b6b' },
-                { name: 'GBA', cost: 320, priority: 5, color: '#00C805' },
-                { name: 'iPhone 15 Final Bill', cost: 617, priority: 6, color: '#5856d6' },
-                { name: 'Gold Chain', cost: 2500, priority: 7, color: '#ffd700' },
-                { name: 'MacBook', cost: 4200, priority: 8, color: '#007AFF' },
-                { name: 'Dog', cost: 5000, priority: 9, color: '#ff9500' },
-                { name: 'RBC Visa', cost: 5500, priority: 10, color: '#ff4444' }
+                { name: 'Keyboard', cost: 120, priority: 1, color: '#34c759' },
+                { name: 'Door Lock', cost: 85, priority: 2, color: '#32ade6' },
+                { name: 'Phone + Watch', cost: 330, priority: 3, color: '#ff6b6b' },
+                { name: 'GBA', cost: 320, priority: 4, color: '#00C805' },
+                { name: 'iPhone 15 Final Bill', cost: 617, priority: 5, color: '#5856d6' },
+                { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
+                { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
+                { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
+                { name: 'RBC Visa', cost: 5500, priority: 9, color: '#ff4444' }
             ];
 
             const timeline = [];
@@ -1994,42 +1993,34 @@
             budgetItems.forEach(item => {
                 let availableDate;
 
-                // Manual dates for items buying soon (spread across next 2 weeks)
-                if (item.name === 'Drain Snake') {
-                    // Dec 4 (Wed)
+                // Manual dates for items buying soon (spread across next 2-3 weeks)
+                if (item.name === 'Keyboard') {
+                    // Dec 18 (Wed) - moved a week later
                     availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 1);
+                    availableDate.setDate(availableDate.getDate() + 15);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
-                } else if (item.name === 'Keyboard') {
-                    // Dec 11 (Wed) - next week
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 8);
-                    timeline.push({ ...item, availableDate, monthsAway: 0 });
-                    cumulativeSavings -= item.cost;
-                } else if (item.name === 'Door Lock') {
-                    // Dec 9 (Mon)
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 6);
-                    timeline.push({ ...item, availableDate, monthsAway: 0 });
-                    cumulativeSavings -= item.cost;
-                } else if (item.name === 'iPhone 17 + Watch') {
-                    // Dec 10 (Tue)
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 7);
-                    timeline.push({ ...item, availableDate, monthsAway: 0 });
-                    cumulativeSavings -= item.cost;
-                } else if (item.name === 'GBA') {
-                    // Dec 12 (Thu)
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 9);
-                    timeline.push({ ...item, availableDate, monthsAway: 0 });
-                    cumulativeSavings -= item.cost;
-                } else if (item.name === 'iPhone 15 Final Bill') {
-                    // Dec 17 (Tue)
+                } else if (item.name === 'Phone + Watch') {
+                    // Dec 17 (Tue) - moved a week later
                     availableDate = new Date(today);
                     availableDate.setDate(availableDate.getDate() + 14);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Door Lock') {
+                    // Dec 16 (Mon) - moved a week later
+                    availableDate = new Date(today);
+                    availableDate.setDate(availableDate.getDate() + 13);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'GBA') {
+                    // Jan 15 (Wed) - moved to next month
+                    availableDate = new Date(2026, 0, 15);
+                    timeline.push({ ...item, availableDate, monthsAway: 1 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'iPhone 15 Final Bill') {
+                    // Jan 20 (Tue) - after GBA
+                    availableDate = new Date(2026, 0, 20);
+                    timeline.push({ ...item, availableDate, monthsAway: 1 });
                     cumulativeSavings -= item.cost;
                 } else if (cumulativeSavings >= item.cost) {
                     // Can afford it with current savings
@@ -3383,10 +3374,6 @@
                         <tr class="future-expense">
                             <td>RBC Credit Card</td>
                             <td>-$5,500</td>
-                        </tr>
-                        <tr class="future-expense">
-                            <td>Drain Snake Chemical</td>
-                            <td>-$15</td>
                         </tr>
                         <tr class="future-expense">
                             <td>GBA Pokémon</td>
