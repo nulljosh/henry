@@ -10,25 +10,26 @@ Perform optimized daily portfolio update for index.html:
 - No emojis, minimal output
 
 **Steps:**
-1. Fetch prices for all holdings in parallel (PLTR, NVDA, NVDL, TSLA, HOOD, GOOGL, GGLL, SPY, cash)
-2. Update fallbackPrice AND fallbackDailyChange in holdingsConfig
-3. Check Downloads for screenshots (*.png, *.HEIC from last 24h)
-4. Read screenshots, update portfolio data (shares, cash, budget)
-5. Market insights auto-update with factual data:
-   - TODAY: Portfolio daily %, top mover
-   - SPREAD: Best to worst performer range
-   - TARGETS: Highest upside to target + debt runway
+1. Check Downloads for screenshots (*.png, *.HEIC from last 24h)
+   - If NO screenshots: Open Chrome to wealthsimple.com and wait for user confirmation
+2. Read screenshots to identify current holdings dynamically
+3. Fetch prices for ALL active holdings in parallel (single message, multiple WebSearch)
+4. Update holdingsConfig:
+   - Add new positions from screenshots
+   - Update shares/prices for existing positions
+   - REMOVE positions with 0 shares (keep config clean)
+   - Update fallbackPrice AND fallbackDailyChange for each
+5. Write portfolio summary to text file (portfolio-update-[date].txt)
 6. Open in Chrome: `open -a "Google Chrome" /Users/joshua/Documents/Code/finn/index.html`
-7. Confirm with user
-8. Git commit + push with message:
-   ```
-   Update portfolio prices and holdings - [date]
-   ```
-9. Delete screenshots: `find /Users/joshua/Downloads -name "Screenshot*.png" -mtime -1 -delete`
+7. Git commit + push with message including added/removed positions
+8. Delete screenshots AND text file: `find /Users/joshua/Downloads -name "Screenshot*.png" -delete`
+9. Delete temp text file after commit
 
 **Important:**
 - Verify share counts match screenshots exactly
 - Update BOTH fallbackPrice AND fallbackDailyChange for each stock
-- Update both JavaScript holdingsConfig AND HTML table
+- Portfolio is DYNAMIC - add new positions, remove sold ones
+- If no screenshots found, open wealthsimple.com and WAIT for user
 - Market insights are unbiased - just facts, no trading advice
+- Write temp text file during update, delete after commit
 - Budget shows $1,113 monthly / ~$476 to invest
