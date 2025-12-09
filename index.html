@@ -1333,6 +1333,168 @@
             border-color: rgba(0, 200, 5, 0.5);
         }
 
+        /* Options Cards */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        body.dark .option-card {
+            background: #1c1c1e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark .option-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .option-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .option-symbol {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+
+        body.dark .option-symbol {
+            color: #f5f5f7;
+        }
+
+        .option-type {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .option-type.put {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .option-type.call {
+            background: #34c759;
+            color: white;
+        }
+
+        .option-strike {
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        body.dark .option-strike {
+            color: #999;
+        }
+
+        .option-status {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .option-status.itm {
+            background: rgba(52, 199, 89, 0.15);
+            color: #34c759;
+        }
+
+        .option-status.otm {
+            background: rgba(142, 142, 147, 0.15);
+            color: #8e8e93;
+        }
+
+        .option-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+
+        .option-row.highlight {
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+            margin: 6px 0;
+        }
+
+        body.dark .option-row.highlight {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .option-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        body.dark .option-label {
+            color: #999;
+        }
+
+        .option-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        body.dark .option-value {
+            color: #f5f5f7;
+        }
+
+        .option-value.profit {
+            color: #34c759;
+        }
+
+        .option-value.loss {
+            color: #ff3b30;
+        }
+
+        .option-value.urgent {
+            color: #ff3b30;
+            font-weight: 700;
+        }
+
+        .option-value.warning {
+            color: #ff9500;
+            font-weight: 700;
+        }
+
     </style>
 </head>
 <body>
@@ -1480,7 +1642,24 @@
             }
         ];
 
+        // Options contracts configuration
+        const optionsConfig = [
+            {
+                symbol: 'CVX',
+                underlying: 'Chevron Corp',
+                type: 'put',  // 'put' or 'call'
+                strike: 149,  // Strike price
+                expiration: '2025-12-19',  // YYYY-MM-DD
+                contracts: 1,  // Number of contracts (1 contract = 100 shares)
+                premiumPaid: 2.19,  // Premium paid per share ($219 total / 100 shares)
+                currentPremium: 2.19,  // Current premium (fallback, will update from market)
+                color: '#0070C9',
+                quoteSymbol: 'CVX'  // For fetching underlying price
+            }
+        ];
+
         let holdingsData = [];
+        let optionsData = [];
 
         const FINANCIAL_CONFIG = {
             cadSavings: 0,  // Stocks are held in TFSA, already counted
@@ -1615,6 +1794,46 @@
                         gainPercent
                     };
                 });
+        }
+
+        function buildOptions(quoteMap = {}) {
+            const now = new Date();
+            return optionsConfig.map(option => {
+                const expDate = new Date(option.expiration + 'T16:00:00-05:00'); // Market close EST
+                const daysToExpiration = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+                const expired = daysToExpiration < 0;
+
+                // Calculate P/L
+                const totalPremiumPaid = option.premiumPaid * option.contracts * 100;
+                const currentValue = option.currentPremium * option.contracts * 100;
+                const profitLoss = currentValue - totalPremiumPaid;
+                const profitLossPercent = totalPremiumPaid > 0 ? (profitLoss / totalPremiumPaid) * 100 : 0;
+
+                // Get underlying stock price for context
+                const quote = quoteMap[option.quoteSymbol || option.symbol];
+                const underlyingPrice = quote?.regularMarketPrice ?? 0;
+
+                // Calculate intrinsic value
+                let intrinsicValue = 0;
+                if (option.type === 'put') {
+                    intrinsicValue = Math.max(0, option.strike - underlyingPrice);
+                } else {
+                    intrinsicValue = Math.max(0, underlyingPrice - option.strike);
+                }
+
+                return {
+                    ...option,
+                    daysToExpiration,
+                    expired,
+                    totalPremiumPaid,
+                    currentValue,
+                    profitLoss,
+                    profitLossPercent,
+                    underlyingPrice,
+                    intrinsicValue,
+                    inTheMoney: intrinsicValue > 0
+                };
+            });
         }
 
         async function loadHoldings() {
@@ -2279,6 +2498,10 @@
             if (!holdingsData || holdingsData.length === 0) {
                 holdingsData = buildHoldings();
             }
+
+            // Load options data
+            optionsData = buildOptions();
+            renderOptions();
             const table = document.getElementById('stockTable');
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
@@ -2931,6 +3154,69 @@
                 sortTable(3, 'desc');
             }
 
+            // Render options
+            function renderOptions() {
+                const container = document.getElementById('optionsContainer');
+                if (!container || !optionsData || optionsData.length === 0) return;
+
+                container.innerHTML = '';
+                optionsData.forEach(option => {
+                    const card = document.createElement('div');
+                    card.className = 'option-card';
+                    card.style.borderLeft = `4px solid ${option.color}`;
+
+                    const isProfit = option.profitLoss >= 0;
+                    const profitClass = isProfit ? 'profit' : 'loss';
+                    const daysClass = option.daysToExpiration <= 3 ? 'urgent' : option.daysToExpiration <= 7 ? 'warning' : '';
+
+                    card.innerHTML = `
+                        <div class="option-header">
+                            <div class="option-title">
+                                <span class="option-symbol">${option.symbol}</span>
+                                <span class="option-type ${option.type}">${option.type.toUpperCase()}</span>
+                                <span class="option-strike">$${option.strike}</span>
+                            </div>
+                            <div class="option-status ${option.inTheMoney ? 'itm' : 'otm'}">
+                                ${option.inTheMoney ? 'ITM' : 'OTM'}
+                            </div>
+                        </div>
+                        <div class="option-details">
+                            <div class="option-row">
+                                <span class="option-label">Underlying:</span>
+                                <span class="option-value">${option.underlying} @ $${option.underlyingPrice.toFixed(2)}</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Expiration:</span>
+                                <span class="option-value ${daysClass}">${option.expiration} (${option.daysToExpiration}d)</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Contracts:</span>
+                                <span class="option-value">${option.contracts} × 100 shares</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Premium Paid:</span>
+                                <span class="option-value">$${option.totalPremiumPaid.toFixed(2)}</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Current Value:</span>
+                                <span class="option-value">$${option.currentValue.toFixed(2)}</span>
+                            </div>
+                            <div class="option-row highlight">
+                                <span class="option-label">P/L:</span>
+                                <span class="option-value ${profitClass}">
+                                    ${isProfit ? '+' : ''}$${option.profitLoss.toFixed(2)} (${isProfit ? '+' : ''}${option.profitLossPercent.toFixed(1)}%)
+                                </span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Intrinsic Value:</span>
+                                <span class="option-value">$${option.intrinsicValue.toFixed(2)}/share</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
             // Payday countdown
             const BUDGET_CONFIG = {
                 vacationFund: 8  // CAD - update from screenshot
@@ -3307,6 +3593,13 @@
                         </iframe>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="glass-card tab-content active" id="optionsCard">
+            <h2 style="margin-bottom: 20px;">Options</h2>
+            <div id="optionsContainer" class="options-container">
+                <!-- Options will be rendered here -->
             </div>
         </div>
 
