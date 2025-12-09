@@ -1735,7 +1735,9 @@
                 color: '#0070C9',
                 quoteSymbol: 'CVX',  // For fetching underlying price
                 filledDate: '2025-12-09',  // Date order was filled
-                filledTime: '10:33 AM'  // Time order was filled
+                filledTime: '10:33 AM',  // Time order was filled
+                logoLabel: 'CVX',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 6l-6 6h4v8h4v-8h4z"/><path d="M10 22l6-6 6 6h-12z"/></svg>'
             }
         ];
 
@@ -2596,6 +2598,8 @@
                 targetValue: option.currentValue,
                 gainPercent: option.profitLossPercent,
                 color: option.color,
+                logoLabel: option.logoLabel,
+                logoSvg: option.logoSvg,
                 isOption: true,
                 optionData: option
             }));
