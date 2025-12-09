@@ -1495,6 +1495,113 @@
             font-weight: 700;
         }
 
+        /* Option Modal */
+        .option-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+        }
+
+        .option-modal.active {
+            display: block;
+        }
+
+        .option-modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .option-modal-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-modal.active .option-modal-content {
+            transform: translateY(0);
+        }
+
+        body.dark .option-modal-content {
+            background: #1c1c1e;
+        }
+
+        .option-modal-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .option-modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .option-modal-close:hover {
+            color: #333;
+        }
+
+        body.dark .option-modal-close {
+            color: #666;
+        }
+
+        body.dark .option-modal-close:hover {
+            color: #ccc;
+        }
+
+        .option-modal-body {
+            padding-bottom: 20px;
+        }
+
+        /* Desktop: centered modal instead of bottom sheet */
+        @media (min-width: 768px) {
+            .option-modal-content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                right: auto;
+                bottom: auto;
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0;
+                border-radius: 20px;
+                max-width: 500px;
+                width: 90%;
+                max-height: 80vh;
+            }
+
+            .option-modal.active .option-modal-content {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -2480,10 +2587,24 @@
             const headers = table ? table.querySelectorAll('th') : [];
             const tbody = table ? table.querySelector('tbody') : null;
             const totalsRow = table ? table.querySelector('tfoot tr') : null;
-            const pieHoldings = [...holdingsData].sort((a, b) => b.currentValue - a.currentValue);
+
+            // Merge options into pie chart as holdings
+            const optionHoldings = optionsData.map(option => ({
+                symbol: option.symbol,
+                shares: option.contracts,
+                currentValue: option.currentValue,
+                targetValue: option.currentValue,
+                gainPercent: option.profitLossPercent,
+                color: option.color,
+                isOption: true,
+                optionData: option
+            }));
+
+            const pieHoldings = [...holdingsData, ...optionHoldings].sort((a, b) => b.currentValue - a.currentValue);
             const tableHoldings = [...holdingsData].sort((a, b) => b.gainPercent - a.gainPercent);
 
-            const currentTotal = holdingsData.reduce((sum, holding) => sum + holding.currentValue, 0);
+            // Calculate totals including options
+            const currentTotal = pieHoldings.reduce((sum, holding) => sum + holding.currentValue, 0);
             const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
 
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
@@ -2693,12 +2814,96 @@
                 defaultCenter();
             };
             const toggleSlice = (symbol) => {
+                // Check if this is an option
+                const holding = pieHoldings.find(h => h.symbol === symbol);
+                if (holding && holding.isOption) {
+                    showOptionModal(holding.optionData);
+                    return;
+                }
+
                 if (activeSymbol === symbol) {
                     resetSlice();
                 } else {
                     activateSlice(symbol);
                 }
             };
+
+            // Option modal functions
+            const showOptionModal = (option) => {
+                const modal = document.getElementById('optionModal');
+                const modalBody = document.getElementById('optionModalBody');
+
+                const isProfit = option.profitLoss >= 0;
+                const profitClass = isProfit ? 'profit' : 'loss';
+                const daysClass = option.daysToExpiration <= 3 ? 'urgent' :
+                                 option.daysToExpiration <= 7 ? 'warning' : '';
+
+                modalBody.innerHTML = `
+                    <div class="option-card" style="border-left: 4px solid ${option.color}; margin-bottom: 0;">
+                        <div class="option-header">
+                            <div class="option-title">
+                                <span class="option-symbol">${option.symbol}</span>
+                                <span class="option-type ${option.type}">${option.type.toUpperCase()}</span>
+                                <span class="option-strike">$${option.strike}</span>
+                            </div>
+                            <div class="option-status ${option.inTheMoney ? 'itm' : 'otm'}">
+                                ${option.inTheMoney ? 'ITM' : 'OTM'}
+                            </div>
+                        </div>
+                        <div class="option-details">
+                            <div class="option-row">
+                                <span class="option-label">Underlying</span>
+                                <span class="option-value">${option.underlying} @ $${option.underlyingPrice.toFixed(2)}</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Expiration</span>
+                                <span class="option-value ${daysClass}">${option.expiration} (${option.daysToExpiration} days)</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Contracts</span>
+                                <span class="option-value">${option.contracts} × 100 = ${option.contracts * 100} shares</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Premium Paid</span>
+                                <span class="option-value">$${option.premiumPaid.toFixed(2)}/share ($${option.totalPremiumPaid.toFixed(2)} total)</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Current Value</span>
+                                <span class="option-value">$${option.currentPremium.toFixed(2)}/share ($${option.currentValue.toFixed(2)} total)</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">P/L</span>
+                                <span class="option-value ${profitClass}">$${option.profitLoss.toFixed(2)} (${option.profitLossPercent.toFixed(2)}%)</span>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Intrinsic Value</span>
+                                <span class="option-value">$${option.intrinsicValue.toFixed(2)}</span>
+                            </div>
+                            ${option.filledDate ? `
+                            <div class="option-row">
+                                <span class="option-label">Filled</span>
+                                <span class="option-value">${option.filledDate} at ${option.filledTime}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                modal.classList.add('active');
+            };
+
+            const closeOptionModal = () => {
+                const modal = document.getElementById('optionModal');
+                modal.classList.remove('active');
+            };
+
+            // Set up modal close handlers
+            const modal = document.getElementById('optionModal');
+            const modalBackdrop = modal.querySelector('.option-modal-backdrop');
+            const modalClose = modal.querySelector('.option-modal-close');
+
+            modalBackdrop.addEventListener('click', closeOptionModal);
+            modalClose.addEventListener('click', closeOptionModal);
             if (pieChart && pieCenter && pieLegend) {
                 let startPercent = 0;
                 pieHoldings.forEach(item => {
@@ -3570,10 +3775,24 @@
             </div>
         </div>
 
-        <div class="glass-card" id="optionsCard">
+        <!-- Hidden: Options integrated into pie chart -->
+        <div class="glass-card" id="optionsCard" style="display: none;">
             <h2 style="margin-bottom: 20px;">Options</h2>
             <div id="optionsContainer" class="options-container">
                 <!-- Options will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Option Details Modal -->
+        <div id="optionModal" class="option-modal">
+            <div class="option-modal-backdrop"></div>
+            <div class="option-modal-content">
+                <div class="option-modal-header">
+                    <button class="option-modal-close">&times;</button>
+                </div>
+                <div id="optionModalBody" class="option-modal-body">
+                    <!-- Option details will be injected here -->
+                </div>
             </div>
         </div>
 
