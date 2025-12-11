@@ -2163,23 +2163,23 @@
             budgetItems.forEach(item => {
                 let availableDate;
 
-                // Manual dates for items buying soon (spread across next 2-3 weeks)
+                // Manual dates for items buying soon
                 if (item.name === 'Keyboard') {
-                    // Dec 18 (Wed) - moved a week later
+                    // Dec 30 (Mon) - last week of December
                     availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 15);
+                    availableDate.setDate(availableDate.getDate() + 19);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'Phone + Watch') {
-                    // Dec 17 (Tue) - moved a week later
+                    // Dec 29 (Sun) - last week of December
                     availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 14);
+                    availableDate.setDate(availableDate.getDate() + 18);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'Door Lock') {
-                    // Dec 16 (Mon) - moved a week later
+                    // Dec 19 (Thu) - next week
                     availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 13);
+                    availableDate.setDate(availableDate.getDate() + 8);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'GBA') {
