@@ -135,6 +135,8 @@
             display: flex;
             flex-direction: column;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         .glass-card {
@@ -918,13 +920,15 @@
 
         .tab-content {
             display: none;
+            position: relative;
+            z-index: 1;
         }
         .tab-content.active {
             display: flex;
             flex-direction: column;
             flex: 1;
             min-height: 100%;
-            padding-bottom: 80px;
+            padding-bottom: 120px;
         }
 
         body.dark .skeleton {
@@ -3610,7 +3614,7 @@
             </div>
         </div>
 
-        <div class="glass-card tab-content market-insights-card" id="marketInsightsCard" data-tab-content="insights" style="justify-content: flex-start;">
+        <div class="glass-card tab-content market-insights-card" id="marketInsightsCard" data-tab-content="insights">
             <h2 style="margin-bottom: 20px;">Insights</h2>
                 <div class="market-insights-meta">
                     <div id="marketInsightsTimestamp">Pre-market outlook loading…</div>
@@ -3633,7 +3637,9 @@
                         <p style="margin: 0 0 10px 0;"><strong>TARGETS:</strong> SPY 60% upside · GOOGL 25% · Cash depleted</p>
                         <p style="margin: 0 0 10px 0;"><strong>NVDA:</strong> $182.36 (-0.56%). Slight dip after strong year.</p>
                         <p style="margin: 0 0 10px 0;"><strong>GOOGL:</strong> $320.13 (+0.79%). Led Friday's session.</p>
-                        <p style="margin: 0 0 0 0;"><strong>HOOD:</strong> $131.89 (-3.79%). Sharp Friday decline.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>HOOD:</strong> $131.89 (-3.79%). Sharp Friday decline.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>XAUUSD (Gold CFD):</strong> Real-time gold prices tracked for portfolio diversification.</p>
+                        <p style="margin: 0 0 0 0;"><strong>NAS100 (Nasdaq 100 CFD):</strong> Tech-heavy index tracking top 100 non-financial stocks.</p>
                     </div>
                 </div>
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(128, 128, 128, 0.2);">
@@ -3783,7 +3789,7 @@
                 </div>
         </div>
 
-        <div class="glass-card tab-content" id="debtCard" data-tab-content="debt" style="justify-content: space-between;">
+        <div class="glass-card tab-content" id="debtCard" data-tab-content="debt">
             <div>
                 <h2 style="margin-bottom: 20px;">Debt</h2>
                 <div class="progress-summary">
@@ -3834,7 +3840,7 @@
             </div>
         </div>
 
-        <div class="glass-card tab-content" id="summaryCard" data-tab-content="summary" style="justify-content: flex-start;">
+        <div class="glass-card tab-content" id="summaryCard" data-tab-content="summary">
             <h2 style="margin-bottom: 20px;">Summary</h2>
                 <table>
                     <tbody>
