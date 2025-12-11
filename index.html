@@ -135,8 +135,6 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            position: relative;
-            z-index: 1;
         }
 
         .glass-card {
@@ -920,8 +918,6 @@
 
         .tab-content {
             display: none;
-            position: relative;
-            z-index: 1;
         }
         .tab-content.active {
             display: flex;
@@ -3381,21 +3377,28 @@
 
                 switch(key) {
                     case 'p':
+                    case '1':
                         tabName = 'portfolio';
                         break;
                     case 'b':
+                    case '2':
                         tabName = 'budget';
                         break;
                     case 'c':
+                    case '3':
                         tabName = 'calendar';
                         break;
                     case 'd':
+                    case '4':
                         tabName = 'debt';
                         break;
                     case 's':
+                    case '5':
                         tabName = 'summary';
                         break;
                     case 'i':
+                    case 'm':
+                    case '6':
                         tabName = 'insights';
                         break;
                 }
