@@ -1608,116 +1608,18 @@
     <script>
         const holdingsConfig = [
             {
-                symbol: 'NVDA',
-                quoteSymbol: 'NVDA',
-                logoLabel: 'NV',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial, sans-serif" letter-spacing="-0.5">NVDA</text></svg>',
-                shares: 1.0169,
-                targetPrice: 390,
-                fallbackPrice: 184.89,
-                fallbackDailyChange: -0.68,
-                color: '#9dd866',
-                url: 'https://finance.yahoo.com/quote/NVDA',
-                earningsStatus: 'beat',
-                earningsLabel: 'NVIDIA Corp'
-            },
-            {
-                symbol: 'IREN',
-                quoteSymbol: 'IREN',
-                logoLabel: 'IREN',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="9" font-weight="bold" font-family="Arial, sans-serif" letter-spacing="-0.5">IREN</text></svg>',
-                shares: 0.2215,
-                targetPrice: 100,
-                fallbackPrice: 47.25,
-                fallbackDailyChange: +0.93,
-                color: '#FF6B35',
-                url: 'https://finance.yahoo.com/quote/IREN',
-                earningsStatus: 'neutral',
-                earningsLabel: 'IREN Limited'
-            },
-            {
-                symbol: 'HOOD',
-                quoteSymbol: 'HOOD',
-                logoLabel: 'H',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="11" font-weight="bold" font-family="Arial, sans-serif" letter-spacing="-0.5">HOOD</text></svg>',
-                shares: 0.3039,
-                targetPrice: 160,
-                fallbackPrice: 138.53,
-                fallbackDailyChange: +2.13,
-                color: '#00C805',
-                url: 'https://finance.yahoo.com/quote/HOOD',
-                earningsStatus: 'neutral',
-                earningsLabel: 'Robinhood Markets'
-            },
-            {
-                symbol: 'GOOGL',
-                quoteSymbol: 'GOOGL',
-                logoLabel: 'G',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="white"><circle cx="16" cy="16" r="14" fill="white"/><path fill="#4285F4" d="M16.3 13.5v3.4h5.6c-.2 1.4-1.6 4-5.6 4-3.4 0-6.2-2.8-6.2-6.2s2.8-6.2 6.2-6.2c1.9 0 3.2.8 4 1.5l2.7-2.6C21.4 5.9 19.1 4.8 16.3 4.8c-5.6 0-10.2 4.5-10.2 10.2s4.5 10.2 10.2 10.2c5.9 0 9.8-4.1 9.8-10 0-.7-.1-1.2-.2-1.7h-9.6z"/></svg>',
-                shares: 0.3322,
-                targetPrice: 400,
-                fallbackPrice: 317.69,
-                fallbackDailyChange: +4.00,
-                color: '#4285F4',
-                url: 'https://finance.yahoo.com/quote/GOOGL',
-                earningsStatus: 'neutral',
-                earningsLabel: 'Alphabet Inc'
-            },
-            {
-                symbol: 'SPY',
-                quoteSymbol: 'SPY',
-                logoLabel: 'SP',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="20" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial, sans-serif">S&P</text></svg>',
-                shares: 0.3081,
-                targetPrice: 1100,
-                fallbackPrice: 684.42,
-                fallbackDailyChange: +0.75,
-                color: '#4f75b7',
-                url: 'https://finance.yahoo.com/quote/SPY',
-                earningsStatus: 'neutral',
-                earningsLabel: 'S&P 500 ETF'
-            },
-            {
-                symbol: 'SLV',
-                quoteSymbol: 'SLV',
-                logoLabel: 'SL',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial, sans-serif" letter-spacing="-0.5">SLV</text></svg>',
-                shares: 1.0,
-                targetPrice: 60,
-                fallbackPrice: 54.74,
-                fallbackDailyChange: +2.11,
-                color: '#C0C0C0',
-                url: 'https://finance.yahoo.com/quote/SLV',
-                earningsStatus: 'neutral',
-                earningsLabel: 'iShares Silver Trust'
-            },
-            {
-                symbol: 'IWM',
-                quoteSymbol: 'IWM',
-                logoLabel: 'IWM',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial, sans-serif" letter-spacing="-0.5">IWM</text></svg>',
-                shares: 0.1499,
-                targetPrice: 300,
-                fallbackPrice: 252.23,
-                fallbackDailyChange: +1.34,
-                color: '#FF6B6B',
-                url: 'https://finance.yahoo.com/quote/IWM',
-                earningsStatus: 'neutral',
-                earningsLabel: 'iShares Russell 2000'
-            },
-            {
                 symbol: 'CASH',
                 quoteSymbol: 'CASH',
                 logoLabel: '$',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" font-family="Arial, sans-serif">$</text></svg>',
-                shares: 0,
-                targetPrice: 0.01,
-                fallbackPrice: 0.01,
+                shares: 857.84,
+                targetPrice: 1,
+                fallbackPrice: 1,
                 fallbackDailyChange: 0,
                 color: '#d1d1d6',
                 url: '#',
                 earningsStatus: 'neutral',
-                earningsLabel: 'CAD cash ($0.01 CAD)'
+                earningsLabel: 'CAD cash ($1 CAD)'
             }
         ];
 
@@ -1731,7 +1633,8 @@
                 expiration: '2025-12-19',  // YYYY-MM-DD
                 contracts: 1,  // Number of contracts (1 contract = 100 shares)
                 premiumPaid: 2.30,  // Premium paid per share ($230 USD total / 100 shares, $324.85 CAD)
-                currentPremium: 2.30,  // Current premium (fallback, will update from market)
+                currentPremium: 0.805,  // Current premium ($80.50 USD / 100 shares)
+                underlyingPrice: 151.83,  // Current underlying price
                 color: '#0070C9',
                 quoteSymbol: 'CVX',  // For fetching underlying price
                 filledDate: '2025-12-09',  // Date order was filled
