@@ -1296,43 +1296,6 @@
             fill: #0074D9;
         }
 
-        #pwdToggle {
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0, 200, 5, 0.4);
-            border-radius: 4px;
-            background: transparent;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        #pwdToggle:checked {
-            background: #00C805;
-            border-color: #00C805;
-        }
-
-        #pwdToggle:checked::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        #pwdToggle:hover {
-            border-color: #00C805;
-            box-shadow: 0 0 0 3px rgba(0, 200, 5, 0.1);
-        }
-
-        body.dark #pwdToggle {
-            border-color: rgba(0, 200, 5, 0.5);
-        }
-
         /* Options Cards */
         .options-container {
             display: flex;
@@ -2140,24 +2103,32 @@
             });
         }
 
-        let isPWDMode = false;
         let scrollListenersInitialized = false;
         let currentMonthIndex = 0;
 
-        function generateBudgetCalendar(usePWD = false) {
+        function generateBudgetCalendar() {
             const monthsContainer = document.getElementById('calendarMonths');
             const legendContainer = document.getElementById('calendarLegend');
             if (!monthsContainer || !legendContainer) return;
 
-            const baseIncome = 1113;
-            const pwdIncome = Math.round(baseIncome * 1.4);
+            // Auto-detect PWD based on year (2026+)
+            const today = new Date();
+            const isPWD2026 = today.getFullYear() >= 2026;
+
+            const baseIncome = isPWD2026 ? 1550 : 1113;
             const expenses = 637;
-            const monthlySurplus = usePWD ? (pwdIncome - expenses) : FINANCIAL_CONFIG.monthlyPaymentCapacity;
+            const monthlySurplus = baseIncome - expenses;
             const currentAssets = 931;
 
             const desc = document.getElementById('timelineDescription');
             if (desc) {
-                desc.textContent = usePWD ? `PWD income: $${monthlySurplus}/month surplus` : `Current income: $476/month surplus`;
+                desc.textContent = isPWD2026 ? `PWD income: $${monthlySurplus}/month surplus` : `Current income: $${monthlySurplus}/month surplus`;
+            }
+
+            // Update income display
+            const incomeValueEl = document.getElementById('incomeValue');
+            if (incomeValueEl) {
+                incomeValueEl.textContent = `$${baseIncome.toLocaleString()}`;
             }
 
             // Sorted by priority: cheap items first, then expensive
@@ -2315,7 +2286,7 @@
                         if (currentMonthIndex > 0) {
                             window.calendarDirection = 'left';
                             currentMonthIndex--;
-                            generateBudgetCalendar(isPWDMode);
+                            generateBudgetCalendar();
                         }
                     };
                 }
@@ -2324,7 +2295,7 @@
                         if (currentMonthIndex < 11) {
                             window.calendarDirection = 'right';
                             currentMonthIndex++;
-                            generateBudgetCalendar(isPWDMode);
+                            generateBudgetCalendar();
                         }
                     };
                 }
@@ -2340,11 +2311,11 @@
                                 if (e.deltaX > 20 && currentMonthIndex < 11) {
                                     window.calendarDirection = 'right';
                                     currentMonthIndex++;
-                                    generateBudgetCalendar(isPWDMode);
+                                    generateBudgetCalendar();
                                 } else if (e.deltaX < -20 && currentMonthIndex > 0) {
                                     window.calendarDirection = 'left';
                                     currentMonthIndex--;
-                                    generateBudgetCalendar(isPWDMode);
+                                    generateBudgetCalendar();
                                 }
                             }, 100);
                         }
@@ -2517,17 +2488,7 @@
 
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
             updateMarketInsights(financialSnapshot);
-            generateBudgetCalendar(isPWDMode);
-
-            // PWD toggle
-            const pwdToggle = document.getElementById('pwdToggle');
-            if (pwdToggle) {
-                pwdToggle.addEventListener('change', () => {
-                    isPWDMode = pwdToggle.checked;
-                    document.getElementById('incomeValue').textContent = isPWDMode ? '$1,558' : '$1,113';
-                    generateBudgetCalendar(isPWDMode);
-                });
-            }
+            generateBudgetCalendar();
 
             if (totalsRow) {
                 const currentCell = totalsRow.querySelector('td:nth-child(5)');
@@ -3737,13 +3698,7 @@
                             <td class="dynamic-value" id="dailyAllowance">--</td>
                         </tr>
                         <tr>
-                            <td>
-                                Income
-                                <label style="margin-left: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; color: #888;">
-                                    <input type="checkbox" id="pwdToggle" style="cursor: pointer; width: 14px; height: 14px;">
-                                    <span style="font-weight: 600; color: #00C805;">PWD +40%</span>
-                                </label>
-                            </td>
+                            <td>Income</td>
                             <td id="incomeValue">$1,113</td>
                         </tr>
                         <tr>
