@@ -2214,9 +2214,9 @@
             const budgetItems = [
                 { name: 'Keyboard', cost: 120, priority: 1, color: '#34c759' },
                 { name: 'Door Lock', cost: 85, priority: 2, color: '#32ade6' },
-                { name: 'Phone + Watch', cost: 330, priority: 3, color: '#ff6b6b' },
+                { name: 'Telus', cost: 110, priority: 3, color: '#ff6b6b', recurring: true },
                 { name: 'GBA', cost: 320, priority: 4, color: '#00C805' },
-                { name: 'iPhone 15 Final Bill', cost: 617, priority: 5, color: '#5856d6' },
+                { name: 'iPhone Final Bill', cost: 610, priority: 5, color: '#5856d6' },
                 { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
                 { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
                 { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
@@ -2240,12 +2240,18 @@
                     availableDate.setDate(availableDate.getDate() + 19);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
-                } else if (item.name === 'Phone + Watch') {
-                    // Dec 29 (Sun) - last week of December
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 18);
+                } else if (item.name === 'Telus') {
+                    // Dec 31 + recurring monthly
+                    availableDate = new Date(2025, 11, 31);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
+                    // Add recurring months
+                    for (let i = 1; i <= 12; i++) {
+                        const recurDate = new Date(2026, i - 1, 31);
+                        if (recurDate.getDate() !== 31) recurDate.setDate(0);
+                        timeline.push({ ...item, availableDate: recurDate, monthsAway: i });
+                        cumulativeSavings -= item.cost;
+                    }
                 } else if (item.name === 'Door Lock') {
                     // Dec 19 (Thu) - next week
                     availableDate = new Date(today);
@@ -2257,10 +2263,10 @@
                     availableDate = new Date(2026, 0, 15);
                     timeline.push({ ...item, availableDate, monthsAway: 1 });
                     cumulativeSavings -= item.cost;
-                } else if (item.name === 'iPhone 15 Final Bill') {
-                    // Jan 20 (Tue) - after GBA
-                    availableDate = new Date(2026, 0, 20);
-                    timeline.push({ ...item, availableDate, monthsAway: 1 });
+                } else if (item.name === 'iPhone Final Bill') {
+                    // Dec 31
+                    availableDate = new Date(2025, 11, 31);
+                    timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (cumulativeSavings >= item.cost) {
                     // Can afford it with current savings
