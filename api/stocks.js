@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const symbols = ['IAU', 'SLV', 'PLTR', 'HOOD', 'GOOGL', 'CVX'];
+  const symbols = ['IAU', 'SLV', 'PLTR', 'HOOD', 'CVX', 'SPY'];
 
   try {
     // Fetch all stock quotes in parallel using Yahoo Finance API
