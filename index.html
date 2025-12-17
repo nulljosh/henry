@@ -1580,42 +1580,14 @@
     <script>
         const holdingsConfig = [
             {
-                symbol: 'IAU',
-                quoteSymbol: 'IAU',
-                logoLabel: 'IAU',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial, sans-serif">IAU</text></svg>',
-                shares: 13.4906,
-                targetPrice: 50.00,
-                fallbackPrice: 26.50,
-                fallbackDailyChange: 0.15,
-                color: '#FFD700',
-                url: 'https://www.ishares.com/us/products/239561/ishares-gold-trust-fund',
-                earningsStatus: 'neutral',
-                earningsLabel: 'iShares Gold Trust ETF (Gold @ $5,000/oz target)'
-            },
-            {
-                symbol: 'SLV',
-                quoteSymbol: 'SLV',
-                logoLabel: 'SLV',
-                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="10" font-weight="bold" font-family="Arial, sans-serif">SLV</text></svg>',
-                shares: 3.8249,
-                targetPrice: 60,
-                fallbackPrice: 56.08,
-                fallbackDailyChange: -2.67,
-                color: '#C0C0C0',
-                url: 'https://www.ishares.com/us/products/239855/ishares-silver-trust-fund',
-                earningsStatus: 'neutral',
-                earningsLabel: 'iShares Silver Trust - iShares'
-            },
-            {
                 symbol: 'PLTR',
                 quoteSymbol: 'PLTR',
                 logoLabel: 'PLTR',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="9" font-weight="bold" font-family="Arial, sans-serif">PLTR</text></svg>',
-                shares: 0.3050,
+                shares: 0.4137,
                 targetPrice: 200,
-                fallbackPrice: 187.54,
-                fallbackDailyChange: -1.83,
+                fallbackPrice: 178.12,
+                fallbackDailyChange: -5.13,
                 color: '#000000',
                 url: 'https://www.palantir.com',
                 earningsStatus: 'neutral',
@@ -1626,24 +1598,52 @@
                 quoteSymbol: 'HOOD',
                 logoLabel: 'HOOD',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="8" font-weight="bold" font-family="Arial, sans-serif">HOOD</text></svg>',
-                shares: 0.2879,
+                shares: 0.2232,
                 targetPrice: 150,
-                fallbackPrice: 124.17,
-                fallbackDailyChange: -2.26,
+                fallbackPrice: 116.94,
+                fallbackDailyChange: -2.06,
                 color: '#00C805',
                 url: 'https://robinhood.com/us/en/stocks/HOOD/',
                 earningsStatus: 'neutral',
                 earningsLabel: 'Robinhood Markets Inc (Class A)'
             },
             {
+                symbol: 'NVDA',
+                quoteSymbol: 'NVDA',
+                logoLabel: 'NVDA',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="8" font-weight="bold" font-family="Arial, sans-serif">NVDA</text></svg>',
+                shares: 0.1452,
+                targetPrice: 200,
+                fallbackPrice: 171.59,
+                fallbackDailyChange: -3.45,
+                color: '#76B900',
+                url: 'https://www.nvidia.com',
+                earningsStatus: 'neutral',
+                earningsLabel: 'NVIDIA Corp'
+            },
+            {
+                symbol: 'TSLA',
+                quoteSymbol: 'TSLA',
+                logoLabel: 'TSLA',
+                logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="8" font-weight="bold" font-family="Arial, sans-serif">TSLA</text></svg>',
+                shares: 0.1368,
+                targetPrice: 500,
+                fallbackPrice: 467.67,
+                fallbackDailyChange: -4.53,
+                color: '#E82127',
+                url: 'https://www.tesla.com',
+                earningsStatus: 'neutral',
+                earningsLabel: 'Tesla Inc'
+            },
+            {
                 symbol: 'GOOGL',
                 quoteSymbol: 'GOOGL',
                 logoLabel: 'GOOGL',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="7" font-weight="bold" font-family="Arial, sans-serif">GOOGL</text></svg>',
-                shares: 0.0817,
+                shares: 0.1208,
                 targetPrice: 250,
-                fallbackPrice: 175.00,
-                fallbackDailyChange: 0.50,
+                fallbackPrice: 296.50,
+                fallbackDailyChange: -3.29,
                 color: '#4285F4',
                 url: 'https://abc.xyz',
                 earningsStatus: 'neutral',
@@ -1654,7 +1654,7 @@
                 quoteSymbol: 'CASH',
                 logoLabel: '$',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" font-family="Arial, sans-serif">$</text></svg>',
-                shares: 35.75,
+                shares: 285.73,
                 targetPrice: 1,
                 fallbackPrice: 1,
                 fallbackDailyChange: 0,
@@ -1675,7 +1675,7 @@
                 expiration: '2025-12-19',  // YYYY-MM-DD
                 contracts: 1,  // Number of contracts (1 contract = 100 shares)
                 premiumPaid: 2.30,  // Premium paid per share ($230 USD total / 100 shares, $324.85 CAD)
-                currentPremium: 1.11,  // Current premium ($111 USD / 100 shares)
+                currentPremium: 0.90,  // Current premium ($90 USD / 100 shares)
                 underlyingPrice: 151.83,  // Current underlying price
                 profitableAt: 146,  // Price at which position becomes profitable
                 color: '#0070C9',
