@@ -2277,6 +2277,16 @@
                     availableDate = new Date(2026, 6, 1);
                     timeline.push({ ...item, availableDate, monthsAway: 7 });
                     cumulativeSavings -= item.cost;
+                } else if (item.name === 'Gold Chain') {
+                    // December 2026 - 5 months after Visa
+                    availableDate = new Date(2026, 11, 1);
+                    timeline.push({ ...item, availableDate, monthsAway: 12 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Dog') {
+                    // January 2027 - 6 months after Visa (interchangeable with Gold Chain)
+                    availableDate = new Date(2027, 0, 1);
+                    timeline.push({ ...item, availableDate, monthsAway: 13 });
+                    cumulativeSavings -= item.cost;
                 } else if (cumulativeSavings >= item.cost) {
                     // Can afford it with current savings
                     timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: 0 });
