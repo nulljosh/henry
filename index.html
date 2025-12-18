@@ -1574,6 +1574,39 @@
             }
         }
 
+        /* Light mode overrides for Mint/Spending section */
+        body:not(.dark) #mintCard h2,
+        body:not(.dark) #mintCard h3 {
+            color: #1d1d1f !important;
+        }
+
+        body:not(.dark) #mintCard input,
+        body:not(.dark) #mintCard select {
+            background: #ffffff !important;
+            color: #1d1d1f !important;
+            border: 1px solid #d1d1d6 !important;
+        }
+
+        body:not(.dark) #mintCard input::placeholder {
+            color: #86868b !important;
+        }
+
+        body:not(.dark) #mintCard .glass-card > div,
+        body:not(.dark) #mintCard > div {
+            background: rgba(0,0,0,0.03) !important;
+        }
+
+        body:not(.dark) #mintCard #categoryBreakdown,
+        body:not(.dark) #mintCard #budgetTracking,
+        body:not(.dark) #mintCard #transactionList {
+            color: #1d1d1f;
+        }
+
+        body:not(.dark) #mintCard #transactionList > div {
+            background: rgba(0,0,0,0.04) !important;
+            color: #1d1d1f;
+        }
+
     </style>
 </head>
 <body>
