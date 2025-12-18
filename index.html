@@ -2267,6 +2267,16 @@
                     availableDate = new Date(2025, 11, 24);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
+                } else if (item.name === 'MacBook') {
+                    // April 2026 - saving a few thousand in next few months
+                    availableDate = new Date(2026, 3, 1);
+                    timeline.push({ ...item, availableDate, monthsAway: 4 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'RBC Visa') {
+                    // July 2026 - summer payoff target
+                    availableDate = new Date(2026, 6, 1);
+                    timeline.push({ ...item, availableDate, monthsAway: 7 });
+                    cumulativeSavings -= item.cost;
                 } else if (cumulativeSavings >= item.cost) {
                     // Can afford it with current savings
                     timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: 0 });
