@@ -1,6 +1,6 @@
 # Finn the Fox
 
-A dynamic portfolio dashboard built with vanilla HTML/CSS/JavaScript. No frameworks, no build tools, just one beautifully designed `index.html` file.
+A comprehensive personal finance dashboard built with vanilla HTML/CSS/JavaScript. Track your portfolio, manage spending, plan purchases, and monitor market insights—all in one beautifully designed `index.html` file. No frameworks, no build tools, no bank login required.
 
 ## Features
 
@@ -18,9 +18,21 @@ A dynamic portfolio dashboard built with vanilla HTML/CSS/JavaScript. No framewo
 - **Top movers** - Best and worst performing holdings
 - **Target analysis** - Highest upside opportunities
 - **Market news** - Curated daily updates
+- **Bear case analysis** - Short thesis and downside scenarios
+- **Options tracking** - Live put/call positions with P&L
 - **Bloomberg TV Live** - Embedded YouTube livestream
 - **Market clocks** - PST/EST time display
 - **Pre-market outlook** - Status updates before market open
+
+### Spending Tracker (Mint-Style)
+- **Transaction entry** - Manual transaction logging with categories
+- **Cash flow summary** - Income vs expenses with net calculation
+- **Category breakdown** - Spending by category with percentages
+- **Budget tracking** - Monthly budget limits with progress bars
+- **Recent transactions** - Scrollable list with delete functionality
+- **localStorage persistence** - All transactions saved locally
+- **Color-coded categories** - Groceries, dining, transportation, entertainment, etc.
+- **Over-budget alerts** - Visual indicators when exceeding limits
 
 ### Visualizations
 - **Canvas pie chart** - Interactive stock allocation with hover effects
@@ -28,14 +40,22 @@ A dynamic portfolio dashboard built with vanilla HTML/CSS/JavaScript. No framewo
 - **Color-coded holdings** - Each stock has unique brand colors
 - **Progress indicators** - Visual debt paydown and milestone tracking
 
+### Budget & Calendar
+- **Interactive calendar** - 12-month purchase timeline with slide navigation
+- **Clickable legend** - Click any item to jump to its date on calendar
+- **Purchase tracking** - Keyboard, GBA, MacBook, Visa payoff dates
+- **Recurring items** - Automatic monthly expenses (Telus)
+- **Slide animations** - Smooth left/right transitions between months
+- **Budget projections** - When you can afford upcoming purchases
+
 ### User Experience
 - **Glass morphism UI** - Modern frosted glass design
 - **Dark mode** - Smooth theme toggle with localStorage persistence
-- **Keyboard shortcuts** - B (Budget), D (Debt), S (Summary), I/M (Insights)
+- **Keyboard shortcuts** - B (Budget), C (Calendar), D (Debt), S (Summary), I/M (Insights), T (Spending)
 - **Responsive design** - Optimized for mobile and desktop
 - **Pull to refresh** - Swipe down on mobile to reload
 - **Haptic feedback** - Vibration on pie chart interactions (mobile)
-- **Tab navigation** - Clean switching between Summary, Insights, Budget, Debt
+- **Tab navigation** - Clean switching between all sections
 
 ### Automation
 - **Live countdowns** - Market hours and payday tracking
@@ -52,10 +72,13 @@ open index.html
 
 ## Keyboard Shortcuts
 
-- **B** - Switch to Budget tab
-- **D** - Switch to Debt tab
-- **S** - Switch to Summary tab
-- **I** or **M** - Switch to Market Insights tab
+- **P** - Portfolio tab
+- **B** - Budget tab
+- **C** - Calendar tab
+- **D** - Debt tab
+- **S** - Summary tab
+- **I** or **M** - Market Insights tab
+- **T** - Spending Tracker tab
 - **Click theme toggle** - Switch between light/dark mode
 
 ## Tech Stack
