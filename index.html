@@ -1586,8 +1586,8 @@
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="9" font-weight="bold" font-family="Arial, sans-serif">PLTR</text></svg>',
                 shares: 0.4137,
                 targetPrice: 200,
-                fallbackPrice: 178.12,
-                fallbackDailyChange: -5.13,
+                fallbackPrice: 178.84,
+                fallbackDailyChange: -4.75,
                 color: '#000000',
                 url: 'https://www.palantir.com',
                 earningsStatus: 'neutral',
@@ -1600,8 +1600,8 @@
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="8" font-weight="bold" font-family="Arial, sans-serif">HOOD</text></svg>',
                 shares: 0.2232,
                 targetPrice: 150,
-                fallbackPrice: 116.94,
-                fallbackDailyChange: -2.06,
+                fallbackPrice: 118.04,
+                fallbackDailyChange: -1.14,
                 color: '#00C805',
                 url: 'https://robinhood.com/us/en/stocks/HOOD/',
                 earningsStatus: 'neutral',
@@ -1614,8 +1614,8 @@
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="8" font-weight="bold" font-family="Arial, sans-serif">NVDA</text></svg>',
                 shares: 0.1452,
                 targetPrice: 200,
-                fallbackPrice: 171.59,
-                fallbackDailyChange: -3.45,
+                fallbackPrice: 171.79,
+                fallbackDailyChange: -3.34,
                 color: '#76B900',
                 url: 'https://www.nvidia.com',
                 earningsStatus: 'neutral',
@@ -1628,8 +1628,8 @@
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="8" font-weight="bold" font-family="Arial, sans-serif">TSLA</text></svg>',
                 shares: 0.1368,
                 targetPrice: 500,
-                fallbackPrice: 467.67,
-                fallbackDailyChange: -4.53,
+                fallbackPrice: 471.21,
+                fallbackDailyChange: -3.81,
                 color: '#E82127',
                 url: 'https://www.tesla.com',
                 earningsStatus: 'neutral',
@@ -1642,8 +1642,8 @@
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="21" text-anchor="middle" font-size="7" font-weight="bold" font-family="Arial, sans-serif">GOOGL</text></svg>',
                 shares: 0.1208,
                 targetPrice: 250,
-                fallbackPrice: 296.50,
-                fallbackDailyChange: -3.29,
+                fallbackPrice: 297.31,
+                fallbackDailyChange: -3.02,
                 color: '#4285F4',
                 url: 'https://abc.xyz',
                 earningsStatus: 'neutral',
@@ -1654,7 +1654,7 @@
                 quoteSymbol: 'CASH',
                 logoLabel: '$',
                 logoSvg: '<svg viewBox="0 0 32 32" fill="currentColor"><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" font-family="Arial, sans-serif">$</text></svg>',
-                shares: 285.73,
+                shares: 266.73,
                 targetPrice: 1,
                 fallbackPrice: 1,
                 fallbackDailyChange: 0,
@@ -1676,7 +1676,7 @@
                 contracts: 1,  // Number of contracts (1 contract = 100 shares)
                 premiumPaid: 2.30,  // Premium paid per share ($230 USD total / 100 shares, $324.85 CAD)
                 currentPremium: 0.90,  // Current premium ($90 USD / 100 shares)
-                underlyingPrice: 151.83,  // Current underlying price
+                underlyingPrice: 147.25,  // Current underlying price
                 profitableAt: 146,  // Price at which position becomes profitable
                 color: '#0070C9',
                 quoteSymbol: 'CVX',  // For fetching underlying price
@@ -2213,10 +2213,9 @@
             // Sorted by priority: cheap items first, then expensive
             const budgetItems = [
                 { name: 'Keyboard', cost: 120, priority: 1, color: '#34c759' },
-                { name: 'Door Lock', cost: 85, priority: 2, color: '#32ade6' },
-                { name: 'Telus', cost: 200, priority: 3, color: '#ff6b6b', recurring: true },
-                { name: 'GBA', cost: 320, priority: 4, color: '#00C805' },
-                { name: 'iPhone Final Bill', cost: 610, priority: 5, color: '#5856d6' },
+                { name: 'Telus', cost: 200, priority: 2, color: '#ff6b6b', recurring: true },
+                { name: 'GBA', cost: 320, priority: 3, color: '#00C805' },
+                { name: 'iPhone Final Bill', cost: 610, priority: 4, color: '#5856d6' },
                 { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
                 { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
                 { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
@@ -2241,8 +2240,8 @@
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'Telus') {
-                    // Dec 31 + recurring monthly
-                    availableDate = new Date(2025, 11, 31);
+                    // Dec 24 + recurring monthly
+                    availableDate = new Date(2025, 11, 24);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                     // Add recurring months
@@ -2264,8 +2263,8 @@
                     timeline.push({ ...item, availableDate, monthsAway: 1 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'iPhone Final Bill') {
-                    // Dec 31
-                    availableDate = new Date(2025, 11, 31);
+                    // Dec 24
+                    availableDate = new Date(2025, 11, 24);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (cumulativeSavings >= item.cost) {
@@ -3354,7 +3353,7 @@
 
             // Payday countdown
             const BUDGET_CONFIG = {
-                vacationFund: 40  // CAD
+                vacationFund: 17  // CAD
             };
 
             function updatePaydayCountdown() {
@@ -3712,16 +3711,15 @@
                     </div>
                 </div>
                 <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(128, 128, 128, 0.2);">
-                    <div style="font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; letter-spacing: 0.5px;">MARKET NEWS · DEC 6, 2025</div>
+                    <div style="font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; letter-spacing: 0.5px;">MARKET NEWS · DEC 17, 2025</div>
                     <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
-                        <p style="margin: 0 0 10px 0;"><strong>CLOSED:</strong> Markets closed today (Saturday). Last session Dec 5.</p>
-                        <p style="margin: 0 0 10px 0;"><strong>LAST SESSION:</strong> Portfolio -0.26%, GOOGL +0.79% led while HOOD dropped -3.79%</p>
-                        <p style="margin: 0 0 10px 0;"><strong>TARGETS:</strong> SPY 60% upside · GOOGL 25% · Cash depleted</p>
-                        <p style="margin: 0 0 10px 0;"><strong>NVDA:</strong> $182.36 (-0.56%). Slight dip after strong year.</p>
-                        <p style="margin: 0 0 10px 0;"><strong>GOOGL:</strong> $320.13 (+0.79%). Led Friday's session.</p>
-                        <p style="margin: 0 0 10px 0;"><strong>HOOD:</strong> $131.89 (-3.79%). Sharp Friday decline.</p>
-                        <p style="margin: 0 0 10px 0;"><strong>XAUUSD (Gold CFD):</strong> Real-time gold prices tracked for portfolio diversification.</p>
-                        <p style="margin: 0 0 0 0;"><strong>NAS100 (Nasdaq 100 CFD):</strong> Tech-heavy index tracking top 100 non-financial stocks.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>SESSION:</strong> Tech selloff. Portfolio down -3.4% led by PLTR -4.75%, TSLA -3.81%, NVDA -3.34%</p>
+                        <p style="margin: 0 0 10px 0;"><strong>TSLA:</strong> $471.21 (-3.81%). Hit fresh ATH $495.28 before reversing on California DMV ruling finding company misled consumers with marketing. Profit-taking after record high.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>PLTR:</strong> $178.84 (-4.75%). Down from recent highs, still +137% YTD. Trading at 190x forward earnings - one of market's most expensive stocks.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>NVDA:</strong> $171.79 (-3.34%). Sold off amid Amazon-OpenAI Trainium chip talks and China's MetaX AI IPO surge. Still up 30.81% over past year.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>HOOD:</strong> $118.04 (-1.14%). Slight pullback after strong gains. Rising on prediction markets expansion and upcoming "Cortex" AI launch. Up 222% over past year.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>GOOGL:</strong> $297.31 (-3.02%). Declined despite Waymo $100B+ funding talks and Gemini expansion news.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>CVX PUT (Dec 19 $149):</strong> $0.90 premium ($90 USD), down from $2.30 paid. Underlying at $147.25 (below strike). Venezuelan tanker seizure forced Chevron to slash prices on crude - operations stable but stock declined 1%. Position expires in 2 days.</p>
                     </div>
                 </div>
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(128, 128, 128, 0.2);">
@@ -3824,10 +3822,6 @@
                         <tr class="future-expense">
                             <td>Final iPhone Bill</td>
                             <td>-$617</td>
-                        </tr>
-                        <tr class="future-expense">
-                            <td>Door Lock</td>
-                            <td>-$85</td>
                         </tr>
                         <tr class="future-expense">
                             <td>RBC Credit Card</td>
