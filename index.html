@@ -157,8 +157,13 @@
             border: none !important;
             border-radius: 0;
             box-shadow: none !important;
-            padding: 24px 20px;
+            padding: 20px 20px 32px;
             margin-bottom: 0;
+        }
+
+        .tab-content.glass-card h2 {
+            margin-bottom: 12px;
+            font-size: 20px;
         }
         .tab-content.glass-card:hover {
             transform: none;
@@ -167,10 +172,11 @@
 
         /* Compact budget page layout */
         #budgetCard {
-            padding: 0 20px !important;
+            padding: 20px 20px 32px !important;
         }
         #budgetCard h2 {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            font-size: 20px;
             margin-top: 0;
         }
 
@@ -1064,12 +1070,13 @@
             display: flex;
             flex-direction: column;
             background: transparent;
-            border-radius: 14px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.18);
             padding: 12px 16px;
             gap: 6px;
             transition: all 0.3s ease;
             width: 100%;
+            overflow: hidden;
         }
 
         tr:hover {
@@ -1605,6 +1612,161 @@
         body:not(.dark) #mintCard #transactionList > div {
             background: rgba(0,0,0,0.04) !important;
             color: #1d1d1f;
+        }
+
+        /* Summary Section Styling */
+        #summaryCard {
+            padding: 20px 20px 32px !important;
+        }
+
+        #summaryCard h2 {
+            margin-bottom: 12px !important;
+            font-size: 20px;
+        }
+
+        #summaryCard table {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        body.dark #summaryCard table {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        #summaryCard tbody {
+            display: table-row-group;
+        }
+
+        #summaryCard tr {
+            display: table-row;
+            border: none;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+        }
+
+        #summaryCard tr:hover {
+            transform: none;
+            box-shadow: none;
+            background: rgba(0, 122, 255, 0.03);
+        }
+
+        body.dark #summaryCard tr:hover {
+            background: rgba(10, 132, 255, 0.06);
+        }
+
+        #summaryCard td {
+            display: table-cell;
+            padding: 12px 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        body.dark #summaryCard td {
+            border-top-color: rgba(255, 255, 255, 0.08);
+        }
+
+        #summaryCard tr:first-child td {
+            border-top: none;
+        }
+
+        #summaryCard td:first-child {
+            font-weight: 500;
+            color: #1d1d1f;
+            width: 50%;
+        }
+
+        body.dark #summaryCard td:first-child {
+            color: #f5f5f7;
+        }
+
+        #summaryCard td:last-child {
+            text-align: right;
+            font-weight: 600;
+            color: #0074D9;
+            font-variant-numeric: tabular-nums;
+        }
+
+        body.dark #summaryCard td:last-child {
+            color: #0a84ff;
+        }
+
+        #summaryCard h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin: 24px 0 12px 0;
+            letter-spacing: -0.2px;
+        }
+
+        body.dark #summaryCard h3 {
+            color: #f5f5f7;
+        }
+
+        #summaryCard table:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* Year Milestones Section */
+        .year-milestones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .year-milestone-card {
+            background: rgba(0, 122, 255, 0.06);
+            border: 1px solid rgba(0, 122, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        body.dark .year-milestone-card {
+            background: rgba(10, 132, 255, 0.08);
+            border-color: rgba(10, 132, 255, 0.2);
+        }
+
+        .year-milestone-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+        }
+
+        body.dark .year-milestone-card:hover {
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.25);
+        }
+
+        .year-milestone-year {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0074D9;
+            margin-bottom: 8px;
+        }
+
+        body.dark .year-milestone-year {
+            color: #0a84ff;
+        }
+
+        .year-milestone-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1d1d1f;
+            font-variant-numeric: tabular-nums;
+        }
+
+        body.dark .year-milestone-value {
+            color: #f5f5f7;
         }
 
     </style>
@@ -2663,6 +2825,30 @@
             }
 
             const targetTotal = projectedValue;
+
+            // Calculate year-by-year projections
+            const yearCards = document.querySelectorAll('.year-milestone-card');
+            const years = [2026, 2027, 2028, 2029, 2030];
+            const now = new Date();
+
+            years.forEach((year, index) => {
+                const yearEnd = new Date(year, 11, 31); // Dec 31 of target year
+                const monthsToYear = Math.max(0, (yearEnd.getFullYear() - now.getFullYear()) * 12 + (yearEnd.getMonth() - now.getMonth()));
+
+                let yearValue = currentTotal;
+                for (let month = 0; month < monthsToYear; month++) {
+                    yearValue = yearValue * (1 + monthlyRate) + monthlyContribution;
+                }
+
+                const card = yearCards[index];
+                if (card) {
+                    const valueEl = card.querySelector('.year-milestone-value');
+                    if (valueEl) {
+                        valueEl.classList.remove('skeleton');
+                        animateValue(valueEl, yearValue, 1000);
+                    }
+                }
+            });
 
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
             updateMarketInsights(financialSnapshot);
@@ -4249,7 +4435,31 @@
                     </tbody>
                 </table>
 
-                <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Portfolio Milestones</h3>
+                <h3>Year Projections</h3>
+                <div class="year-milestones-grid" id="yearMilestonesGrid">
+                    <div class="year-milestone-card">
+                        <div class="year-milestone-year">2026</div>
+                        <div class="year-milestone-value skeleton">$0</div>
+                    </div>
+                    <div class="year-milestone-card">
+                        <div class="year-milestone-year">2027</div>
+                        <div class="year-milestone-value skeleton">$0</div>
+                    </div>
+                    <div class="year-milestone-card">
+                        <div class="year-milestone-year">2028</div>
+                        <div class="year-milestone-value skeleton">$0</div>
+                    </div>
+                    <div class="year-milestone-card">
+                        <div class="year-milestone-year">2029</div>
+                        <div class="year-milestone-value skeleton">$0</div>
+                    </div>
+                    <div class="year-milestone-card">
+                        <div class="year-milestone-year">2030</div>
+                        <div class="year-milestone-value skeleton">$0</div>
+                    </div>
+                </div>
+
+                <h3>Portfolio Milestones</h3>
                 <table>
                     <tbody id="milestonesTable">
                         <tr>
