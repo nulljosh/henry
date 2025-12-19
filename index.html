@@ -1607,6 +1607,43 @@
             color: #1d1d1f;
         }
 
+        .year-milestones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .year-milestone-card {
+            background: rgba(0, 122, 255, 0.08);
+            border: 1px solid rgba(0, 122, 255, 0.2);
+            border-radius: 10px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+        body.dark .year-milestone-card {
+            background: rgba(10, 132, 255, 0.1);
+            border-color: rgba(10, 132, 255, 0.25);
+        }
+        .year-milestone-year {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0074D9;
+            margin-bottom: 6px;
+        }
+        body.dark .year-milestone-year {
+            color: #0a84ff;
+        }
+        .year-milestone-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+        body.dark .year-milestone-value {
+            color: #f5f5f7;
+        }
+
     </style>
 </head>
 <body>
@@ -2663,6 +2700,20 @@
             }
 
             const targetTotal = projectedValue;
+
+            // Calculate year projections
+            const years = [2026, 2027, 2028, 2029, 2030];
+            const now = new Date();
+            years.forEach(year => {
+                const yearEnd = new Date(year, 11, 31);
+                const monthsToYear = Math.max(0, (yearEnd.getFullYear() - now.getFullYear()) * 12 + (yearEnd.getMonth() - now.getMonth()));
+                let yearValue = currentTotal;
+                for (let m = 0; m < monthsToYear; m++) {
+                    yearValue = yearValue * (1 + monthlyRate) + monthlyContribution;
+                }
+                const el = document.getElementById(`year${year}`);
+                if (el) animateValue(el, yearValue, 1000);
+            });
 
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
             updateMarketInsights(financialSnapshot);
@@ -4248,6 +4299,15 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Year Projections</h3>
+                <div class="year-milestones-grid">
+                    <div class="year-milestone-card"><div class="year-milestone-year">2026</div><div class="year-milestone-value" id="year2026">$0</div></div>
+                    <div class="year-milestone-card"><div class="year-milestone-year">2027</div><div class="year-milestone-value" id="year2027">$0</div></div>
+                    <div class="year-milestone-card"><div class="year-milestone-year">2028</div><div class="year-milestone-value" id="year2028">$0</div></div>
+                    <div class="year-milestone-card"><div class="year-milestone-year">2029</div><div class="year-milestone-value" id="year2029">$0</div></div>
+                    <div class="year-milestone-card"><div class="year-milestone-year">2030</div><div class="year-milestone-value" id="year2030">$0</div></div>
+                </div>
 
                 <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Portfolio Milestones</h3>
                 <table>
