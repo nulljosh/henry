@@ -20,7 +20,7 @@ A comprehensive personal finance dashboard built with vanilla HTML/CSS/JavaScrip
 - **Market news** - Curated daily updates
 - **Bear case analysis** - Short thesis and downside scenarios
 - **Options tracking** - Live put/call positions with P&L
-- **Bloomberg TV Live** - Embedded YouTube livestream
+- **Options scenarios** - Best case, breakeven, worst case, and wildcard forecasts
 - **Market clocks** - PST/EST time display
 - **Pre-market outlook** - Status updates before market open
 
