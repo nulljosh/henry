@@ -1973,8 +1973,8 @@
             const milestonesTable = document.getElementById('milestonesTable');
             if (milestonesTable) {
                 const currentPortfolio = totalAssetsUsd;
-                const monthlyInvestment = 476; // Current monthly capacity
-                const annualReturn = 0.15; // 15% conservative estimate
+                const monthlyInvestment = 1600; // Updated monthly contribution
+                const annualReturn = 0.10; // 10% S&P 500 average
                 const milestones = [1000, 2000, 5000, 13000, 34000, 89000, 233000, 987000];
 
                 let html = '';
@@ -2645,7 +2645,24 @@
 
             // Calculate totals including options
             const currentTotal = pieHoldings.reduce((sum, holding) => sum + holding.currentValue, 0);
-            const targetTotal = holdingsData.reduce((sum, holding) => sum + holding.targetValue, 0);
+
+            // Calculate projected 2030 value with monthly contributions
+            const targetYear = 2030;
+            const targetDate = new Date(targetYear, 0, 1); // Jan 1, 2030
+            const now = new Date();
+            const monthsTo2030 = Math.max(0, (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth()));
+
+            const annualReturn = 0.10; // 10% annual return (S&P 500 average)
+            const monthlyRate = annualReturn / 12;
+            const monthlyContribution = 1600; // Updated from $476
+
+            // Project portfolio value to 2030 with compound growth
+            let projectedValue = currentTotal;
+            for (let month = 0; month < monthsTo2030; month++) {
+                projectedValue = projectedValue * (1 + monthlyRate) + monthlyContribution;
+            }
+
+            const targetTotal = projectedValue;
 
             const financialSnapshot = updateFinancialSections(currentTotal, targetTotal);
             updateMarketInsights(financialSnapshot);
@@ -3435,7 +3452,7 @@
                 const now = new Date();
                 const paydays = [
                     new Date('2025-11-19T00:00:00'),
-                    new Date('2025-12-18T11:00:00'),
+                    new Date('2025-12-19T12:00:00'),
                     new Date('2026-01-19T00:00:00')
                 ];
                 let nextPayday = null;
@@ -4050,7 +4067,7 @@
                     <div class="payday-title">Next Payday</div>
                     <div id="paydayCountdown" class="payday-amount">Loading...</div>
                     <div id="paydayDateLabel" class="payday-date"></div>
-                    <div class="payday-note">$1,113 monthly / ~$476 to invest</div>
+                    <div class="payday-note">$1,100 (Dec) → $1,600/mo (Jan+)</div>
                 </div>
                 <table>
                     <thead>
