@@ -2703,7 +2703,6 @@
 
             // Calculate year projections
             const years = [2026, 2027, 2028, 2029, 2030];
-            const now = new Date();
             years.forEach(year => {
                 const yearEnd = new Date(year, 11, 31);
                 const monthsToYear = Math.max(0, (yearEnd.getFullYear() - now.getFullYear()) * 12 + (yearEnd.getMonth() - now.getMonth()));
