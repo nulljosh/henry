@@ -2319,8 +2319,8 @@
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'Telus') {
-                    // Dec 24 + recurring monthly
-                    availableDate = new Date(2025, 11, 24);
+                    // Dec 31 + recurring monthly
+                    availableDate = new Date(2025, 11, 31);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                     // Add recurring months
@@ -2342,8 +2342,8 @@
                     timeline.push({ ...item, availableDate, monthsAway: 1 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'iPhone Final Bill') {
-                    // Dec 24
-                    availableDate = new Date(2025, 11, 24);
+                    // Dec 31
+                    availableDate = new Date(2025, 11, 31);
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'MacBook') {
