@@ -110,6 +110,110 @@ finn/
         └── portfolio-update.md
 ```
 
+## Coming Soon: Finn Professional Suite
+
+### Vision
+Transform Finn from a single-file dashboard into a full-stack personal finance platform with native apps, real-time sync, and brokerage integrations.
+
+### Roadmap
+
+#### Phase 1: Backend API (3-4 months)
+**Core Infrastructure**
+- REST API (Node.js/Express or Go)
+- PostgreSQL database for user data, transactions, holdings
+- JWT authentication + OAuth2
+- WebSocket server for live price updates
+- Redis caching for stock prices
+- Rate limiting and security hardening
+
+**Endpoints**
+- `/api/portfolio` - CRUD for holdings
+- `/api/transactions` - Spending tracker data
+- `/api/prices` - Live stock quotes (Alpha Vantage, Yahoo Finance)
+- `/api/sync` - Cross-device state sync
+- `/api/export` - CSV/PDF reports
+
+**Estimated effort:** 200-300 hours
+
+#### Phase 2: iOS App (2-3 months)
+**Native Swift/SwiftUI**
+- Portfolio dashboard with live updates
+- Interactive charts (Swift Charts)
+- Transaction entry with camera receipt scanning (Vision API)
+- Push notifications for price alerts, milestone hits
+- Widget for home screen portfolio summary
+- Dark mode with system preference sync
+- Biometric authentication (Face ID/Touch ID)
+- Offline mode with background sync
+
+**Estimated effort:** 150-200 hours
+
+#### Phase 3: Web App (1-2 months)
+**React/Next.js SPA**
+- Migrate from single HTML to component architecture
+- Server-side rendering for performance
+- Real-time WebSocket price updates
+- Advanced charting (TradingView widgets, Chart.js)
+- Multi-user support (family accounts)
+- Export/import from Mint, Personal Capital, YNAB
+- Hosted on Vercel/Railway
+
+**Estimated effort:** 100-150 hours
+
+#### Phase 4: Integrations (3-6 months)
+**Brokerage Connections**
+- Plaid API for bank/brokerage linking
+- Wealthsimple API (if available)
+- Robinhood unofficial API
+- Interactive Brokers API
+- Auto-sync holdings daily
+- Transaction import from checking accounts
+
+**Third-Party Services**
+- Stripe for premium subscriptions
+- SendGrid for email alerts
+- Twilio for SMS price alerts
+- AWS S3 for receipt storage
+
+**Estimated effort:** 200-300 hours
+
+#### Phase 5: Android App (2-3 months)
+**Kotlin/Jetpack Compose**
+- Feature parity with iOS
+- Material Design 3
+- Google Wallet integration for receipt scanning
+- Widgets and notifications
+
+**Estimated effort:** 150-200 hours
+
+#### Phase 6: Advanced Features (Ongoing)
+- AI-powered spending insights (GPT-4 API)
+- Budget recommendations based on patterns
+- Tax loss harvesting suggestions
+- Retirement planning calculator
+- Crypto portfolio tracking
+- Options P&L calculator with Greeks
+- Social features (share portfolio performance)
+- Chrome extension for quick portfolio glance
+
+### Total Estimated Effort
+**800-1,150 hours** (6-9 months full-time, or 12-18 months part-time)
+
+### Tech Stack (Proposed)
+**Backend:** Node.js/Express or Go, PostgreSQL, Redis, WebSocket
+**iOS:** Swift, SwiftUI, Combine
+**Android:** Kotlin, Jetpack Compose
+**Web:** React, Next.js, TailwindCSS, Recharts
+**Infrastructure:** Railway/Render, Vercel, AWS S3
+**APIs:** Plaid, Alpha Vantage, Stripe, SendGrid
+
+### Monetization Strategy
+- Free tier: Single portfolio, basic features
+- Pro ($4.99/mo): Unlimited portfolios, live sync, price alerts
+- Premium ($9.99/mo): Brokerage integrations, AI insights, tax tools
+
+---
+
 ## License
 
 MIT
