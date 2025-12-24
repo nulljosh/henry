@@ -8,55 +8,84 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
+            /* Dark Mode - Default (Palantir-inspired depth) */
             --bg-outer: #000;
-            --bg-frame: #1c1c1e;
+            --bg-frame: #0a0a0a;
             --bg-app: #000;
-            --bg-card: #1c1c1e;
-            --border-color: rgba(255,255,255,0.1);
-            --text-primary: #f5f5f7;
+            --bg-card: rgba(28, 28, 30, 0.7);
+            --bg-card-elevated: rgba(44, 44, 46, 0.85);
+            --border-color: rgba(255,255,255,0.06);
+            --border-color-strong: rgba(255,255,255,0.12);
+            --text-primary: #fff;
             --text-secondary: #98989d;
-            --shadow: 0 20px 60px rgba(0,0,0,0.8);
+            --text-tertiary: #636366;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.6);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.8);
+            --shadow-glass: 0 8px 32px 0 rgba(0,0,0,0.37);
             --notch-bg: #000;
             --indicator-bg: rgba(255,255,255,0.3);
+            --accent-wealthsimple: #00d395;
+            --accent-robinhood: #00c805;
+            --accent-palantir: #3371ff;
+            --blur-amount: 40px;
         }
 
         @media (prefers-color-scheme: light) {
             :root {
                 --bg-outer: #f5f5f7;
-                --bg-frame: #ffffff;
+                --bg-frame: #fafafa;
                 --bg-app: #f5f5f7;
-                --bg-card: #ffffff;
-                --border-color: rgba(0,0,0,0.1);
-                --text-primary: #1d1d1f;
+                --bg-card: rgba(255, 255, 255, 0.7);
+                --bg-card-elevated: rgba(255, 255, 255, 0.9);
+                --border-color: rgba(0,0,0,0.04);
+                --border-color-strong: rgba(0,0,0,0.08);
+                --text-primary: #000;
                 --text-secondary: #86868b;
-                --shadow: 0 20px 60px rgba(0,0,0,0.15);
-                --notch-bg: #ffffff;
+                --text-tertiary: #c7c7cc;
+                --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+                --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+                --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+                --shadow-glass: 0 8px 32px 0 rgba(31,38,135,0.15);
+                --notch-bg: #fafafa;
                 --indicator-bg: rgba(0,0,0,0.3);
             }
         }
 
         body.light-mode {
             --bg-outer: #f5f5f7;
-            --bg-frame: #ffffff;
+            --bg-frame: #fafafa;
             --bg-app: #f5f5f7;
-            --bg-card: #ffffff;
-            --border-color: rgba(0,0,0,0.1);
-            --text-primary: #1d1d1f;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --bg-card-elevated: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(0,0,0,0.04);
+            --border-color-strong: rgba(0,0,0,0.08);
+            --text-primary: #000;
             --text-secondary: #86868b;
-            --shadow: 0 20px 60px rgba(0,0,0,0.15);
-            --notch-bg: #ffffff;
+            --text-tertiary: #c7c7cc;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --shadow-glass: 0 8px 32px 0 rgba(31,38,135,0.15);
+            --notch-bg: #fafafa;
             --indicator-bg: rgba(0,0,0,0.3);
         }
 
         body.dark-mode {
             --bg-outer: #000;
-            --bg-frame: #1c1c1e;
+            --bg-frame: #0a0a0a;
             --bg-app: #000;
-            --bg-card: #1c1c1e;
-            --border-color: rgba(255,255,255,0.1);
-            --text-primary: #f5f5f7;
+            --bg-card: rgba(28, 28, 30, 0.7);
+            --bg-card-elevated: rgba(44, 44, 46, 0.85);
+            --border-color: rgba(255,255,255,0.06);
+            --border-color-strong: rgba(255,255,255,0.12);
+            --text-primary: #fff;
             --text-secondary: #98989d;
-            --shadow: 0 20px 60px rgba(0,0,0,0.8);
+            --text-tertiary: #636366;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.6);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.8);
+            --shadow-glass: 0 8px 32px 0 rgba(0,0,0,0.37);
             --notch-bg: #000;
             --indicator-bg: rgba(255,255,255,0.3);
         }
@@ -69,18 +98,31 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            transition: background 0.3s ease;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .iphone-frame {
             width: 390px;
             height: 844px;
             background: var(--bg-frame);
-            border-radius: 50px;
-            box-shadow: var(--shadow);
+            border-radius: 55px;
+            box-shadow: var(--shadow-lg),
+                        0 0 0 1px rgba(255,255,255,0.05) inset;
             overflow: hidden;
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (max-width: 430px) {
+            .iphone-frame {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                max-width: 100vw;
+            }
+            body {
+                padding: 0;
+            }
         }
 
         .notch {
@@ -111,16 +153,25 @@
         .app-content {
             height: calc(100% - 50px);
             overflow-y: auto;
+            overflow-x: hidden;
             background: var(--bg-app);
-            transition: background 0.3s ease;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .app-content::-webkit-scrollbar {
+            display: none;
         }
 
         .hero-card {
-            background: linear-gradient(135deg, #00a68f 0%, #2ac98d 100%);
-            margin: 16px;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,166,143,0.3);
+            background: linear-gradient(135deg, #00a68f 0%, #00d395 100%);
+            margin: 20px 16px 16px;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
         }
 
         .hero-label {
@@ -170,13 +221,19 @@
 
         .stat-card {
             background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 16px;
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-radius: 18px;
+            padding: 18px 14px;
             text-align: center;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            border: 1px solid var(--border-color-strong);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-glass);
+        }
+
+        .stat-card:active {
+            transform: scale(0.98);
+            background: var(--bg-card-elevated);
         }
 
         .stat-value {
@@ -210,13 +267,25 @@
 
         .stock-card {
             background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color-strong);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-glass);
+            cursor: pointer;
+        }
+
+        .stock-card:hover {
+            background: var(--bg-card-elevated);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stock-card:active {
+            transform: scale(0.98);
         }
 
         .stock-header {
@@ -235,7 +304,15 @@
         .stock-gain {
             font-size: 16px;
             font-weight: 700;
-            color: #30d158;
+            color: var(--accent-wealthsimple);
+        }
+
+        .stock-gain.negative {
+            color: #ff453a;
+        }
+
+        .stock-gain.neutral {
+            color: var(--text-secondary);
         }
 
         .stock-details {
@@ -267,20 +344,27 @@
             position: fixed;
             top: 40px;
             right: 40px;
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
+            width: 54px;
+            height: 54px;
+            border-radius: 27px;
+            background: var(--bg-card-elevated);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-color-strong);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-glass);
             z-index: 1000;
+        }
+
+        @media (max-width: 430px) {
+            .mode-toggle {
+                top: 20px;
+                right: 20px;
+            }
         }
 
         .app-footer {
@@ -329,11 +413,18 @@
         .daily-change {
             margin: 0 16px 16px;
             background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid var(--border-color);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border-color-strong);
+            box-shadow: var(--shadow-glass);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .daily-change:active {
+            transform: scale(0.99);
+            background: var(--bg-card-elevated);
         }
 
         .daily-label {
@@ -367,26 +458,26 @@
         <div class="app-content">
             <div class="hero-card">
                 <div class="hero-label">Portfolio Value</div>
-                <div class="hero-amount">$787</div>
-                <div class="hero-subtext">2030 target $1,371 · +74% upside</div>
+                <div class="hero-amount">$398</div>
+                <div class="hero-subtext">2030 target $1,200 · +202% upside</div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 52%;"></div>
+                    <div class="progress-fill" style="width: 7%;"></div>
                 </div>
             </div>
 
             <div class="daily-change">
-                <div class="daily-label">Debt Goal ($4,700)</div>
-                <div class="daily-value">$931 saved · $3,769 remaining</div>
+                <div class="daily-label">Debt Goal ($5,500)</div>
+                <div class="daily-value">$398 saved · $5,102 remaining</div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value">$931</div>
+                    <div class="stat-value">$398</div>
                     <div class="stat-label">Total Assets</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">$200</div>
-                    <div class="stat-label">Cash (CAD)</div>
+                    <div class="stat-value">$57</div>
+                    <div class="stat-label">Cash (USD)</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">$476</div>
@@ -400,82 +491,64 @@
                 <div class="stock-card">
                     <div class="stock-header">
                         <div class="stock-symbol">PLTR</div>
-                        <div class="stock-gain">+69%</div>
+                        <div class="stock-gain">+3%</div>
                     </div>
-                    <div class="stock-details">3.5174 shares · $71.53</div>
-                    <div class="stock-value">$252 current · $425 target</div>
-                </div>
-
-                <div class="stock-card">
-                    <div class="stock-header">
-                        <div class="stock-symbol">NVDA</div>
-                        <div class="stock-gain">+36%</div>
-                    </div>
-                    <div class="stock-details">1.2174 shares · $147.01</div>
-                    <div class="stock-value">$179 current · $243 target</div>
-                </div>
-
-                <div class="stock-card">
-                    <div class="stock-header">
-                        <div class="stock-symbol">NVDL</div>
-                        <div class="stock-gain">+100%</div>
-                    </div>
-                    <div class="stock-details">1.3894 shares · $76.77</div>
-                    <div class="stock-value">$107 current · $214 target</div>
-                </div>
-
-                <div class="stock-card">
-                    <div class="stock-header">
-                        <div class="stock-symbol">TSLA</div>
-                        <div class="stock-gain">+25%</div>
-                    </div>
-                    <div class="stock-details">0.2603 shares · $339.64</div>
-                    <div class="stock-value">$88 current · $110 target</div>
-                </div>
-
-                <div class="stock-card">
-                    <div class="stock-header">
-                        <div class="stock-symbol">HOOD</div>
-                        <div class="stock-gain">+85%</div>
-                    </div>
-                    <div class="stock-details">2.0509 shares · $41.25</div>
-                    <div class="stock-value">$85 current · $157 target</div>
+                    <div class="stock-details">0.5187 shares · $193.39</div>
+                    <div class="stock-value">$100 current · $104 target</div>
                 </div>
 
                 <div class="stock-card">
                     <div class="stock-header">
                         <div class="stock-symbol">GOOGL</div>
-                        <div class="stock-gain">+14%</div>
+                        <div class="stock-gain">+26%</div>
                     </div>
-                    <div class="stock-details">0.3983 shares · $177.69</div>
-                    <div class="stock-value">$71 current · $81 target</div>
+                    <div class="stock-details">0.3195 shares · $315.41</div>
+                    <div class="stock-value">$101 current · $80 target</div>
                 </div>
 
                 <div class="stock-card">
                     <div class="stock-header">
-                        <div class="stock-symbol">GGLL</div>
-                        <div class="stock-gain">+100%</div>
+                        <div class="stock-symbol">TSLA</div>
+                        <div class="stock-gain">+3%</div>
                     </div>
-                    <div class="stock-details">1.0 shares · $39.59</div>
-                    <div class="stock-value">$40 current · $80 target</div>
+                    <div class="stock-details">0.1743 shares · $485.36</div>
+                    <div class="stock-value">$85 current · $87 target</div>
                 </div>
 
                 <div class="stock-card">
                     <div class="stock-header">
-                        <div class="stock-symbol">SPY</div>
-                        <div class="stock-gain">+10%</div>
+                        <div class="stock-symbol">HOOD</div>
+                        <div class="stock-gain negative">-17%</div>
                     </div>
-                    <div class="stock-details">0.0554 shares · $596.72</div>
-                    <div class="stock-value">$33 current · $36 target</div>
+                    <div class="stock-details">0.2577 shares · $120.21</div>
+                    <div class="stock-value">$31 current · $39 target</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">SLV</div>
+                        <div class="stock-gain negative">-12%</div>
+                    </div>
+                    <div class="stock-details">0.2208 shares · $65.55</div>
+                    <div class="stock-value">$14 current · $17 target</div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <div class="stock-symbol">IAU</div>
+                        <div class="stock-gain negative">-15%</div>
+                    </div>
+                    <div class="stock-details">0.1204 shares · $84.61</div>
+                    <div class="stock-value">$10 current · $12 target</div>
                 </div>
 
                 <div class="stock-card">
                     <div class="stock-header">
                         <div class="stock-symbol">CASH</div>
-                        <div class="stock-gain">Stable</div>
+                        <div class="stock-gain neutral">Stable</div>
                     </div>
                     <div class="stock-details">USD reserve</div>
-                    <div class="stock-value">$25 ready to deploy</div>
+                    <div class="stock-value">$57 ready to deploy</div>
                 </div>
             </div>
 
