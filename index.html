@@ -3880,12 +3880,12 @@
             <div class="portfolio-header">
                 <h2>Portfolio</h2>
                 <div class="view-toggle" role="group" aria-label="Toggle portfolio view">
-                    <button type="button" class="active" data-view-toggle="pie">Pie</button>
-                    <button type="button" data-view-toggle="table">Table</button>
+                    <button type="button" data-view-toggle="pie">Pie</button>
+                    <button type="button" class="active" data-view-toggle="table">Table</button>
                 </div>
             </div>
-            <div class="portfolio-views" data-current-view="pie">
-                <div class="portfolio-pie-view" id="stockPieView">
+            <div class="portfolio-views" data-current-view="table">
+                <div class="portfolio-pie-view hidden" id="stockPieView">
                     <div class="pie-chart-wrapper">
                         <div class="pie-chart" id="stockPieChart">
                             <canvas id="stockPieCanvas" width="260" height="260"></canvas>
@@ -3895,7 +3895,7 @@
                     </div>
                     <ul class="chart-legend" id="stockPieLegend"></ul>
                 </div>
-                <div class="portfolio-table-view hidden" id="stockTableWrapper">
+                <div class="portfolio-table-view" id="stockTableWrapper">
                     <table id="stockTable">
                         <thead>
                             <tr>
