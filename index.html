@@ -3879,22 +3879,8 @@
         <div class="glass-card tab-content active" id="portfolioCard" data-tab-content="portfolio">
             <div class="portfolio-header">
                 <h2>Portfolio</h2>
-                <div class="view-toggle" role="group" aria-label="Toggle portfolio view">
-                    <button type="button" data-view-toggle="pie">Pie</button>
-                    <button type="button" class="active" data-view-toggle="table">Table</button>
-                </div>
             </div>
-            <div class="portfolio-views" data-current-view="table">
-                <div class="portfolio-pie-view hidden" id="stockPieView">
-                    <div class="pie-chart-wrapper">
-                        <div class="pie-chart" id="stockPieChart">
-                            <canvas id="stockPieCanvas" width="260" height="260"></canvas>
-                            <div class="pie-center-label" id="stockPieCenter"></div>
-                        </div>
-                        <div class="pie-logo-ring" id="stockPieLogos"></div>
-                    </div>
-                    <ul class="chart-legend" id="stockPieLegend"></ul>
-                </div>
+            <div class="portfolio-views">
                 <div class="portfolio-table-view" id="stockTableWrapper">
                     <table id="stockTable">
                         <thead>
