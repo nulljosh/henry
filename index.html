@@ -2236,7 +2236,7 @@
 
             const desc = document.getElementById('timelineDescription');
             if (desc) {
-                desc.textContent = isPWD2026 ? `PWD income: $${monthlySurplus}/month surplus` : `Current income: $${monthlySurplus}/month surplus`;
+                desc.textContent = isPWD2026 ? `PWD income: $${monthlySurplus}/month surplus (Target August 2026)` : `Current income: $${monthlySurplus}/month surplus (Target August 2026)`;
             }
 
             // Update income display
@@ -2259,6 +2259,7 @@
             ];
 
             const timeline = [];
+            const today = new Date(2026, 0, 4); // Simulate current date as Jan 4, 2026
             today.setHours(0, 0, 0, 0);
 
             // Sequential timeline with manual dates for quick purchases
@@ -2270,58 +2271,49 @@
 
                 // Manual dates for items buying soon
                 if (item.name === 'Keyboard') {
-                    // Dec 30 (Mon) - last week of December
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 19);
+                    availableDate = new Date(2026, 0, 23); // Jan 23, 2026 (approx 19 days from Jan 4)
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'Telus') {
                     // Dec 31 + recurring monthly
-                    availableDate = new Date(2025, 11, 31);
+                    availableDate = new Date(2025, 11, 31); // Keep prior year as it's recurring
                     timeline.push({ ...item, availableDate, monthsAway: 0 });
                     cumulativeSavings -= item.cost;
-                    // Add recurring months
-                    for (let i = 1; i <= 12; i++) {
+                    // Add recurring months for 2026
+                    for (let i = 1; i <= 8; i++) { // Up to August 2026
                         const recurDate = new Date(2026, i - 1, 31);
                         if (recurDate.getDate() !== 31) recurDate.setDate(0);
                         timeline.push({ ...item, availableDate: recurDate, monthsAway: i });
                         cumulativeSavings -= item.cost;
                     }
-                } else if (item.name === 'Door Lock') {
-                    // Dec 19 (Thu) - next week
-                    availableDate = new Date(today);
-                    availableDate.setDate(availableDate.getDate() + 8);
-                    timeline.push({ ...item, availableDate, monthsAway: 0 });
-                    cumulativeSavings -= item.cost;
                 } else if (item.name === 'GBA') {
-                    // Jan 15 (Wed) - moved to next month
-                    availableDate = new Date(2026, 0, 15);
+                    availableDate = new Date(2026, 0, 15); // Jan 15, 2026
                     timeline.push({ ...item, availableDate, monthsAway: 1 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'iPhone Final Bill') {
-                    // Dec 31
-                    availableDate = new Date(2025, 11, 31);
-                    timeline.push({ ...item, availableDate, monthsAway: 0 });
+                    availableDate = new Date(2026, 1, 1); // Feb 1, 2026
+                    timeline.push({ ...item, availableDate, monthsAway: 1 });
+                    cumulativeSavings -= item.cost;
+                } else if (item.name === 'Bell') {
+                    availableDate = new Date(2026, 2, 1); // Mar 1, 2026
+                    timeline.push({ ...item, availableDate, monthsAway: 2 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'MacBook') {
-                    // April 2026 - saving a few thousand in next few months
-                    availableDate = new Date(2026, 3, 1);
+                    availableDate = new Date(2026, 4, 1); // May 1, 2026
                     timeline.push({ ...item, availableDate, monthsAway: 4 });
                     cumulativeSavings -= item.cost;
+                } else if (item.name === 'Dog') {
+                    availableDate = new Date(2026, 5, 1); // June 1, 2026
+                    timeline.push({ ...item, availableDate, monthsAway: 5 });
+                    cumulativeSavings -= item.cost;
                 } else if (item.name === 'RBC Visa') {
-                    // July 2026 - summer payoff target
-                    availableDate = new Date(2026, 6, 1);
-                    timeline.push({ ...item, availableDate, monthsAway: 7 });
+                    availableDate = new Date(2026, 6, 1); // July 1, 2026
+                    timeline.push({ ...item, availableDate, monthsAway: 6 });
                     cumulativeSavings -= item.cost;
                 } else if (item.name === 'Gold Chain') {
-                    // December 2026 - 5 months after Visa
-                    availableDate = new Date(2026, 11, 1);
-                    timeline.push({ ...item, availableDate, monthsAway: 12 });
-                    cumulativeSavings -= item.cost;
-                } else if (item.name === 'Dog') {
-                    // January 2027 - 6 months after Visa (interchangeable with Gold Chain)
-                    availableDate = new Date(2027, 0, 1);
-                    timeline.push({ ...item, availableDate, monthsAway: 13 });
+                    // This will now be past August 2026 with the new timeline, but keep it for completeness
+                    availableDate = new Date(2026, 7, 15); // August 15, 2026 (example for later purchase)
+                    timeline.push({ ...item, availableDate, monthsAway: 7 });
                     cumulativeSavings -= item.cost;
                 } else if (cumulativeSavings >= item.cost) {
                     // Can afford it with current savings
@@ -2664,14 +2656,14 @@
             const currentTotal = pieHoldings.reduce((sum, holding) => sum + holding.currentValue, 0);
 
             // Calculate projected 2030 value with monthly contributions
-            const targetYear = 2030;
-            const targetDate = new Date(targetYear, 0, 1); // Jan 1, 2030
+            const targetYear = 2026; // User's goal: August 2026
+            const targetDate = new Date(targetYear, 7, 31); // August 31, 2026 (User's goal)
             const now = new Date();
             const monthsTo2030 = Math.max(0, (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth()));
 
             const annualReturn = 0.10; // 10% annual return (S&P 500 average)
             const monthlyRate = annualReturn / 12;
-            const monthlyContribution = 1600; // Updated from $476
+            const monthlyContribution = 1600; // Updated from $476 for August 2026 goal
 
             // Project portfolio value to 2030 with compound growth
             let projectedValue = currentTotal;
