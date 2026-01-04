@@ -1728,7 +1728,7 @@
         const FINANCIAL_CONFIG = {
             cadSavings: 0,  // Stocks are held in TFSA, already counted
             cadToUsdRate: 0.72,
-            debtGoal: 5500,  // RBC VISA credit card debt (settle in 2025)
+            debtGoal: 6640,  // Bell $780 + Telus $360 + RBC VISA $5500 | BC Provincial owes $1100 (Dec unpaid)
             monthlyPaymentCapacity: 476
         };
 
@@ -2248,9 +2248,10 @@
             // Sorted by priority: cheap items first, then expensive
             const budgetItems = [
                 { name: 'Keyboard', cost: 120, priority: 1, color: '#34c759' },
-                { name: 'Telus', cost: 200, priority: 2, color: '#ff6b6b', recurring: true },
+                { name: 'Telus', cost: 360, priority: 2, color: '#ff6b6b', recurring: true },
                 { name: 'GBA', cost: 320, priority: 3, color: '#00C805' },
                 { name: 'iPhone Final Bill', cost: 610, priority: 4, color: '#5856d6' },
+                { name: 'Bell', cost: 780, priority: 5, color: '#0071e3' },
                 { name: 'Gold Chain', cost: 2500, priority: 6, color: '#ffd700' },
                 { name: 'MacBook', cost: 4200, priority: 7, color: '#007AFF' },
                 { name: 'Dog', cost: 5000, priority: 8, color: '#ff9500' },
