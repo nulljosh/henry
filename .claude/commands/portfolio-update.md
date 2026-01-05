@@ -1,19 +1,19 @@
 ---
-description: Fast portfolio update - batched price fetches, auto-update from screenshots
+description: Fast portfolio update - batched price fetches, auto-update from screenshots (project)
 ---
 
-Daily portfolio update for index.html:
+Portfolio update for index.html:
 
-1. Check Downloads for screenshots (*.png, *.HEIC from last 24h)
+1. Check Downloads for screenshots (*.png from last 24h)
    - No screenshots? Open wealthsimple.com and WAIT for user
-2. Read screenshots to identify holdings
-3. Batch fetch ALL stock prices in parallel (single message, multiple WebSearch)
-4. Update holdingsConfig in index.html:
-   - Match share counts to screenshots exactly
-   - Update fallbackPrice AND fallbackDailyChange
+2. Read screenshots and extract directly:
+   - Symbol, shares, current price, daily % change
+   - Cash balances (Vacation, TFSA cash)
+3. Update holdingsConfig in index.html:
+   - Use prices/changes FROM screenshots (skip WebSearch)
+   - Match share counts exactly
    - Add new positions, remove zero-share positions
-5. Open in Chrome: `open -a "Google Chrome" /Users/joshua/Documents/Code/finn/index.html`
-6. Git commit + push
-7. Cleanup: `find /Users/joshua/Downloads -name "Screenshot*.png" -delete`
+4. Open in Chrome + git commit & push
+5. Cleanup: delete processed screenshots
 
-No emojis, minimal output
+No emojis, minimal output.
