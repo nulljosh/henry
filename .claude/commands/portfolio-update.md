@@ -6,14 +6,20 @@ Portfolio update for index.html:
 
 1. Check Downloads for screenshots (*.png from last 24h)
    - No screenshots? Open wealthsimple.com and WAIT for user
-2. Read screenshots and extract directly:
+2. Read screenshots and extract:
    - Symbol, shares, current price, daily % change
    - Cash balances (Vacation, TFSA cash)
-3. Update holdingsConfig in index.html:
-   - Use prices/changes FROM screenshots (skip WebSearch)
-   - Match share counts exactly
+3. Cross-reference prices:
+   - WebSearch each tradeable symbol (SLV, IAU, GOOGL, RL, GOLD)
+   - Compare to screenshot prices - flag if >2% difference
+   - Use WebSearch price if screenshot looks stale
+4. Update BOTH static HTML table AND holdingsConfig in index.html:
+   - Match share counts to screenshots exactly
+   - Update fallbackPrice AND fallbackDailyChange
+   - Update static tbody rows with current values
+   - Update tfoot totals
    - Add new positions, remove zero-share positions
-4. Open in Chrome + git commit & push
-5. Cleanup: delete processed screenshots
+5. Open in Chrome + git commit & push
+6. Cleanup: delete processed screenshots
 
 No emojis, minimal output.
