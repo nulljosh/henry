@@ -512,6 +512,14 @@
             width: 24px;
             height: 24px;
         }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -530,7 +538,9 @@
         </div>
 
         <div class="app-content">
-            <div class="hero-card">
+            <!-- Portfolio Tab -->
+            <div class="tab-content active" data-tab-content="portfolio">
+                <div class="hero-card">
                 <div class="hero-label">Portfolio Value</div>
                 <div class="hero-amount">$398</div>
                 <div class="hero-subtext">2030 target $1,200 · +202% upside</div>
@@ -626,8 +636,134 @@
                 </div>
             </div>
 
-            <div class="app-footer">
-                <a href="https://github.com/nulljosh/finn" target="_blank" rel="noopener">Built with <span class="heart">&hearts;</span> in Vancouver, BC</a>
+                <div class="app-footer">
+                    <a href="https://github.com/nulljosh/finn" target="_blank" rel="noopener">Built with <span class="heart">&hearts;</span> in Vancouver, BC</a>
+                </div>
+            </div>
+
+            <!-- Budget Tab -->
+            <div class="tab-content" data-tab-content="budget">
+                <div class="hero-card" style="background: linear-gradient(135deg, #0074D9 0%, #0a84ff 100%);">
+                    <div class="hero-label">Monthly Budget</div>
+                    <div class="hero-amount">$476</div>
+                    <div class="hero-subtext">Surplus after expenses</div>
+                </div>
+                <div class="section-header">Income & Expenses</div>
+                <div class="stock-list">
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Income</div>
+                            <div class="stock-gain">+$1,600</div>
+                        </div>
+                        <div class="stock-details">Monthly salary</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Rent</div>
+                            <div class="stock-gain negative">-$800</div>
+                        </div>
+                        <div class="stock-details">Monthly housing</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Other</div>
+                            <div class="stock-gain negative">-$324</div>
+                        </div>
+                        <div class="stock-details">Food, transit, misc</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Tab -->
+            <div class="tab-content" data-tab-content="calendar">
+                <div class="hero-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);">
+                    <div class="hero-label">Timeline</div>
+                    <div class="hero-amount">2026</div>
+                    <div class="hero-subtext">Major purchases planned</div>
+                </div>
+                <div class="section-header">Upcoming Goals</div>
+                <div class="stock-list">
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">MacBook</div>
+                            <div class="stock-gain neutral">Jul 2026</div>
+                        </div>
+                        <div class="stock-details">$2,000 planned</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Apple Watch</div>
+                            <div class="stock-gain neutral">Nov 2026</div>
+                        </div>
+                        <div class="stock-details">$500 planned</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debt Tab -->
+            <div class="tab-content" data-tab-content="debt">
+                <div class="hero-card" style="background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);">
+                    <div class="hero-label">Debt Remaining</div>
+                    <div class="hero-amount">$4,700</div>
+                    <div class="hero-subtext">To pay off</div>
+                </div>
+                <div class="daily-change">
+                    <div class="daily-label">Progress</div>
+                    <div class="daily-value" style="color: #00d395;">$931 paid (19%)</div>
+                    <div class="progress-bar" style="margin-top: 12px;">
+                        <div class="progress-fill" style="width: 19%;"></div>
+                    </div>
+                </div>
+                <div class="section-header">Details</div>
+                <div class="stock-list">
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Total Debt</div>
+                            <div class="stock-gain neutral">$5,631</div>
+                        </div>
+                        <div class="stock-details">Original amount</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Payoff Date</div>
+                            <div class="stock-gain neutral">Jul 2026</div>
+                        </div>
+                        <div class="stock-details">Estimated</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Tab -->
+            <div class="tab-content" data-tab-content="summary">
+                <div class="hero-card" style="background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);">
+                    <div class="hero-label">Net Worth</div>
+                    <div class="hero-amount">$398</div>
+                    <div class="hero-subtext">Assets minus debt</div>
+                </div>
+                <div class="section-header">Overview</div>
+                <div class="stock-list">
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Assets</div>
+                            <div class="stock-gain">$398</div>
+                        </div>
+                        <div class="stock-details">Stocks + Cash</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">Monthly Save</div>
+                            <div class="stock-gain">$476</div>
+                        </div>
+                        <div class="stock-details">Income surplus</div>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">2030 Target</div>
+                            <div class="stock-gain">$1,200</div>
+                        </div>
+                        <div class="stock-details">Long-term goal</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -686,27 +822,22 @@
 
         // Tab Navigation System
         const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
 
         function switchTab(tabName) {
-            // Remove active class from all tabs
+            // Remove active class from all tabs and content
             tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
 
-            // Add active class to clicked tab
+            // Add active class to clicked tab and content
             const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
+            const activeContent = document.querySelector(`[data-tab-content="${tabName}"]`);
+
+            if (activeTab) activeTab.classList.add('active');
+            if (activeContent) activeContent.classList.add('active');
 
             // Store the active tab
             localStorage.setItem('activeTab', tabName);
-
-            // Provide visual feedback
-            if (activeTab) {
-                activeTab.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    activeTab.style.transform = '';
-                }, 150);
-            }
         }
 
         // Attach click handlers
