@@ -262,7 +262,7 @@
         }
 
         .stock-list {
-            padding: 0 16px 100px;
+            padding: 0 16px 140px;
         }
 
         .stock-card {
@@ -438,6 +438,80 @@
             font-weight: 700;
             color: #30d158;
         }
+
+        /* Tab Navigation - iOS Bottom Tabs */
+        .tab-navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-top: 1px solid var(--border-color-strong);
+            padding: 8px 12px;
+            padding-bottom: 20px;
+            gap: 4px;
+            z-index: 50;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+            margin: 0 8px;
+            border-radius: 20px 20px 0 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (max-width: 430px) {
+            .tab-navigation {
+                margin: 0;
+                border-radius: 0;
+                bottom: 0;
+            }
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .tab-btn:active {
+            transform: scale(0.95);
+            background: var(--bg-card-elevated);
+        }
+
+        .tab-btn.active {
+            background: rgba(10, 132, 255, 0.25);
+            color: #0a84ff;
+        }
+
+        body.light-mode .tab-btn {
+            color: #86868b;
+        }
+
+        body.light-mode .tab-btn.active {
+            background: rgba(0, 116, 217, 0.15);
+            color: #0074D9;
+        }
+
+        .tab-btn svg {
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
 <body>
@@ -558,6 +632,35 @@
         </div>
 
         <div class="home-indicator"></div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="portfolio" title="Portfolio">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                </svg>
+            </button>
+            <button class="tab-btn" data-tab="budget" title="Budget">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                </svg>
+            </button>
+            <button class="tab-btn" data-tab="calendar" title="Calendar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
+                </svg>
+            </button>
+            <button class="tab-btn" data-tab="debt" title="Debt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
+                </svg>
+            </button>
+            <button class="tab-btn" data-tab="summary" title="Summary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <script>
@@ -580,6 +683,43 @@
 
         // Initialize dark mode
         document.body.classList.add('dark-mode');
+
+        // Tab Navigation System
+        const tabs = document.querySelectorAll('.tab-btn');
+
+        function switchTab(tabName) {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+
+            // Add active class to clicked tab
+            const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            // Store the active tab
+            localStorage.setItem('activeTab', tabName);
+
+            // Provide visual feedback
+            if (activeTab) {
+                activeTab.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    activeTab.style.transform = '';
+                }, 150);
+            }
+        }
+
+        // Attach click handlers
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(tab.dataset.tab);
+            });
+        });
+
+        // Restore saved tab or default to portfolio
+        const savedTab = localStorage.getItem('activeTab') || 'portfolio';
+        switchTab(savedTab);
     </script>
 </body>
 </html>
