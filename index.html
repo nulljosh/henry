@@ -14,6 +14,7 @@
 
         html {
             height: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -25,6 +26,9 @@
             display: flex;
             flex-direction: column;
             transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
         }
 
         :root {
@@ -144,6 +148,13 @@
             display: flex;
             flex-direction: column;
             width: 100%;
+            overflow-x: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px 100px;
+            }
         }
 
         .glass-card {
@@ -156,6 +167,16 @@
             margin-bottom: 24px;
             box-shadow: none;
             transition: none;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .glass-card {
+                padding: 16px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
         }
         .glass-card:hover {
             transform: none;
@@ -880,9 +901,12 @@
             -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid rgba(0, 0, 0, 0.08);
             padding: 8px;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
             gap: 4px;
-            z-index: 1000;
+            z-index: 10001;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body.dark .tab-navigation {
@@ -902,6 +926,11 @@
             font-weight: 600;
             border-radius: 10px;
             transition: all 0.2s ease;
+            min-height: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .tab-btn:hover {
@@ -2300,6 +2329,22 @@
                 { name: 'RBC Visa', cost: 5500, priority: 9, color: '#ff4444' }
             ];
 
+            // Income Assistance Payment Dates (PWD/EI)
+            const incomePayments = [
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 0, 21), month: 'Feb', color: '#00C805' }, // Jan 21 for Feb
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 1, 25), month: 'Mar', color: '#00C805' }, // Feb 25 for Mar
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 2, 25), month: 'Apr', color: '#00C805' }, // Mar 25 for Apr
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 3, 22), month: 'May', color: '#00C805' }, // Apr 22 for May
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 4, 27), month: 'Jun', color: '#00C805' }, // May 27 for Jun
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 5, 24), month: 'Jul', color: '#00C805' }, // Jun 24 for Jul
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 6, 29), month: 'Aug', color: '#00C805' }, // Jul 29 for Aug
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 7, 26), month: 'Sep', color: '#00C805' }, // Aug 26 for Sep
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 8, 23), month: 'Oct', color: '#00C805' }, // Sep 23 for Oct
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 9, 21), month: 'Nov', color: '#00C805' }, // Oct 21 for Nov
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 10, 18), month: 'Dec', color: '#00C805' }, // Nov 18 for Dec
+                { name: 'Payday', amount: baseIncome, date: new Date(2026, 11, 16), month: 'Jan 2027', color: '#00C805' } // Dec 16 for Jan 2027
+            ];
+
             const timeline = [];
             const today = new Date(2026, 0, 4); // Simulate current date as Jan 4, 2026
             today.setHours(0, 0, 0, 0);
@@ -2369,6 +2414,18 @@
                     timeline.push({ ...item, availableDate: new Date(currentDate), monthsAway: monthsNeeded });
                     cumulativeSavings = (monthsNeeded * monthlySurplus) - remaining;
                 }
+            });
+
+            // Add income payment dates to timeline
+            incomePayments.forEach(payment => {
+                timeline.push({
+                    name: `💰 ${payment.name}`,
+                    cost: payment.amount,
+                    availableDate: payment.date,
+                    color: payment.color,
+                    monthsAway: 0,
+                    isIncome: true
+                });
             });
 
             // Generate 12 months starting from today
@@ -3977,6 +4034,22 @@
                         <p style="margin: 0 0 10px 0;"><strong>HOOD:</strong> Up 20%+ in 2025. Expanded prediction markets in late November ahead of competitors. Expecting 25% revenue growth this fiscal year. Momentum continues on fintech innovation.</p>
                         <p style="margin: 0 0 10px 0;"><strong>SPY:</strong> New all-time high $6,909.79. Markets booking weekly wins in final full week of 2025. Santa Claus rally in full effect heading into year-end.</p>
                         <p style="margin: 0 0 10px 0;"><strong>WEEK AHEAD:</strong> Dec 26 full trading day, then quiet week into New Year. Low volume expected, typical year-end positioning. Watch for tax-loss harvesting and January effect setups.</p>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(128, 128, 128, 0.2);">
+                    <div style="font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; letter-spacing: 0.5px;">ECONOMIC INSIGHTS · TAKING ADVANTAGE</div>
+                    <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                        <p style="margin: 0 0 10px 0;"><strong>GOLD AT ALL-TIME HIGHS:</strong> Gold continues hitting record highs almost daily - clear signal that governments are printing money faster than they can track. When fiat currency loses purchasing power, hard assets shine. Traditional inflation hedge proving its worth in 2026.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>AI BUBBLE ECONOMY:</strong> The AI boom is largely concentrated in a circular economy - NVDA selling chips to OpenAI, Microsoft, Google who then buy more GPUs. Trillions flowing between the same handful of companies. Classic bubble indicators: limited revenue diversity, sky-high valuations based on future promises, FOMO-driven institutional buying.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>GOVERNMENT INCOMPETENCE:</strong> Central banks worldwide running printing presses at historic rates. National debts ballooning with no realistic repayment plans. When traditional institutions fail to maintain sound money, alternative stores of value (gold, hard assets, select commodities) become essential portfolio protection.</p>
+                        <p style="margin: 0 0 10px 0;"><strong>HOW TO TAKE ADVANTAGE:</strong>
+                            <br>• <strong>Gold exposure</strong> - Physical or mining stocks (GOLD, NEM, RGLD) as inflation hedge
+                            <br>• <strong>Ride the AI wave carefully</strong> - NVDA/PLTR positions but set strict stop-losses. Bubble doesn't mean "don't participate" - just means "don't be last in"
+                            <br>• <strong>Hard assets</strong> - Real estate, commodities, tangible value when currency debasement accelerates
+                            <br>• <strong>Income assistance arbitrage</strong> - Your PWD/EI payments ($1,550/mo) are indexed to inflation. Live below means, invest surplus into appreciating assets. Government money + disciplined investing = wealth building regardless of macro chaos
+                            <br>• <strong>Avoid debt traps</strong> - High interest consumer debt gets worse in inflationary environments. Priority #1: pay off RBC Visa, Bell, iPhone bills
+                        </p>
+                        <p style="margin: 0; font-style: italic; opacity: 0.8;"><strong>TLDR:</strong> Governments printing money = buy gold. AI bubble = ride NVDA but watch the exit. Income assistance = free government inflation hedge if you invest the surplus wisely. Pay off debt first, then deploy capital into hard assets and strategic growth plays.</p>
                     </div>
                 </div>
             </div>
