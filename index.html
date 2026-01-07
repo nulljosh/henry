@@ -1,212 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finn</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-            background: #000;
-            color: #f5f5f7;
-            min-height: 100vh;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        h1 { font-size: 28px; margin-bottom: 24px; font-weight: 600; }
-        h2 { font-size: 18px; margin: 32px 0 16px; font-weight: 600; color: #98989d; }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        td:last-child { text-align: right; }
-        .symbol { font-weight: 600; }
-        .meta { font-size: 12px; color: #98989d; }
-        .positive { color: #34c759; }
-        .negative { color: #ff3b30; }
-        .total-row td { border-bottom: none; padding-top: 16px; font-weight: 600; font-size: 18px; }
-        .due { font-size: 12px; color: #98989d; }
-        .priority-high { border-left: 3px solid #ff3b30; padding-left: 12px; }
-        .priority-med { border-left: 3px solid #ff9500; padding-left: 12px; }
-        .priority-low { border-left: 3px solid #34c759; padding-left: 12px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finn</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui;background:#000;color:#f5f5f7;padding:20px;max-width:600px;margin:0 auto}
+h1{font-size:28px;margin-bottom:24px}
+h2{font-size:16px;margin:28px 0 12px;color:#888}
+table{width:100%;border-collapse:collapse}
+td{padding:10px 0;border-bottom:1px solid #222}
+td:last-child{text-align:right}
+.s{font-weight:600}
+.m{font-size:12px;color:#888}
+.g{color:#34c759}
+.r{color:#ff3b30}
+.o{color:#ff9500}
+.t td{border:0;padding-top:14px;font-weight:600;font-size:17px}
+.h{border-left:3px solid #ff3b30;padding-left:10px}
+.w{border-left:3px solid #ff9500;padding-left:10px}
+.l{border-left:3px solid #34c759;padding-left:10px}
+.note{margin-top:40px;padding:12px;background:#111;border-radius:8px;font-size:12px;color:#666}
+</style>
 </head>
 <body>
-    <h1>Finn</h1>
+<h1>Finn</h1>
 
-    <h2>Portfolio</h2>
-    <table id="portfolio">
-        <tr>
-            <td>
-                <div class="symbol">SLV</div>
-                <div class="meta">1.0039 shares @ $70.86</div>
-            </td>
-            <td>
-                <div>$71.14</div>
-                <div class="meta negative">-3.82%</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="symbol">IAU</div>
-                <div class="meta">0.1204 shares @ $83.84</div>
-            </td>
-            <td>
-                <div>$10.09</div>
-                <div class="meta negative">-0.91%</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="symbol">GOOGL</div>
-                <div class="meta">0.0039 shares @ $321.49</div>
-            </td>
-            <td>
-                <div>$1.25</div>
-                <div class="meta positive">+2.33%</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="symbol">RL</div>
-                <div class="meta">0.0034 shares @ $362.32</div>
-            </td>
-            <td>
-                <div>$1.23</div>
-                <div class="meta negative">-0.25%</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="symbol">GOLD</div>
-                <div class="meta">0.00025 oz @ $6,165.14 CAD</div>
-            </td>
-            <td>
-                <div>$1.54 CAD</div>
-                <div class="meta negative">-0.93%</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="symbol">Cash</div>
-                <div class="meta">TFSA</div>
-            </td>
-            <td>$6.18 CAD</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="symbol">Vacation</div>
-                <div class="meta">Chequing</div>
-            </td>
-            <td>$19.01 CAD</td>
-        </tr>
-        <tr class="total-row">
-            <td>Total</td>
-            <td>~$95 USD</td>
-        </tr>
-    </table>
+<h2>Portfolio</h2>
+<table>
+<tr><td><div class="s">SLV</div><div class="m">1.0039 @ $70.86</div></td><td>$71.14<div class="m r">-3.82%</div></td></tr>
+<tr><td><div class="s">IAU</div><div class="m">0.1204 @ $83.84</div></td><td>$10.09<div class="m r">-0.91%</div></td></tr>
+<tr><td><div class="s">GOOGL</div><div class="m">0.0039 @ $321.49</div></td><td>$1.25<div class="m g">+2.33%</div></td></tr>
+<tr><td><div class="s">RL</div><div class="m">0.0034 @ $362.32</div></td><td>$1.23<div class="m r">-0.25%</div></td></tr>
+<tr><td><div class="s">GOLD</div><div class="m">0.00025oz @ $6,165 CAD</div></td><td>$1.54 CAD<div class="m r">-0.93%</div></td></tr>
+<tr><td><div class="s">Cash</div><div class="m">TFSA</div></td><td>$6.18 CAD</td></tr>
+<tr><td><div class="s">Vacation</div><div class="m">Chequing</div></td><td>$19.01 CAD</td></tr>
+<tr class="t"><td>Total</td><td>~$95 USD</td></tr>
+</table>
 
-    <h2>Debt</h2>
-    <table>
-        <tr class="priority-high">
-            <td>
-                <div class="symbol">RBC VISA</div>
-                <div class="meta">Credit card</div>
-            </td>
-            <td>$5,500</td>
-        </tr>
-        <tr class="priority-high">
-            <td>
-                <div class="symbol">Bell</div>
-                <div class="meta">Phone plan</div>
-            </td>
-            <td>$780</td>
-        </tr>
-        <tr class="priority-med">
-            <td>
-                <div class="symbol">Telus</div>
-                <div class="meta">Old phone</div>
-            </td>
-            <td>$360</td>
-        </tr>
-        <tr class="total-row">
-            <td>Total Debt</td>
-            <td>$6,640</td>
-        </tr>
-    </table>
+<h2>Debt</h2>
+<table>
+<tr class="h"><td><div class="s">RBC VISA</div></td><td>$5,500</td></tr>
+<tr class="h"><td><div class="s">Bell</div><div class="m">Phone plan</div></td><td>$780</td></tr>
+<tr class="w"><td><div class="s">Telus</div><div class="m">Old phone</div></td><td>$360</td></tr>
+<tr class="t"><td>Total</td><td class="r">$6,640</td></tr>
+</table>
 
-    <h2>Goals</h2>
-    <table>
-        <tr class="priority-high">
-            <td>
-                <div class="symbol">Pay off debt</div>
-                <div class="due">~8 months at $476/mo surplus</div>
-            </td>
-            <td>Aug 2026</td>
-        </tr>
-        <tr class="priority-med">
-            <td>
-                <div class="symbol">MacBook Pro</div>
-                <div class="due">After debt cleared</div>
-            </td>
-            <td>~$3,500</td>
-        </tr>
-        <tr class="priority-med">
-            <td>
-                <div class="symbol">Apple Watch Ultra</div>
-                <div class="due">Financing $50/mo</div>
-            </td>
-            <td>~$1,200</td>
-        </tr>
-        <tr class="priority-low">
-            <td>
-                <div class="symbol">GBA Pokemon</div>
-                <div class="due">Want</div>
-            </td>
-            <td>$320</td>
-        </tr>
-        <tr class="priority-low">
-            <td>
-                <div class="symbol">Gold Chain</div>
-                <div class="due">Someday</div>
-            </td>
-            <td>$2,500</td>
-        </tr>
-        <tr class="priority-low">
-            <td>
-                <div class="symbol">Dog</div>
-                <div class="due">After stable income</div>
-            </td>
-            <td>~$5,000</td>
-        </tr>
-    </table>
+<h2>Monthly ($1,100)</h2>
+<table>
+<tr><td>Income</td><td class="g">+$1,100</td></tr>
+<tr><td>Food</td><td>-$300</td></tr>
+<tr><td>Phone + Watch</td><td>-$180</td></tr>
+<tr><td>Gym</td><td>-$30</td></tr>
+<tr class="t"><td>Surplus</td><td class="g">+$590</td></tr>
+</table>
 
-    <h2>Monthly</h2>
-    <table>
-        <tr>
-            <td>Income</td>
-            <td class="positive">+$1,600</td>
-        </tr>
-        <tr>
-            <td>Food</td>
-            <td>-$300</td>
-        </tr>
-        <tr>
-            <td>Phone + Watch</td>
-            <td>-$180</td>
-        </tr>
-        <tr>
-            <td>Gym</td>
-            <td>-$30</td>
-        </tr>
-        <tr class="total-row">
-            <td>Surplus</td>
-            <td class="positive">+$653</td>
-        </tr>
-    </table>
+<h2>Goals</h2>
+<table>
+<tr class="h"><td><div class="s">Pay off debt</div><div class="m">~11 months @ $590/mo</div></td><td>Dec 2026</td></tr>
+<tr class="w"><td><div class="s">MacBook Pro</div><div class="m">After debt</div></td><td>~$3,500</td></tr>
+<tr class="w"><td><div class="s">Apple Watch Ultra</div><div class="m">$50/mo financing</div></td><td>~$1,200</td></tr>
+<tr class="l"><td><div class="s">GBA Pokemon</div></td><td>$320</td></tr>
+<tr class="l"><td><div class="s">Gold Chain</div></td><td>$2,500</td></tr>
+<tr class="l"><td><div class="s">Dog</div><div class="m">After stable income</div></td><td>~$5,000</td></tr>
+</table>
 
-    <div style="margin-top: 48px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 12px; color: #666;">
-        Last updated: Jan 7, 2026
-    </div>
+<h2>Pay Schedule (2026)</h2>
+<table>
+<tr class="o"><td><div class="s">Dec 17</div><div class="m">MISSED - gov behind</div></td><td class="o">Pending</td></tr>
+<tr><td>Jan 27</td><td>Next</td></tr>
+<tr><td>Feb 25</td><td></td></tr>
+<tr><td>Mar 25</td><td></td></tr>
+<tr><td>Apr 22</td><td></td></tr>
+<tr><td>May 20</td><td></td></tr>
+<tr><td>Jun 17</td><td></td></tr>
+<tr><td>Jul 22</td><td></td></tr>
+<tr><td>Aug 19</td><td></td></tr>
+<tr><td>Sep 23</td><td></td></tr>
+<tr><td>Oct 21</td><td></td></tr>
+<tr><td>Nov 18</td><td></td></tr>
+<tr><td>Dec 16</td><td></td></tr>
+</table>
+
+<div class="note">Updated: Jan 7, 2026</div>
 </body>
 </html>
